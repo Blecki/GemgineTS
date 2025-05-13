@@ -1,0 +1,50 @@
+<title>Canvas Sprite Example</title>
+<style>
+  body { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+  canvas {
+    border: 1px solid black;
+    background-color: #ffffff;
+  }
+</style>
+</head>
+<body>
+  <canvas id="myCanvas" width="320" height="240"></canvas>
+
+  <script>
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const image = new Image();
+    image.src = 'tiles.png'; // Replace with the actual path to your sprite sheet
+
+    image.onload = () => {
+        const spriteWidth = 16; // Width of a single sprite
+        const spriteHeight = 16; // Height of a single sprite
+        const frameX = 0; // Column index of the sprite to draw
+        const frameY = 0; // Row index of the sprite to draw
+        const canvasX = 50; // X coordinate where to draw the sprite on the canvas
+        const canvasY = 50; // Y coordinate where to draw the sprite on the canvas
+
+        // Draw the sprite
+        ctx.drawImage(
+            image, // Source image
+            frameX * spriteWidth, // Source X (cropping start X)
+            frameY * spriteHeight, // Source Y (cropping start Y)
+            spriteWidth, // Source width (cropping width)
+            spriteHeight, // Source height (cropping height)
+            canvasX, // Destination X (canvas X)
+            canvasY, // Destination Y (canvas Y)
+            spriteWidth, // Destination width (drawing width)
+            spriteHeight  // Destination height (drawing height)
+        );
+    };
+  </script>
+</body>
+</html>
