@@ -1,0 +1,1 @@
+{"version":3,"file":"Sprite.js","sourceRoot":"","sources":["../Sprite.ts"],"names":[],"mappings":"AAGA,MAAM,OAAO,MAAM;IACV,KAAK,CAAiB;IACtB,UAAU,CAAO;IAExB,YAAY,KAAqB,EAAE,UAAgB;QAEjD,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;QACnB,IAAI,CAAC,UAAU,GAAG,UAAU,CAAC;IAC/B,CAAC;CACF"}

@@ -1,6 +1,6 @@
 import { Sprite } from "./Sprite.js";
 import { Point } from "./Point.js";
-
+import { Rect } from "./Rect.js";
 
 export class RenderingContext {
   public canvas: HTMLCanvasElement;
@@ -22,6 +22,19 @@ export class RenderingContext {
       position.y,
       sprite.sourceRect.width,
       sprite.sourceRect.height);
+  }
+  
+  public DrawSpriteFromSourceRect(image: ImageBitmap, rect: Rect, position: Point) {
+    this.context.drawImage(
+      image,
+      rect.x,
+      rect.y,
+      rect.width,
+      rect.height,
+      position.x,
+      position.y,
+      rect.width,
+      rect.height);
   }
 
   public ClearScreen() {

@@ -1,5 +1,5 @@
 import { Component } from "./Component.js";
-import { RenderingContext} from "./RenderingContext.js";
+import { RenderingContext } from "./RenderingContext.js";
 
 export class Module {
   public ComponentCreated(component: Component) {}
