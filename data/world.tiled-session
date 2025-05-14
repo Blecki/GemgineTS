@@ -1,0 +1,83 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "assets/test-room2.tmj",
+    "console.history": [
+        "world"
+    ],
+    "expandedProjectPaths": [
+        "assets",
+        "."
+    ],
+    "fileStates": {
+        "assets/template.tsj": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/template.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/test-room.tmj": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1246.6666666666667,
+                "y": 313.33333333333337
+            }
+        },
+        "assets/test-room.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1246.6666666666667,
+                "y": 313.33333333333337
+            }
+        },
+        "assets/test-room2.tmj": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 766.6666666666667,
+                "y": 313.33333333333337
+            }
+        },
+        "assets/test-room2.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 766.6666666666667,
+                "y": 313.33333333333337
+            }
+        }
+    },
+    "last.imagePath": "C:/Users/salli/Desktop/GemgineTS/data/assets",
+    "last.worldFilePath": "C:/Users/salli/Desktop/GemgineTS/data/assets",
+    "loadedWorlds": [
+        "C:/Users/salli/Desktop/GemgineTS/data/assets/world.world",
+        "C:/Users/salli/Desktop/GemgineTS/data/assets/world.world"
+    ],
+    "map.lastUsedFormat": "json",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "openFiles": [
+        "assets/test-room.tmj",
+        "assets/test-room2.tmj",
+        "assets/template.tsj"
+    ],
+    "project": "world.tiled-project",
+    "recentFiles": [
+        "assets/test-room.tmj",
+        "assets/template.tsj",
+        "assets/test-room2.tmj",
+        "assets/template.tsx"
+    ],
+    "tileset.lastUsedFormat": "json",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
