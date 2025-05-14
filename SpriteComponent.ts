@@ -1,4 +1,5 @@
-import { RenderComponent, RenderingContext } from "./RenderModule.js";
+import { RenderComponent } from "./RenderModule.js";
+import { RenderingContext } from "./RenderingContext.js";
 import { Sprite } from "./Sprite.js";
 
 export class SpriteComponent extends RenderComponent {

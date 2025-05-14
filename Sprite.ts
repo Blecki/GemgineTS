@@ -1,4 +1,4 @@
-import { AssetReference } from "./AssetLoader.js";
+import { AssetReference } from "./AssetManagement/AssetReference.js";
 import { Rect } from "./Rect.js";
 
 export class Sprite {
