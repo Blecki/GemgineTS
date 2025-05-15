@@ -8,11 +8,13 @@ export class TilemapComponent extends RenderComponent {
         this.tilemapAsset = tilemapAsset;
         this.tilemap = tilemapAsset.asset;
     }
-    OnSpawn() {
+    Initialize() {
         this.tilemap = this.tilemapAsset.asset;
     }
-    render(context) {
+    Render(context) {
         for (var layer of this.tilemap.layers) {
+            if (layer.type != "tilelayer")
+                continue;
             var basePoint = this.transform.position;
             basePoint.x += layer.x;
             basePoint.y += layer.y;

@@ -25,8 +25,8 @@
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 1246.6666666666667,
-                "y": 313.33333333333337
+                "x": 286.6666666666667,
+                "y": 159.3333333333333
             }
         },
         "assets/test-room.tmx": {
@@ -41,8 +41,8 @@
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 766.6666666666667,
-                "y": 313.33333333333337
+                "x": 2234.6666666666665,
+                "y": 760
             }
         },
         "assets/test-room2.tmx": {
@@ -55,6 +55,7 @@
         }
     },
     "last.imagePath": "C:/Users/salli/Desktop/GemgineTS/data/assets",
+    "last.objectTemplatePath": "C:/Users/salli/Desktop/GemgineTS/data/assets/templates",
     "last.worldFilePath": "C:/Users/salli/Desktop/GemgineTS/data/assets",
     "loadedWorlds": [
         "C:/Users/salli/Desktop/GemgineTS/data/assets/world.world",

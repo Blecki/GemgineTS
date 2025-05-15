@@ -1,4 +1,4 @@
-import { AssetReference } from "./AssetManagement/AssetReference.js";
+import { AssetReference } from "./AssetReference.js";
 import { RenderComponent } from "./RenderModule.js";
 import { Point } from "./Point.js";
 import { TiledTilemap } from "./TiledTilemap.js";
@@ -14,12 +14,13 @@ export class TilemapComponent extends RenderComponent {
     this.tilemap = tilemapAsset.asset;
   }
 
-  OnSpawn() {
+  public Initialize() {
     this.tilemap = this.tilemapAsset.asset as TiledTilemap;
   }
 
-  public render(context: RenderingContext) {
+  public Render(context: RenderingContext) {
     for (var layer of this.tilemap.layers) {
+      if (layer.type != "tilelayer") continue;
       var basePoint = this.transform.position;
       basePoint.x += layer.x;
       basePoint.y += layer.y;
@@ -31,7 +32,6 @@ export class TilemapComponent extends RenderComponent {
           var cellRect = this.tilemap.tilesets[0].tilesetAsset.GetTileRect(cellValue - 1);
           var tilesetImage = this.tilemap.tilesets[0].tilesetAsset.imageAsset;
           context.DrawSpriteFromSourceRect(tilesetImage, cellRect, basePoint.Add(new Point(x * this.tilemap.tilewidth, y * this.tilemap.tileheight)));
-
         }
     }
   }

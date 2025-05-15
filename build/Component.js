@@ -1,7 +1,6 @@
 export class Component {
-    engine;
+    ID;
     transform;
     Clone() { return new Component(); }
-    OnSpawn() { }
 }
 //# sourceMappingURL=Component.js.map

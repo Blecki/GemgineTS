@@ -1,18 +1,15 @@
-import { AssetLoader } from "./AssetManagement/AssetLoader.js";
-import { AssetReference } from "./AssetManagement/AssetReference.js";
-import { Sprite } from "./Sprite.js";
-import { Rect } from "./Rect.js";
+import { AssetLoader } from "./AssetLoader.js";
 import { RenderModule } from "./RenderModule.js";
 import { RenderingContext } from "./RenderingContext.js";
 import { Engine } from "./Engine.js";
 import { EntityPrototype } from "./EntityPrototype.js";
-import { SpriteComponent } from "./SpriteComponent.js";
-import { LoadJSON } from "./AssetManagement/JsonLoader.js";
-import { LoadAndConvertJSON } from "./AssetManagement/JsonConverter.js";
+import { LoadJSON } from "./JsonLoader.js";
+import { LoadAndConvertJSON } from "./JsonConverter.js";
 import { TilemapComponent } from "./TilemapComponent.js";
 import { TiledTileset } from "./TiledTileset.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 import { TiledWorld } from "./TiledWorld.js";
+import { Input } from "./Input.js";
 
 export function Run() {
   LoadJSON("data/", "manifest.json")
@@ -33,7 +30,19 @@ export function Run() {
         var entityPrototype = new EntityPrototype();
         entityPrototype.components.push(new TilemapComponent(assets.get("assets/test-room.tmj")));
         engine.CreateEntity(entityPrototype);
-        engine.Run(new RenderingContext(canvas, ctx));
+
+        var input = new Input();
+        input.Bind("Space", "button");
+        input.Initialize();
+
+        engine.Run(new RenderingContext(canvas, ctx), () => {
+          var spacePress = input.tryGetRecentInput("button", 1000);
+          if (spacePress != null) {
+            input.markHandled(spacePress);
+            console.log("Space pressed!");
+          }
+          input.cleanup();
+        });
       });
     })
     .catch(error => console.error("Failed to load asset manifest."));

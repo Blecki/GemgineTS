@@ -3,14 +3,17 @@ import { Module } from "./Module.js";
 import { RenderingContext } from "./RenderingContext.js";
 
 export class RenderComponent extends Component {
-  public render(context: RenderingContext) {}
+  public Render(context: RenderingContext) {}
+  public Initialize() {}
 }
 export class RenderModule extends Module {
   private renderables: RenderComponent[] = [];
 
   ComponentCreated(component: Component) {
     if (component instanceof RenderComponent) {
-      this.renderables.push(component as RenderComponent);
+      var rc = component as RenderComponent;
+      this.renderables.push(rc);
+      rc.Initialize();
     }
   }
 
@@ -19,6 +22,6 @@ export class RenderModule extends Module {
 
   Render(context: RenderingContext) {
     for (var renderable of this.renderables)
-      renderable.render(context);
+      renderable.Render(context);
   }
 }

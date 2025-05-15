@@ -1,4 +1,4 @@
-import { Engine } from "./../Engine.js";
+import { Engine } from "./Engine.js";
 
 interface Asset {
   ResolveAssets(reference: AssetReference, engine: Engine);

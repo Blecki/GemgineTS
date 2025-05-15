@@ -1,13 +1,15 @@
-import { Entity } from "./Entity.js";
 import { Transform } from "./Transform.js";
+import { AllocateEntityID } from "./AllocateEntityID.js";
 export class Engine {
     modules = [];
     AssetMap;
+    SceneRoot;
     constructor(AssetMap) {
         this.AssetMap = AssetMap;
         for (const [key, value] of AssetMap) {
             value.ResolveDependencies(this);
         }
+        this.SceneRoot = new Transform(0, null);
     }
     Update() {
         for (var module of this.modules)
@@ -17,31 +19,31 @@ export class Engine {
         for (var module of this.modules)
             module.Render(context);
     }
-    Run(context) {
+    Run(context, frameCallback) {
         this.Update();
+        frameCallback();
         context.ClearScreen();
         this.Render(context);
-        requestAnimationFrame(() => this.Run(context));
+        requestAnimationFrame(() => this.Run(context, frameCallback));
     }
     AddModule(newModule) {
         this.modules.push(newModule);
     }
     CreateEntity(prototype) {
-        let result = new Entity();
-        result.transform = new Transform();
-        prototype.components.forEach(component => {
+        let resultID = AllocateEntityID();
+        let transform = new Transform(resultID, this.SceneRoot);
+        let resultComponents = prototype.components.map(component => {
             let newComponent = component.Clone();
-            newComponent.transform = result.transform;
-            newComponent.engine = this;
-            result.components.push(newComponent);
+            newComponent.transform = transform;
+            newComponent.ID = resultID;
+            return newComponent;
         });
-        result.components.forEach(component => component.OnSpawn());
         this.modules.forEach(module => {
-            result.components.forEach(component => {
+            resultComponents.forEach(component => {
                 module.ComponentCreated(component);
             });
         });
-        return result;
+        return resultID;
     }
 }
 //# sourceMappingURL=Engine.js.map

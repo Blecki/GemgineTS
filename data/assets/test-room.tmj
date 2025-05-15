@@ -32,9 +32,68 @@
          "width":30,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"Object Layer 1",
+         "objects":[
+                {
+                 "height":174.666666666667,
+                 "id":1,
+                 "name":"test rectangle",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":254.666666666667,
+                 "x":150.666666666667,
+                 "y":96
+                }, 
+                {
+                 "gid":15,
+                 "id":2,
+                 "template":"templates\/pot.tj",
+                 "x":32,
+                 "y":64
+                }, 
+                {
+                 "id":7,
+                 "template":"templates\/pot.tj",
+                 "x":48,
+                 "y":80
+                }, 
+                {
+                 "id":8,
+                 "template":"templates\/pot.tj",
+                 "x":16,
+                 "y":80
+                }, 
+                {
+                 "id":9,
+                 "template":"templates\/pot.tj",
+                 "x":32,
+                 "y":80
+                }, 
+                {
+                 "id":10,
+                 "template":"templates\/pot.tj",
+                 "x":16,
+                 "y":64
+                }, 
+                {
+                 "id":11,
+                 "template":"templates\/pot.tj",
+                 "x":48,
+                 "y":64
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":2,
- "nextobjectid":1,
+ "nextlayerid":3,
+ "nextobjectid":12,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
