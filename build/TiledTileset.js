@@ -1,4 +1,5 @@
 import { Rect } from "./Rect.js";
+import pathCombine from "./PathCombine.js";
 export class TiledTileset {
     columns;
     image;
@@ -15,7 +16,7 @@ export class TiledTileset {
     version;
     imageAsset;
     ResolveDependencies(self, engine) {
-        this.imageAsset = engine.AssetMap.get(self.Directory() + this.image).asset;
+        this.imageAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.image)).asset;
     }
     GetTileRect(index) {
         return new Rect((index % this.columns) * this.tilewidth, Math.floor(index / this.columns) * this.tileheight, this.tilewidth, this.tileheight);

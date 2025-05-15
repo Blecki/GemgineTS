@@ -1,6 +1,7 @@
 import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
 import { Rect } from "./Rect.js";
+import pathCombine from "./PathCombine.js";
 
 export class TiledTileset {
   public columns: number;
@@ -19,7 +20,7 @@ export class TiledTileset {
   public imageAsset: ImageBitmap;
 
   public ResolveDependencies(self: AssetReference, engine: Engine) {
-    this.imageAsset = engine.AssetMap.get(self.Directory() + this.image).asset as ImageBitmap;
+    this.imageAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.image)).asset as ImageBitmap;
   }
 
   public GetTileRect(index: number): Rect {
