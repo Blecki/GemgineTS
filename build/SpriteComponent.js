@@ -1,15 +1,12 @@
 import { RenderComponent } from "./RenderModule.js";
+import { Sprite } from "./Sprite.js";
 export class SpriteComponent extends RenderComponent {
     sprite;
-    constructor(sprite) {
-        super();
-        this.sprite = sprite;
-    }
     Render(context) {
         context.DrawSprite(this.sprite, this.transform.position);
     }
-    Clone() {
-        return new SpriteComponent(this.sprite);
+    Initialize(engine, template) {
+        this.sprite = new Sprite(template.tileset.tilesetAsset.imageAsset, template.tileset.tilesetAsset.GetTileRect(template.object.gid));
     }
 }
 //# sourceMappingURL=SpriteComponent.js.map

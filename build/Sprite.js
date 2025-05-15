@@ -1,8 +1,8 @@
 export class Sprite {
-    asset;
+    image;
     sourceRect;
-    constructor(asset, sourceRect) {
-        this.asset = asset;
+    constructor(image, sourceRect) {
+        this.image = image;
         this.sourceRect = sourceRect;
     }
 }

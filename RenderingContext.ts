@@ -13,7 +13,7 @@ export class RenderingContext {
 
   public DrawSprite(sprite: Sprite, position: Point) {
     this.context.drawImage(
-      sprite.asset.asset, 
+      sprite.image, 
       sprite.sourceRect.x,
       sprite.sourceRect.y,
       sprite.sourceRect.width,

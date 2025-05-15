@@ -1,14 +1,11 @@
 import { RenderComponent } from "./RenderModule.js";
 import { Point } from "./Point.js";
 export class TilemapComponent extends RenderComponent {
+    tilemapName;
     tilemapAsset;
     tilemap;
-    constructor(tilemapAsset) {
-        super();
-        this.tilemapAsset = tilemapAsset;
-        this.tilemap = tilemapAsset.asset;
-    }
-    Initialize() {
+    Initialize(engine, template) {
+        this.tilemapAsset = engine.AssetMap.get(this.tilemapName);
         this.tilemap = this.tilemapAsset.asset;
     }
     Render(context) {
@@ -28,9 +25,6 @@ export class TilemapComponent extends RenderComponent {
                     context.DrawSpriteFromSourceRect(tilesetImage, cellRect, basePoint.Add(new Point(x * this.tilemap.tilewidth, y * this.tilemap.tileheight)));
                 }
         }
-    }
-    Clone() {
-        return new TilemapComponent(this.tilemapAsset);
     }
 }
 //# sourceMappingURL=TilemapComponent.js.map

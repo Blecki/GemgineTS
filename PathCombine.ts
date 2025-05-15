@@ -9,5 +9,6 @@ export default function pathCombine(...args) {
     if (p == '..') r.pop();
     else r.push(p);
   });
+  
   return r.join('/');
 }
