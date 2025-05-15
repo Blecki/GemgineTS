@@ -3,18 +3,48 @@ import { InitializeFromJSON } from "./JsonConverter.js";
 import { Engine } from "./Engine.js";
 import { Rect } from "./Rect.js";
 import { TiledTileset } from "./TiledTileset.js";
+import pathCombine from "./PathCombine.js";
 
 export class TiledLayer {
   public data: number[];
+  public draworder: string;
   public height: number;
   public id: number;
   public name: string;
+  public objects: TiledObject[];
   public opacity: number;
   public type: string;
   public visible: boolean;
   public width: number;
   public x: number;
   public y: number;
+
+  public ResolveDependencies(self: AssetReference, engine: Engine) {
+    if (this.objects != undefined) {
+      this.objects = this.objects.map(t => { var n = new TiledObject(); InitializeFromJSON(t, n); return n; });
+      this.objects.forEach(t => t.ResolveDependencies(self, engine));
+    }
+  }
+}
+
+export class TiledObject {
+  public gid: number;
+  public height: number;
+  public id: number;
+  public name: string;
+  public rotation: number;
+  public template: string;
+  public type: string;
+  public visible: boolean;
+  public width: number;
+  public x: number;
+  public y: number;
+  public templateAsset: AssetReference;
+
+  public ResolveDependencies(self: AssetReference, engine: Engine) {
+    if (this.template != null && this.template != "")
+      this.templateAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.template));
+  }
 }
 
 export class TiledInlineTileset {
@@ -23,7 +53,7 @@ export class TiledInlineTileset {
   public tilesetAsset: TiledTileset;
 
   public ResolveDependencies(self: AssetReference, engine: Engine) {
-    this.tilesetAsset = engine.AssetMap.get(self.Directory() + this.source).asset as TiledTileset;
+    this.tilesetAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.source)).asset as TiledTileset;
   }
 }
 
@@ -47,5 +77,8 @@ export class TiledTilemap {
   public ResolveDependencies(self: AssetReference, engine: Engine) {
     this.tilesets = this.tilesets.map(t => { var n = new TiledInlineTileset(); InitializeFromJSON(t, n); return n; });
     this.tilesets.forEach(t => t.ResolveDependencies(self, engine));
+
+    this.layers = this.layers.map(t => { var n = new TiledLayer(); InitializeFromJSON(t,n); return n; });
+    this.layers.forEach(t => t.ResolveDependencies(self, engine));
   }
 }

@@ -10,6 +10,7 @@ import { TiledTileset } from "./TiledTileset.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 import { TiledWorld } from "./TiledWorld.js";
 import { Input } from "./Input.js";
+import { TiledTemplate } from "./TiledTemplate.js";
 export function Run() {
     LoadJSON("data/", "manifest.json")
         .then(asset => {
@@ -21,6 +22,7 @@ export function Run() {
         loader.AddLoader("tmj", LoadAndConvertJSON(() => new TiledTilemap()));
         loader.AddLoader("tsj", LoadAndConvertJSON(() => new TiledTileset()));
         loader.AddLoader("world", LoadAndConvertJSON(() => new TiledWorld()));
+        loader.AddLoader("tj", LoadAndConvertJSON(() => new TiledTemplate()));
         loader.LoadAssets("data/", manifest, (assets) => {
             const engine = new Engine(assets);
             engine.AddModule(new RenderModule());
@@ -42,4 +44,4 @@ export function Run() {
     })
         .catch(error => console.error("Failed to load asset manifest."));
 }
-//# sourceMappingURL=Main.js.map
+//# sourceMappingURL=main.js.map
