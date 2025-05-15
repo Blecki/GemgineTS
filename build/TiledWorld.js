@@ -1,4 +1,4 @@
-import { InitializeFromJSON } from "./AssetManagement/JsonConverter.js";
+import { InitializeFromJSON } from "./JsonConverter.js";
 export class TiledWorldMap {
     fileName;
     height;

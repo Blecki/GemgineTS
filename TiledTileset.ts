@@ -1,4 +1,4 @@
-import { AssetReference } from "./AssetManagement/AssetReference.js";
+import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
 import { Rect } from "./Rect.js";
 

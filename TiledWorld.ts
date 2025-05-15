@@ -1,5 +1,5 @@
-import { AssetReference } from "./AssetManagement/AssetReference.js";
-import { InitializeFromJSON } from "./AssetManagement/JsonConverter.js";
+import { AssetReference } from "./AssetReference.js";
+import { InitializeFromJSON } from "./JsonConverter.js";
 import { Engine } from "./Engine.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 

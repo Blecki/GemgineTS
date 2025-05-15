@@ -8,7 +8,7 @@ export class SpriteComponent extends RenderComponent {
     super();
     this.sprite = sprite;
   }
-  public render(context: RenderingContext) {
+  public Render(context: RenderingContext) {
     context.DrawSprite(this.sprite, this.transform.position);
   }
   public Clone() {

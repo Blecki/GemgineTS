@@ -1,20 +1,23 @@
 import { Component } from "./Component.js";
 import { Module } from "./Module.js";
 export class RenderComponent extends Component {
-    render(context) { }
+    Render(context) { }
+    Initialize() { }
 }
 export class RenderModule extends Module {
     renderables = [];
     ComponentCreated(component) {
         if (component instanceof RenderComponent) {
-            this.renderables.push(component);
+            var rc = component;
+            this.renderables.push(rc);
+            rc.Initialize();
         }
     }
     Update() {
     }
     Render(context) {
         for (var renderable of this.renderables)
-            renderable.render(context);
+            renderable.Render(context);
     }
 }
 //# sourceMappingURL=RenderModule.js.map
