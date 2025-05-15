@@ -4,6 +4,7 @@ import { Engine } from "./Engine.js";
 import { Rect } from "./Rect.js";
 import { TiledTileset } from "./TiledTileset.js";
 import pathCombine from "./PathCombine.js";
+import { TiledObject  } from "./TiledObject.js";
 
 export class TiledLayer {
   public data: number[];
@@ -24,26 +25,6 @@ export class TiledLayer {
       this.objects = this.objects.map(t => { var n = new TiledObject(); InitializeFromJSON(t, n); return n; });
       this.objects.forEach(t => t.ResolveDependencies(self, engine));
     }
-  }
-}
-
-export class TiledObject {
-  public gid: number;
-  public height: number;
-  public id: number;
-  public name: string;
-  public rotation: number;
-  public template: string;
-  public type: string;
-  public visible: boolean;
-  public width: number;
-  public x: number;
-  public y: number;
-  public templateAsset: AssetReference;
-
-  public ResolveDependencies(self: AssetReference, engine: Engine) {
-    if (this.template != null && this.template != "")
-      this.templateAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.template));
   }
 }
 

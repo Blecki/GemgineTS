@@ -2,7 +2,6 @@ import { Component } from "./Component.js";
 import { Module } from "./Module.js";
 export class RenderComponent extends Component {
     Render(context) { }
-    Initialize() { }
 }
 export class RenderModule extends Module {
     renderables = [];
@@ -10,7 +9,6 @@ export class RenderModule extends Module {
         if (component instanceof RenderComponent) {
             var rc = component;
             this.renderables.push(rc);
-            rc.Initialize();
         }
     }
     Update() {

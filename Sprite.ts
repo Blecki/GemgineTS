@@ -2,12 +2,12 @@ import { AssetReference } from "./AssetReference.js";
 import { Rect } from "./Rect.js";
 
 export class Sprite {
-  public asset: AssetReference;
+  public image: ImageBitmap;
   public sourceRect: Rect;
 
-  constructor(asset: AssetReference, sourceRect: Rect)
+  constructor(image: ImageBitmap, sourceRect: Rect)
   {
-    this.asset = asset;
+    this.image = image;
     this.sourceRect = sourceRect;
   }
 }

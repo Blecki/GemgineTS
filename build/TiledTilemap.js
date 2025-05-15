@@ -1,5 +1,6 @@
 import { InitializeFromJSON } from "./JsonConverter.js";
 import pathCombine from "./PathCombine.js";
+import { TiledObject } from "./TiledObject.js";
 export class TiledLayer {
     data;
     draworder;
@@ -18,24 +19,6 @@ export class TiledLayer {
             this.objects = this.objects.map(t => { var n = new TiledObject(); InitializeFromJSON(t, n); return n; });
             this.objects.forEach(t => t.ResolveDependencies(self, engine));
         }
-    }
-}
-export class TiledObject {
-    gid;
-    height;
-    id;
-    name;
-    rotation;
-    template;
-    type;
-    visible;
-    width;
-    x;
-    y;
-    templateAsset;
-    ResolveDependencies(self, engine) {
-        if (this.template != null && this.template != "")
-            this.templateAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.template));
     }
 }
 export class TiledInlineTileset {

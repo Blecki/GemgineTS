@@ -11,6 +11,7 @@ import { TiledTilemap } from "./TiledTilemap.js";
 import { TiledWorld } from "./TiledWorld.js";
 import { Input } from "./Input.js";
 import { TiledTemplate } from "./TiledTemplate.js";
+import { SpriteComponent } from "./SpriteComponent.js";
 
 export function Run() {
   LoadJSON("data/", "manifest.json")
@@ -25,13 +26,16 @@ export function Run() {
       loader.AddLoader("tsj", LoadAndConvertJSON(() => new TiledTileset()));
       loader.AddLoader("world", LoadAndConvertJSON(() => new TiledWorld()));
       loader.AddLoader("tj", LoadAndConvertJSON(() => new TiledTemplate()));
+      loader.AddLoader("proto", LoadAndConvertJSON(() => new EntityPrototype()));
 
       loader.LoadAssets("data/", manifest, (assets) => { 
         const engine = new Engine(assets);
+        engine.componentFactory.addComponentType("Sprite", () => new SpriteComponent());
+        engine.componentFactory.addComponentType("Tilemap", () => new TilemapComponent());
         engine.AddModule(new RenderModule());
         var entityPrototype = new EntityPrototype();
-        entityPrototype.components.push(new TilemapComponent(assets.get("assets/test-room.tmj")));
-        engine.CreateEntity(entityPrototype);
+        entityPrototype.components.push({ type: "Tilemap", tilemapName: "assets/test-room.tmj" });
+        engine.CreateEntityFromPrototype(entityPrototype, new TiledTemplate());
 
         var input = new Input();
         input.Bind("Space", "button");

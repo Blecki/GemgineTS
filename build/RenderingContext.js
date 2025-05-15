@@ -6,7 +6,7 @@ export class RenderingContext {
         this.context = context;
     }
     DrawSprite(sprite, position) {
-        this.context.drawImage(sprite.asset.asset, sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height, position.x, position.y, sprite.sourceRect.width, sprite.sourceRect.height);
+        this.context.drawImage(sprite.image, sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height, position.x, position.y, sprite.sourceRect.width, sprite.sourceRect.height);
     }
     DrawSpriteFromSourceRect(image, rect, position) {
         this.context.drawImage(image, rect.x, rect.y, rect.width, rect.height, position.x, position.y, rect.width, rect.height);

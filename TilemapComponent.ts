@@ -3,18 +3,16 @@ import { RenderComponent } from "./RenderModule.js";
 import { Point } from "./Point.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 import { RenderingContext} from "./RenderingContext.js";
+import { Engine } from "./Engine.js";
+import { TiledTemplate } from "./TiledTemplate.js";
 
 export class TilemapComponent extends RenderComponent {
+  public tilemapName: string;
   public tilemapAsset: AssetReference;
-  public tilemap: TiledTilemap;
+  private tilemap: TiledTilemap;
 
-  constructor(tilemapAsset: AssetReference) {
-    super();
-    this.tilemapAsset = tilemapAsset;
-    this.tilemap = tilemapAsset.asset;
-  }
-
-  public Initialize() {
+  public Initialize(engine: Engine, template: TiledTemplate) {
+    this.tilemapAsset = engine.AssetMap.get(this.tilemapName);
     this.tilemap = this.tilemapAsset.asset as TiledTilemap;
   }
 
@@ -34,9 +32,5 @@ export class TilemapComponent extends RenderComponent {
           context.DrawSpriteFromSourceRect(tilesetImage, cellRect, basePoint.Add(new Point(x * this.tilemap.tilewidth, y * this.tilemap.tileheight)));
         }
     }
-  }
-
-  public Clone() {
-    return new TilemapComponent(this.tilemapAsset);
   }
 }

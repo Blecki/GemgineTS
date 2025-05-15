@@ -6,9 +6,9 @@
      "name":"",
      "properties":[
             {
-             "name":"backingClass",
+             "name":"prototype",
              "type":"string",
-             "value":"decor_pot"
+             "value":"decor_sprite"
             }],
      "rotation":0,
      "type":"",
