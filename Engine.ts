@@ -7,6 +7,7 @@ import { AllocateEntityID } from "./AllocateEntityID.js";
 import { Component, ComponentFactory } from "./Component.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { TiledObject, TiledProperty } from "./TiledObject.js";
+import { Point } from "./Point.js";
 
 export class Engine {
   private modules: Module[] = [];
@@ -48,6 +49,7 @@ export class Engine {
   public CreateEntityFromPrototype(prototype: EntityPrototype, template: TiledTemplate): number {
     let resultID = AllocateEntityID();
     let transform = new Transform(resultID, this.SceneRoot);
+    transform.position = new Point(template.object.x, template.object.y);
 
     let resultComponents = prototype.components.map(componentPrototype => {
       let newComponent = this.componentFactory.createFromPrototype(componentPrototype);
@@ -81,6 +83,6 @@ export class Engine {
       console.error(`Could not find prototype ${prototypeProperty.value}.`);
       return -1;
     }
-    return this.CreateEntityFromPrototype(prototype.asset, template);
+    return this.CreateEntityFromPrototype(prototype.asset, template);    
   }
 }
