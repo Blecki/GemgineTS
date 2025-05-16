@@ -1,6 +1,6 @@
 export class Component {
     parent;
-    Initialize(engine, template) { }
+    initialize(engine, template) { }
 }
 export class ComponentFactory {
     typeMap;

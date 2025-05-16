@@ -8,7 +8,7 @@ export class Point {
     this.y = y;
   }
 
-  public Add(other: Point): Point {
+  public add(other: Point): Point {
     return new Point(this.x + other.x, this.y + other.y);
   }
 }

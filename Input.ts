@@ -13,7 +13,7 @@ export class Input {
 
 
 
-  Initialize(): void {
+  initialize(): void {
     window.addEventListener('keydown', function(e) {
       const action = this.actionMap[e.code];
       if (!action) return;
@@ -43,7 +43,7 @@ export class Input {
     }.bind(this));
   }
 
-  Bind(key: string, action: string) {
+  bind(key: string, action: string) {
     this.actionMap[key] = action;
   }
 
@@ -58,6 +58,14 @@ export class Input {
       }
     }
     return null;
+  }
+
+  check(action: string): boolean {
+    var input = this.tryGetRecentInput(action, 500);
+    if (input != null) {
+      this.markHandled(input);
+      return true;
+    }
   }
 
   /**

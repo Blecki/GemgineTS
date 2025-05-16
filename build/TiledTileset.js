@@ -15,10 +15,10 @@ export class TiledTileset {
     type;
     version;
     imageAsset;
-    ResolveDependencies(self, engine) {
-        this.imageAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.image)).asset;
+    resolveDependencies(self, engine) {
+        this.imageAsset = engine.assetMap.get(pathCombine(self.directory(), this.image)).asset;
     }
-    GetTileRect(index) {
+    getTileRect(index) {
         return new Rect((index % this.columns) * this.tilewidth, Math.floor(index / this.columns) * this.tileheight, this.tilewidth, this.tileheight);
     }
 }

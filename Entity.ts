@@ -1,10 +1,14 @@
 import { Point } from "./Point.js";
 import { Component } from "./Component.js";
+import { Rect } from "./Rect.js";
 
 export class Entity {
   public ID: number;
   public parent: Entity;
-  public position: Point = new Point(0, 0);
+  public position: Point = new Point(0,0);
+  public localPosition: Point = new Point(0, 0);
+  public localBounds: Rect = new Rect(-0.5, -0.5, 1, 1);
+  public pivot: Point = new Point(0, 0);
   public components: Component[];
 
   constructor(ID: number, parent: Entity) {
@@ -15,5 +19,5 @@ export class Entity {
 
   public getComponent<T>(t: new () => T): T | undefined {
     return this.components.find((component) => component instanceof t) as T;
-}
+  }
 }

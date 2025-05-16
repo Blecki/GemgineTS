@@ -2,11 +2,11 @@ import { AssetReference } from "./AssetReference.js";
 function create(type) {
     return new type();
 }
-export function InitializeFromJSON(source, destination) {
+export function initializeFromJSON(source, destination) {
     for (var property in source)
         destination[property] = source[property];
 }
-export function LoadAndConvertJSON(creationFunction) {
+export function loadAndConvertJSON(creationFunction) {
     return (basePath, path) => {
         return new Promise(async (resolve, reject) => {
             const response = await fetch(basePath + path);
@@ -16,7 +16,7 @@ export function LoadAndConvertJSON(creationFunction) {
             }
             var json = await response.json();
             var result = creationFunction();
-            InitializeFromJSON(json, result);
+            initializeFromJSON(json, result);
             resolve(new AssetReference(path, result));
         });
     };

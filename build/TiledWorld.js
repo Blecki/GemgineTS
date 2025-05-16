@@ -1,4 +1,4 @@
-import { InitializeFromJSON } from "./JsonConverter.js";
+import { initializeFromJSON } from "./JsonConverter.js";
 export class TiledWorldMap {
     fileName;
     height;
@@ -6,17 +6,17 @@ export class TiledWorldMap {
     x;
     y;
     tilemapAsset;
-    ResolveDependencies(self, engine) {
-        this.tilemapAsset = engine.AssetMap.get(self.Directory() + this.fileName).asset;
+    resolveDependencies(self, engine) {
+        this.tilemapAsset = engine.assetMap.get(self.directory() + this.fileName).asset;
     }
 }
 export class TiledWorld {
     maps;
     onlyShowAdjacentMaps;
     type;
-    ResolveDependencies(self, engine) {
-        this.maps = this.maps.map(m => { var n = new TiledWorldMap(); InitializeFromJSON(m, n); return n; });
-        this.maps.forEach(t => t.ResolveDependencies(self, engine));
+    resolveDependencies(self, engine) {
+        this.maps = this.maps.map(m => { var n = new TiledWorldMap(); initializeFromJSON(m, n); return n; });
+        this.maps.forEach(t => t.resolveDependencies(self, engine));
     }
 }
 //# sourceMappingURL=TiledWorld.js.map

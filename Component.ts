@@ -5,7 +5,7 @@ import { TiledTemplate } from "./TiledTemplate.js";
 export class Component {
   public parent: Entity;
 
-  public Initialize(engine: Engine, template: TiledTemplate) {}
+  public initialize(engine: Engine, template: TiledTemplate) {}
 }
 
 export class ComponentFactory {

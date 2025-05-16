@@ -1,12 +1,12 @@
 import { AssetReference } from "./AssetReference.js";
-import { LoadPNG } from "./PngLoader.js";
-import { LoadJSON } from "./JsonLoader.js";
+import { loadPNG } from "./PngLoader.js";
+import { loadJSON } from "./JsonLoader.js";
 export class AssetLoader {
     loaders = new Map([
-        ["png", LoadPNG],
-        ["json", LoadJSON]
+        ["png", loadPNG],
+        ["json", loadJSON]
     ]);
-    AddLoader(extension, loader) {
+    addLoader(extension, loader) {
         this.loaders.set(extension, loader);
     }
     getFileExtension(filename) {
@@ -22,7 +22,7 @@ export class AssetLoader {
             return new Promise(async (resolve, reject) => { resolve(new AssetReference(path, null)); });
         }
     }
-    async loadAssets(baseUrl, assetUrls) {
+    async loadAssets_ex(baseUrl, assetUrls) {
         const promises = assetUrls.map(url => this.getLoaderPromise(baseUrl, url));
         try {
             const loadedAssets = await Promise.all(promises);
@@ -33,8 +33,8 @@ export class AssetLoader {
             throw error;
         }
     }
-    LoadAssets(baseUrl, assetList, onComplete) {
-        this.loadAssets(baseUrl, assetList)
+    loadAssets(baseUrl, assetList, onComplete) {
+        this.loadAssets_ex(baseUrl, assetList)
             .then(assets => {
             let assetMap = new Map();
             assets.forEach(a => assetMap.set(a.path, a));

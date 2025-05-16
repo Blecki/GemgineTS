@@ -1,50 +1,50 @@
 import { Entity } from "./Entity.js";
-import { AllocateEntityID } from "./AllocateEntityID.js";
+import { allocateEntityID } from "./AllocateEntityID.js";
 import { ComponentFactory } from "./Component.js";
 import { Point } from "./Point.js";
 import { GameTime } from "./GameTime.js";
 export class Engine {
     modules = [];
-    AssetMap;
-    SceneRoot;
+    assetMap;
+    sceneRoot;
     componentFactory;
-    constructor(AssetMap) {
-        this.AssetMap = AssetMap;
-        for (const [key, value] of AssetMap) {
-            value.ResolveDependencies(this);
+    constructor(assetMap) {
+        this.assetMap = assetMap;
+        for (const [key, value] of assetMap) {
+            value.resolveDependencies(this);
         }
-        this.SceneRoot = new Entity(0, null);
+        this.sceneRoot = new Entity(0, null);
         this.componentFactory = new ComponentFactory();
     }
-    Update() {
+    update() {
         for (var module of this.modules)
-            module.Update();
+            module.update();
     }
-    Render(context) {
+    render(context) {
         for (var module of this.modules)
-            module.Render(context);
+            module.render(context);
     }
-    Run(context, frameCallback) {
+    run(context, frameCallback) {
         GameTime.update();
-        this.Update();
+        this.update();
         frameCallback();
-        context.ClearScreen();
-        this.Render(context);
-        requestAnimationFrame(() => this.Run(context, frameCallback));
+        context.clearScreen();
+        this.render(context);
+        requestAnimationFrame(() => this.run(context, frameCallback));
     }
-    AddModule(newModule) {
+    addModule(newModule) {
         this.modules.push(newModule);
     }
-    CreateEntityFromPrototype(prototype, template) {
-        let resultID = AllocateEntityID();
-        let entity = new Entity(resultID, this.SceneRoot);
+    createEntityFromPrototype(prototype, template) {
+        let resultID = allocateEntityID();
+        let entity = new Entity(resultID, this.sceneRoot);
         entity.components = prototype.components.map(componentPrototype => this.componentFactory.createFromPrototype(componentPrototype));
         entity.components.forEach(c => c.parent = entity);
-        entity.components.forEach(c => c.Initialize(this, template));
-        this.modules.forEach(module => module.EntityCreated(entity));
+        entity.components.forEach(c => c.initialize(this, template));
+        this.modules.forEach(module => module.entityCreated(entity));
         return entity;
     }
-    CreateEntitytFromTiledTemplate(template) {
+    createEntitytFromTiledTemplate(template) {
         if (template.object.properties == undefined) {
             console.error("Can't create entity from template without a prototype.");
             return null;
@@ -54,15 +54,15 @@ export class Engine {
             console.error("Can't create entity from template without a prototype.");
             return null;
         }
-        var prototype = this.AssetMap.get(prototypeProperty.value);
+        var prototype = this.assetMap.get(prototypeProperty.value);
         if (prototype == undefined) {
             console.error(`Could not find prototype ${prototypeProperty.value}.`);
             return null;
         }
-        return this.CreateEntityFromPrototype(prototype.asset, template);
+        return this.createEntityFromPrototype(prototype.asset, template);
     }
-    CreateEntityFromTiledObject(object) {
-        var r = this.CreateEntitytFromTiledTemplate(object.templateAsset.asset);
+    createEntityFromTiledObject(object) {
+        var r = this.createEntitytFromTiledTemplate(object.templateAsset.asset);
         r.position = new Point(object.x, object.y); // Pass the TiledObject down?
         return r;
     }

@@ -8,8 +8,8 @@ export class SpriteAnimator extends AnimationComponent {
     sprite;
     animationAsset;
     currentPlace;
-    Initialize(engine, template) {
-        this.animationAsset = engine.AssetMap.get(this.animation).asset;
+    initialize(engine, template) {
+        this.animationAsset = engine.assetMap.get(this.animation).asset;
         this.sprite = this.parent.getComponent(SpriteComponent);
         this.currentPlace = 0;
     }

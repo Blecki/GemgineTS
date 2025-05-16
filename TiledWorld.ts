@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { InitializeFromJSON } from "./JsonConverter.js";
+import { initializeFromJSON } from "./JsonConverter.js";
 import { Engine } from "./Engine.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 
@@ -11,8 +11,8 @@ export class TiledWorldMap {
   public y: number;
   public tilemapAsset: TiledTilemap;
 
-  public ResolveDependencies(self: AssetReference, engine: Engine) {
-    this.tilemapAsset = engine.AssetMap.get(self.Directory() + this.fileName).asset as TiledTilemap;
+  public resolveDependencies(self: AssetReference, engine: Engine) {
+    this.tilemapAsset = engine.assetMap.get(self.directory() + this.fileName).asset as TiledTilemap;
   }
 }
 
@@ -21,8 +21,8 @@ export class TiledWorld {
   public onlyShowAdjacentMaps: boolean;
   public type: string;
 
-  public ResolveDependencies(self: AssetReference, engine: Engine) {
-    this.maps = this.maps.map(m => { var n = new TiledWorldMap(); InitializeFromJSON(m, n); return n; });
-    this.maps.forEach(t => t.ResolveDependencies(self, engine));
+  public resolveDependencies(self: AssetReference, engine: Engine) {
+    this.maps = this.maps.map(m => { var n = new TiledWorldMap(); initializeFromJSON(m, n); return n; });
+    this.maps.forEach(t => t.resolveDependencies(self, engine));
   }
 }

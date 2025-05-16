@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-export function LoadJSON(basePath, path) {
+export function loadJSON(basePath, path) {
     return new Promise(async (resolve, reject) => {
         const response = await fetch(basePath + path);
         if (!response.ok) {

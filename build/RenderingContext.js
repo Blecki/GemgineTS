@@ -1,17 +1,36 @@
+class PendingSprite {
+    image;
+    position;
+    sourceRect;
+    sortY;
+    constructor(image, position, sourceRect, sortY) {
+        this.image = image;
+        this.position = position;
+        this.sourceRect = sourceRect;
+        this.sortY = sortY;
+    }
+}
 export class RenderingContext {
     canvas;
     context;
+    pendingSprites;
     constructor(canvas, context) {
         this.canvas = canvas;
         this.context = context;
+        this.pendingSprites = [];
     }
-    DrawSprite(sprite, position) {
-        this.context.drawImage(sprite.image, sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height, position.x, position.y, sprite.sourceRect.width, sprite.sourceRect.height);
+    drawSprite(sprite, position) {
+        this.pendingSprites.push(new PendingSprite(sprite.image, position, sprite.sourceRect, 1));
     }
-    DrawSpriteFromSourceRect(image, rect, position) {
-        this.context.drawImage(image, rect.x, rect.y, rect.width, rect.height, position.x, position.y, rect.width, rect.height);
+    drawSpriteFromSourceRect(image, rect, position) {
+        this.pendingSprites.push(new PendingSprite(image, position, rect, 1));
     }
-    ClearScreen() {
+    flushSprites(camera) {
+        for (var s of this.pendingSprites)
+            this.context.drawImage(s.image, s.sourceRect.x, s.sourceRect.y, s.sourceRect.width, s.sourceRect.height, s.position.x - camera.position.x, s.position.y - camera.position.y, s.sourceRect.width, s.sourceRect.height);
+        this.pendingSprites = [];
+    }
+    clearScreen() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 }

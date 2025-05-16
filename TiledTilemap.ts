@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { InitializeFromJSON } from "./JsonConverter.js";
+import { initializeFromJSON } from "./JsonConverter.js";
 import { Engine } from "./Engine.js";
 import { Rect } from "./Rect.js";
 import { TiledTileset } from "./TiledTileset.js";
@@ -20,10 +20,10 @@ export class TiledLayer {
   public x: number;
   public y: number;
 
-  public ResolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: Engine) {
     if (this.objects != undefined) {
-      this.objects = this.objects.map(t => { var n = new TiledObject(); InitializeFromJSON(t, n); return n; });
-      this.objects.forEach(t => t.ResolveDependencies(self, engine));
+      this.objects = this.objects.map(t => { var n = new TiledObject(); initializeFromJSON(t, n); return n; });
+      this.objects.forEach(t => t.resolveDependencies(self, engine));
     }
   }
 }
@@ -33,8 +33,8 @@ export class TiledInlineTileset {
   public source: string;
   public tilesetAsset: TiledTileset;
 
-  public ResolveDependencies(self: AssetReference, engine: Engine) {
-    this.tilesetAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.source)).asset as TiledTileset;
+  public resolveDependencies(self: AssetReference, engine: Engine) {
+    this.tilesetAsset = engine.assetMap.get(pathCombine(self.directory(), this.source)).asset as TiledTileset;
   }
 }
 
@@ -55,11 +55,11 @@ export class TiledTilemap {
   public version: string;
   public width: number;
 
-  public ResolveDependencies(self: AssetReference, engine: Engine) {
-    this.tilesets = this.tilesets.map(t => { var n = new TiledInlineTileset(); InitializeFromJSON(t, n); return n; });
-    this.tilesets.forEach(t => t.ResolveDependencies(self, engine));
+  public resolveDependencies(self: AssetReference, engine: Engine) {
+    this.tilesets = this.tilesets.map(t => { var n = new TiledInlineTileset(); initializeFromJSON(t, n); return n; });
+    this.tilesets.forEach(t => t.resolveDependencies(self, engine));
 
-    this.layers = this.layers.map(t => { var n = new TiledLayer(); InitializeFromJSON(t,n); return n; });
-    this.layers.forEach(t => t.ResolveDependencies(self, engine));
+    this.layers = this.layers.map(t => { var n = new TiledLayer(); initializeFromJSON(t,n); return n; });
+    this.layers.forEach(t => t.resolveDependencies(self, engine));
   }
 }

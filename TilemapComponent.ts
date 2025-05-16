@@ -11,12 +11,12 @@ export class TilemapComponent extends RenderComponent {
   public tilemapAsset: AssetReference;
   private tilemap: TiledTilemap;
 
-  public Initialize(engine: Engine, template: TiledTemplate) {
-    this.tilemapAsset = engine.AssetMap.get(this.tilemapName);
+  public initialize(engine: Engine, template: TiledTemplate) {
+    this.tilemapAsset = engine.assetMap.get(this.tilemapName);
     this.tilemap = this.tilemapAsset.asset as TiledTilemap;
   }
 
-  public Render(context: RenderingContext) {
+  public render(context: RenderingContext) {
     for (var layer of this.tilemap.layers) {
       if (layer.type != "tilelayer") continue;
       var basePoint = this.parent.position;
@@ -27,9 +27,9 @@ export class TilemapComponent extends RenderComponent {
         {
           var cellValue = layer.data[(y * layer.width) + x];
           if (cellValue == 0) continue;
-          var cellRect = this.tilemap.tilesets[0].tilesetAsset.GetTileRect(cellValue - 1);
+          var cellRect = this.tilemap.tilesets[0].tilesetAsset.getTileRect(cellValue - 1);
           var tilesetImage = this.tilemap.tilesets[0].tilesetAsset.imageAsset;
-          context.DrawSpriteFromSourceRect(tilesetImage, cellRect, basePoint.Add(new Point(x * this.tilemap.tilewidth, y * this.tilemap.tileheight)));
+          context.drawSpriteFromSourceRect(tilesetImage, cellRect, basePoint.add(new Point(x * this.tilemap.tilewidth, y * this.tilemap.tileheight)));
         }
     }
   }

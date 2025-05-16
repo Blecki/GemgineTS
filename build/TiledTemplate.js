@@ -1,4 +1,4 @@
-import { InitializeFromJSON } from "./JsonConverter.js";
+import { initializeFromJSON } from "./JsonConverter.js";
 import { TiledObject } from "./TiledObject.js";
 import { TiledInlineTileset } from "./TiledTilemap.js";
 export class TiledTemplate {
@@ -6,19 +6,19 @@ export class TiledTemplate {
     tileset;
     type;
     basePath;
-    ResolveDependencies(self, engine) {
-        this.basePath = self.Directory();
+    resolveDependencies(self, engine) {
+        this.basePath = self.directory();
         if (this.tileset != undefined) {
             var n = new TiledInlineTileset();
-            InitializeFromJSON(this.tileset, n);
+            initializeFromJSON(this.tileset, n);
             this.tileset = n;
-            this.tileset.ResolveDependencies(self, engine);
+            this.tileset.resolveDependencies(self, engine);
         }
         if (this.object != undefined) {
             var o = new TiledObject();
-            InitializeFromJSON(this.object, o);
+            initializeFromJSON(this.object, o);
             this.object = o;
-            o.ResolveDependencies(self, engine);
+            o.resolveDependencies(self, engine);
         }
     }
 }
