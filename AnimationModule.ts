@@ -9,7 +9,7 @@ export class AnimationComponent extends Component {
 export class AnimationModule extends Module {
   private animatables: AnimationComponent[] = [];
 
-  EntityCreated(entity: Entity) {
+  entityCreated(entity: Entity) {
     entity.components.forEach(component => {
       if (component instanceof AnimationComponent) {
         var rc = component as AnimationComponent;
@@ -18,7 +18,7 @@ export class AnimationModule extends Module {
     });
   }
 
-  Update() {
+  update() {
     this.animatables.forEach(a => a.animate());
   }
 }

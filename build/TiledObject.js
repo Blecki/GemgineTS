@@ -1,4 +1,4 @@
-import { InitializeFromJSON } from "./JsonConverter.js";
+import { initializeFromJSON } from "./JsonConverter.js";
 import pathCombine from "./PathCombine.js";
 export class TiledProperty {
     name;
@@ -19,11 +19,11 @@ export class TiledObject {
     x;
     y;
     templateAsset;
-    ResolveDependencies(self, engine) {
+    resolveDependencies(self, engine) {
         if (this.template != null && this.template != "")
-            this.templateAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.template));
+            this.templateAsset = engine.assetMap.get(pathCombine(self.directory(), this.template));
         if (this.properties != undefined)
-            this.properties = this.properties.map(t => { var n = new TiledProperty(); InitializeFromJSON(t, n); return n; });
+            this.properties = this.properties.map(t => { var n = new TiledProperty(); initializeFromJSON(t, n); return n; });
     }
 }
 //# sourceMappingURL=TiledObject.js.map

@@ -19,11 +19,11 @@ export class TiledTileset {
   public version: string;
   public imageAsset: ImageBitmap;
 
-  public ResolveDependencies(self: AssetReference, engine: Engine) {
-    this.imageAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.image)).asset as ImageBitmap;
+  public resolveDependencies(self: AssetReference, engine: Engine) {
+    this.imageAsset = engine.assetMap.get(pathCombine(self.directory(), this.image)).asset as ImageBitmap;
   }
 
-  public GetTileRect(index: number): Rect {
+  public getTileRect(index: number): Rect {
     return new Rect((index % this.columns) * this.tilewidth, Math.floor(index / this.columns) * this.tileheight, this.tilewidth, this.tileheight);
   }
 }

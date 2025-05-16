@@ -2,11 +2,11 @@ import { RenderComponent } from "./RenderModule.js";
 import { Sprite } from "./Sprite.js";
 export class SpriteComponent extends RenderComponent {
     sprite;
-    Render(context) {
-        context.DrawSprite(this.sprite, this.parent.position);
+    render(context) {
+        context.drawSprite(this.sprite, this.parent.position);
     }
-    Initialize(engine, template) {
-        this.sprite = new Sprite(template.tileset.tilesetAsset.imageAsset, template.tileset.tilesetAsset.GetTileRect(template.object.gid - 1));
+    initialize(engine, template) {
+        this.sprite = new Sprite(template.tileset.tilesetAsset.imageAsset, template.tileset.tilesetAsset.getTileRect(template.object.gid - 1));
     }
 }
 //# sourceMappingURL=SpriteComponent.js.map

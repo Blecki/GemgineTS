@@ -5,16 +5,16 @@ export class AssetReference {
         this.path = path;
         this.asset = asset;
     }
-    Directory() {
+    directory() {
         const separator = this.path.lastIndexOf('/');
         if (separator === -1) {
             return "";
         }
         return this.path.substring(0, separator + 1);
     }
-    ResolveDependencies(engine) {
-        if (this.asset !== null && this.asset !== undefined && typeof (this.asset.ResolveDependencies) === 'function')
-            this.asset.ResolveDependencies(this, engine);
+    resolveDependencies(engine) {
+        if (this.asset !== null && this.asset !== undefined && typeof (this.asset.resolveDependencies) === 'function')
+            this.asset.resolveDependencies(this, engine);
     }
 }
 //# sourceMappingURL=AssetReference.js.map

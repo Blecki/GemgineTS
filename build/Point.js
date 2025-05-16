@@ -5,7 +5,7 @@ export class Point {
         this.x = x;
         this.y = y;
     }
-    Add(other) {
+    add(other) {
         return new Point(this.x + other.x, this.y + other.y);
     }
 }

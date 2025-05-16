@@ -1,6 +1,6 @@
 import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
-import { InitializeFromJSON } from "./JsonConverter.js";
+import { initializeFromJSON } from "./JsonConverter.js";
 import pathCombine from "./PathCombine.js";
 
 export class TiledProperty {
@@ -24,11 +24,11 @@ export class TiledObject {
   public y: number;
   public templateAsset: AssetReference;
 
-  public ResolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: Engine) {
     if (this.template != null && this.template != "")
-      this.templateAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.template));
+      this.templateAsset = engine.assetMap.get(pathCombine(self.directory(), this.template));
 
     if (this.properties != undefined)
-      this.properties = this.properties.map(t => { var n = new TiledProperty(); InitializeFromJSON(t, n); return n; });
+      this.properties = this.properties.map(t => { var n = new TiledProperty(); initializeFromJSON(t, n); return n; });
   }
 }

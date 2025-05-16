@@ -14,8 +14,8 @@ export class SpriteAnimator extends AnimationComponent {
   private animationAsset: Animation;
   private currentPlace: number;  
   
-  public Initialize(engine: Engine, template: TiledTemplate): void {
-    this.animationAsset = engine.AssetMap.get(this.animation).asset;
+  public initialize(engine: Engine, template: TiledTemplate): void {
+    this.animationAsset = engine.assetMap.get(this.animation).asset;
     this.sprite = this.parent.getComponent(SpriteComponent);
     this.currentPlace = 0;
   }

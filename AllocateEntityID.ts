@@ -1,5 +1,5 @@
 let nextEntityID = 1;
 
-export function AllocateEntityID() {
+export function allocateEntityID() {
   return nextEntityID++;
 }

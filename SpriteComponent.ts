@@ -9,11 +9,11 @@ import { TiledTemplate } from "./TiledTemplate.js";
 export class SpriteComponent extends RenderComponent {
   public sprite: Sprite;
   
-  public Render(context: RenderingContext) {
-    context.DrawSprite(this.sprite, this.parent.position);
+  public render(context: RenderingContext) {
+    context.drawSprite(this.sprite, this.parent.position);
   }
 
-  public Initialize(engine: Engine, template: TiledTemplate): void {
-    this.sprite = new Sprite(template.tileset.tilesetAsset.imageAsset, template.tileset.tilesetAsset.GetTileRect(template.object.gid - 1));
+  public initialize(engine: Engine, template: TiledTemplate): void {
+    this.sprite = new Sprite(template.tileset.tilesetAsset.imageAsset, template.tileset.tilesetAsset.getTileRect(template.object.gid - 1));
   }
 }

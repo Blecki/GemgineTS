@@ -4,11 +4,11 @@ export class TilemapComponent extends RenderComponent {
     tilemapName;
     tilemapAsset;
     tilemap;
-    Initialize(engine, template) {
-        this.tilemapAsset = engine.AssetMap.get(this.tilemapName);
+    initialize(engine, template) {
+        this.tilemapAsset = engine.assetMap.get(this.tilemapName);
         this.tilemap = this.tilemapAsset.asset;
     }
-    Render(context) {
+    render(context) {
         for (var layer of this.tilemap.layers) {
             if (layer.type != "tilelayer")
                 continue;
@@ -20,9 +20,9 @@ export class TilemapComponent extends RenderComponent {
                     var cellValue = layer.data[(y * layer.width) + x];
                     if (cellValue == 0)
                         continue;
-                    var cellRect = this.tilemap.tilesets[0].tilesetAsset.GetTileRect(cellValue - 1);
+                    var cellRect = this.tilemap.tilesets[0].tilesetAsset.getTileRect(cellValue - 1);
                     var tilesetImage = this.tilemap.tilesets[0].tilesetAsset.imageAsset;
-                    context.DrawSpriteFromSourceRect(tilesetImage, cellRect, basePoint.Add(new Point(x * this.tilemap.tilewidth, y * this.tilemap.tileheight)));
+                    context.drawSpriteFromSourceRect(tilesetImage, cellRect, basePoint.add(new Point(x * this.tilemap.tilewidth, y * this.tilemap.tileheight)));
                 }
         }
     }

@@ -12,8 +12,8 @@ export class Animation {
   public frames: Point[];
   public frametime: number = 10;
 
-  public ResolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: Engine) {
     if (this.type == "spritesheet")
-      this.spriteSheetAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.spriteSheetPath)).asset;
+      this.spriteSheetAsset = engine.assetMap.get(pathCombine(self.directory(), this.spriteSheetPath)).asset;
   }
 }

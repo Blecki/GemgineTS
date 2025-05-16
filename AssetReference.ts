@@ -1,7 +1,7 @@
 import { Engine } from "./Engine.js";
 
 interface Asset {
-  ResolveAssets(reference: AssetReference, engine: Engine);
+  resolveDependencies(reference: AssetReference, engine: Engine);
 }
 
 export class AssetReference {
@@ -13,7 +13,7 @@ export class AssetReference {
     this.asset = asset;
   }
 
-  public Directory() {
+  public directory() {
     const separator = this.path.lastIndexOf('/');
 
     if (separator === -1) {
@@ -22,8 +22,8 @@ export class AssetReference {
     return this.path.substring(0, separator + 1);
   }
 
-  public ResolveDependencies(engine: Engine) {
-    if (this.asset !== null && this.asset !== undefined && typeof(this.asset.ResolveDependencies) === 'function')
-      this.asset.ResolveDependencies(this, engine);
+  public resolveDependencies(engine: Engine) {
+    if (this.asset !== null && this.asset !== undefined && typeof(this.asset.resolveDependencies) === 'function')
+      this.asset.resolveDependencies(this, engine);
   }
 }

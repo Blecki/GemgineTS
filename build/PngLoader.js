@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-export function LoadPNG(basePath, path) {
+export function loadPNG(basePath, path) {
     return new Promise(async (resolve, reject) => {
         const img = new Image();
         img.onload = async () => {

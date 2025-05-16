@@ -1,11 +1,12 @@
 import { Component } from "./Component.js";
 import { Module } from "./Module.js";
 export class RenderComponent extends Component {
-    Render(context) { }
+    render(context) { }
 }
 export class RenderModule extends Module {
     renderables = [];
-    EntityCreated(entity) {
+    camera;
+    entityCreated(entity) {
         entity.components.forEach(component => {
             if (component instanceof RenderComponent) {
                 var rc = component;
@@ -13,11 +14,15 @@ export class RenderModule extends Module {
             }
         });
     }
-    Update() {
+    update() {
     }
-    Render(context) {
+    render(context) {
         for (var renderable of this.renderables)
-            renderable.Render(context);
+            renderable.render(context);
+        context.flushSprites(this.camera);
+    }
+    setCamera(camera) {
+        this.camera = camera;
     }
 }
 //# sourceMappingURL=RenderModule.js.map

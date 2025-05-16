@@ -1,17 +1,17 @@
 import { AssetReference } from "./AssetReference.js";
-import { LoadPNG } from "./PngLoader.js";
-import { LoadJSON } from "./JsonLoader.js";
+import { loadPNG } from "./PngLoader.js";
+import { loadJSON } from "./JsonLoader.js";
 
 type LoadFunction = (basePath: string, path: string) => Promise<AssetReference>;
 
 export class AssetLoader {
 
   loaders: Map<string, LoadFunction> = new Map([
-    ["png", LoadPNG],
-    ["json", LoadJSON]
+    ["png", loadPNG],
+    ["json", loadJSON]
   ]);
 
-  public AddLoader(extension: string, loader: LoadFunction) {
+  public addLoader(extension: string, loader: LoadFunction) {
     this.loaders.set(extension, loader);
   }
 
@@ -32,7 +32,7 @@ export class AssetLoader {
     }
   }
   
-  async loadAssets(baseUrl: string, assetUrls: string[]) {
+  async loadAssets_ex(baseUrl: string, assetUrls: string[]) {
     const promises = assetUrls.map(url => this.getLoaderPromise(baseUrl, url));
 
     try {
@@ -44,8 +44,8 @@ export class AssetLoader {
     }
   }
 
-  public LoadAssets(baseUrl: string, assetList: string[], onComplete: (Assets: Map<string, AssetReference>) => void) {
-    this.loadAssets(baseUrl, assetList)
+  public loadAssets(baseUrl: string, assetList: string[], onComplete: (Assets: Map<string, AssetReference>) => void) {
+    this.loadAssets_ex(baseUrl, assetList)
       .then(assets => {
         let assetMap = new Map<string, AssetReference>();
         assets.forEach(a => assetMap.set(a.path, a));

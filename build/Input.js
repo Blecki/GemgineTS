@@ -2,7 +2,7 @@ export class Input {
     inputEvents = [];
     maxHistoryTime = 5_000; // milliseconds
     actionMap = {};
-    Initialize() {
+    initialize() {
         window.addEventListener('keydown', function (e) {
             const action = this.actionMap[e.code];
             if (!action)
@@ -30,7 +30,7 @@ export class Input {
             }
         }.bind(this));
     }
-    Bind(key, action) {
+    bind(key, action) {
         this.actionMap[key] = action;
     }
     /**
@@ -44,6 +44,13 @@ export class Input {
             }
         }
         return null;
+    }
+    check(action) {
+        var input = this.tryGetRecentInput(action, 500);
+        if (input != null) {
+            this.markHandled(input);
+            return true;
+        }
     }
     /**
      * Marks a specific input event as handled.
