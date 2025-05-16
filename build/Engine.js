@@ -2,6 +2,7 @@ import { Entity } from "./Entity.js";
 import { AllocateEntityID } from "./AllocateEntityID.js";
 import { ComponentFactory } from "./Component.js";
 import { Point } from "./Point.js";
+import { GameTime } from "./GameTime.js";
 export class Engine {
     modules = [];
     AssetMap;
@@ -24,6 +25,7 @@ export class Engine {
             module.Render(context);
     }
     Run(context, frameCallback) {
+        GameTime.update();
         this.Update();
         frameCallback();
         context.ClearScreen();

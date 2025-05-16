@@ -12,4 +12,8 @@ export class Entity {
     this.parent = parent;
     this.components = [];
   }
+
+  public getComponent<T>(t: new () => T): T | undefined {
+    return this.components.find((component) => component instanceof t) as T;
+}
 }

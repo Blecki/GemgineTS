@@ -10,6 +10,7 @@ export class Animation {
   public spriteWidth: number;
   public spriteHeight: number;
   public frames: Point[];
+  public frametime: number = 10;
 
   public ResolveDependencies(self: AssetReference, engine: Engine) {
     if (this.type == "spritesheet")

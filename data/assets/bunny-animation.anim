@@ -1,7 +1,8 @@
 { 
   "type": "spritesheet",
   "spriteSheetPath": "brown-rabbit.png",
-  "spriteWidth": 16,
-  "spriteHeight": 16,
-  "frames": [ {"x":0, "y":0}, {"x":1, "y":0}, {"x":2, "y":0} ]
+  "spriteWidth": 24,
+  "spriteHeight": 24,
+  "frames": [ {"x":0, "y":0}, {"x":1, "y":0}, {"x":2, "y":0} ],
+  "frametime": 0.2
 }

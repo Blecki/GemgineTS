@@ -6,6 +6,7 @@ export class Animation {
     spriteWidth;
     spriteHeight;
     frames;
+    frametime = 10;
     ResolveDependencies(self, engine) {
         if (this.type == "spritesheet")
             this.spriteSheetAsset = engine.AssetMap.get(pathCombine(self.Directory(), this.spriteSheetPath)).asset;

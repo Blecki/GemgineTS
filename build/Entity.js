@@ -9,5 +9,8 @@ export class Entity {
         this.parent = parent;
         this.components = [];
     }
+    getComponent(t) {
+        return this.components.find((component) => component instanceof t);
+    }
 }
 //# sourceMappingURL=Entity.js.map
