@@ -1,4 +1,4 @@
-import { Transform } from "./Transform.js";
+import { Entity } from "./Entity.js";
 import { AllocateEntityID } from "./AllocateEntityID.js";
 import { ComponentFactory } from "./Component.js";
 import { Point } from "./Point.js";
@@ -12,7 +12,7 @@ export class Engine {
         for (const [key, value] of AssetMap) {
             value.ResolveDependencies(this);
         }
-        this.SceneRoot = new Transform(0, null);
+        this.SceneRoot = new Entity(0, null);
         this.componentFactory = new ComponentFactory();
     }
     Update() {
@@ -35,23 +35,12 @@ export class Engine {
     }
     CreateEntityFromPrototype(prototype, template) {
         let resultID = AllocateEntityID();
-        let transform = new Transform(resultID, this.SceneRoot);
-        console.log("Create Entity From Prototype");
-        console.log(prototype);
-        let resultComponents = prototype.components.map(componentPrototype => {
-            let newComponent = this.componentFactory.createFromPrototype(componentPrototype);
-            console.log(newComponent);
-            newComponent.transform = transform;
-            newComponent.ID = resultID;
-            newComponent.Initialize(this, template);
-            return newComponent;
-        });
-        this.modules.forEach(module => {
-            resultComponents.forEach(component => {
-                module.ComponentCreated(component);
-            });
-        });
-        return transform;
+        let entity = new Entity(resultID, this.SceneRoot);
+        entity.components = prototype.components.map(componentPrototype => this.componentFactory.createFromPrototype(componentPrototype));
+        entity.components.forEach(c => c.parent = entity);
+        entity.components.forEach(c => c.Initialize(this, template));
+        this.modules.forEach(module => module.EntityCreated(entity));
+        return entity;
     }
     CreateEntitytFromTiledTemplate(template) {
         if (template.object.properties == undefined) {
@@ -71,9 +60,7 @@ export class Engine {
         return this.CreateEntityFromPrototype(prototype.asset, template);
     }
     CreateEntityFromTiledObject(object) {
-        console.log(object);
         var r = this.CreateEntitytFromTiledTemplate(object.templateAsset.asset);
-        console.log(r);
         r.position = new Point(object.x, object.y); // Pass the TiledObject down?
         return r;
     }

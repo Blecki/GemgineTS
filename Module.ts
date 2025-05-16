@@ -1,8 +1,8 @@
-import { Component } from "./Component.js";
+import { Entity } from "./Entity.js";
 import { RenderingContext } from "./RenderingContext.js";
 
 export class Module {
-  public ComponentCreated(component: Component) {}
+  public EntityCreated(entity: Entity) {}
   public Update() {}
   public Render(context: RenderingContext) {}
 }

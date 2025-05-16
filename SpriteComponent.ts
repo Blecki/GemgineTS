@@ -10,11 +10,10 @@ export class SpriteComponent extends RenderComponent {
   public sprite: Sprite;
   
   public Render(context: RenderingContext) {
-    context.DrawSprite(this.sprite, this.transform.position);
+    context.DrawSprite(this.sprite, this.parent.position);
   }
 
   public Initialize(engine: Engine, template: TiledTemplate): void {
     this.sprite = new Sprite(template.tileset.tilesetAsset.imageAsset, template.tileset.tilesetAsset.GetTileRect(template.object.gid - 1));
-    console.log(this.sprite);
   }
 }

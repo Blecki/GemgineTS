@@ -5,11 +5,13 @@ export class RenderComponent extends Component {
 }
 export class RenderModule extends Module {
     renderables = [];
-    ComponentCreated(component) {
-        if (component instanceof RenderComponent) {
-            var rc = component;
-            this.renderables.push(rc);
-        }
+    EntityCreated(entity) {
+        entity.components.forEach(component => {
+            if (component instanceof RenderComponent) {
+                var rc = component;
+                this.renderables.push(rc);
+            }
+        });
     }
     Update() {
     }

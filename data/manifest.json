@@ -5,5 +5,7 @@
   "assets/test-room.tmj",
   "assets/test-room2.tmj",
   "assets/templates/pot.tj",
-  "assets/prototypes/decor_sprite.proto"
+  "assets/prototypes/decor_sprite.proto",
+  "assets/brown-rabbit.png",
+  "assets/bunny-animation.anim"
 ]
