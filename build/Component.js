@@ -1,5 +1,4 @@
 export class Component {
-    typeName = "Component";
     ID;
     transform;
     Initialize(engine, template) { }

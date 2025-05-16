@@ -4,5 +4,6 @@
   "assets/template.tsj",
   "assets/test-room.tmj",
   "assets/test-room2.tmj",
-  "assets/templates/pot.tj"
+  "assets/templates/pot.tj",
+  "assets/prototypes/decor_sprite.proto"
 ]
