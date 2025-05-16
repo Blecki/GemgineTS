@@ -19,7 +19,7 @@ export class TilemapComponent extends RenderComponent {
   public Render(context: RenderingContext) {
     for (var layer of this.tilemap.layers) {
       if (layer.type != "tilelayer") continue;
-      var basePoint = this.transform.position;
+      var basePoint = this.parent.position;
       basePoint.x += layer.x;
       basePoint.y += layer.y;
       for (var x = 0; x < layer.width; ++x)

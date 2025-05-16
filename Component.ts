@@ -1,10 +1,9 @@
-import { Transform } from "./Transform.js";
+import { Entity } from "./Entity.js";
 import { Engine } from "./Engine.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 
 export class Component {
-  public ID: number;
-  public transform: Transform;
+  public parent: Entity;
 
   public Initialize(engine: Engine, template: TiledTemplate) {}
 }

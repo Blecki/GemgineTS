@@ -1,6 +1,5 @@
 export class Component {
-    ID;
-    transform;
+    parent;
     Initialize(engine, template) { }
 }
 export class ComponentFactory {

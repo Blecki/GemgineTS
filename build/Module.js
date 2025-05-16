@@ -1,5 +1,5 @@
 export class Module {
-    ComponentCreated(component) { }
+    EntityCreated(entity) { }
     Update() { }
     Render(context) { }
 }
