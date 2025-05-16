@@ -8,7 +8,7 @@
             {
              "name":"prototype",
              "type":"string",
-             "value":"assets/prototypes/decor_sprite.proto"
+             "value":"assets/prototypes/animated_bunny.proto"
             }],
      "rotation":0,
      "type":"",

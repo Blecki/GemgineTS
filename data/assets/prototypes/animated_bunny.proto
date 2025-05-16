@@ -1,0 +1,11 @@
+{
+   "components": [
+      {
+         "type": "Sprite"
+      },
+      {
+         "type": "SpriteAnimator",
+         "animation": "assets/bunny-animation.anim"
+      }
+   ]
+}

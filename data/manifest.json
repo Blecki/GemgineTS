@@ -7,5 +7,6 @@
   "assets/templates/pot.tj",
   "assets/prototypes/decor_sprite.proto",
   "assets/brown-rabbit.png",
-  "assets/bunny-animation.anim"
+  "assets/bunny-animation.anim",
+  "assets/prototypes/animated_bunny.proto"
 ]

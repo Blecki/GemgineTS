@@ -8,6 +8,7 @@ import { Component, ComponentFactory } from "./Component.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { TiledObject, TiledProperty } from "./TiledObject.js";
 import { Point } from "./Point.js";
+import { GameTime } from "./GameTime.js";
 
 export class Engine {
   private modules: Module[] = [];
@@ -35,6 +36,7 @@ export class Engine {
   }
 
   public Run(context: RenderingContext, frameCallback: () => void) {
+    GameTime.update();
     this.Update();
     frameCallback();
     context.ClearScreen();

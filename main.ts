@@ -13,6 +13,8 @@ import { Input } from "./Input.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { SpriteComponent } from "./SpriteComponent.js";
 import { Animation } from "./Animation.js";
+import { SpriteAnimator } from "./SpriteAnimator.js";
+import { AnimationModule } from "./AnimationModule.js";
 
 export function Run() {
   LoadJSON("data/", "manifest.json")
@@ -35,7 +37,9 @@ export function Run() {
         const engine = new Engine(assets);
         engine.componentFactory.addComponentType("Sprite", () => new SpriteComponent());
         engine.componentFactory.addComponentType("Tilemap", () => new TilemapComponent());
+        engine.componentFactory.addComponentType("SpriteAnimator", () => new SpriteAnimator());
         engine.AddModule(new RenderModule());
+        engine.AddModule(new AnimationModule());
 
         var entityPrototype = new EntityPrototype();
         entityPrototype.components.push({ type: "Tilemap", tilemapName: "assets/test-room.tmj" });

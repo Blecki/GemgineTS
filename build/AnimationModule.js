@@ -1,6 +1,7 @@
 import { Component } from "./Component.js";
 import { Module } from "./Module.js";
 export class AnimationComponent extends Component {
+    animate() { }
 }
 export class AnimationModule extends Module {
     animatables = [];
@@ -13,6 +14,7 @@ export class AnimationModule extends Module {
         });
     }
     Update() {
+        this.animatables.forEach(a => a.animate());
     }
 }
 //# sourceMappingURL=AnimationModule.js.map

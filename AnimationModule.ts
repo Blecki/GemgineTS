@@ -3,7 +3,7 @@ import { Module } from "./Module.js";
 import { Entity } from "./Entity.js";
 
 export class AnimationComponent extends Component {
-  
+  animate() {}
 }
 
 export class AnimationModule extends Module {
@@ -19,5 +19,6 @@ export class AnimationModule extends Module {
   }
 
   Update() {
+    this.animatables.forEach(a => a.animate());
   }
 }
