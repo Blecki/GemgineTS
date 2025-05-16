@@ -6,7 +6,8 @@ export class SpriteComponent extends RenderComponent {
         context.DrawSprite(this.sprite, this.transform.position);
     }
     Initialize(engine, template) {
-        this.sprite = new Sprite(template.tileset.tilesetAsset.imageAsset, template.tileset.tilesetAsset.GetTileRect(template.object.gid));
+        this.sprite = new Sprite(template.tileset.tilesetAsset.imageAsset, template.tileset.tilesetAsset.GetTileRect(template.object.gid - 1));
+        console.log(this.sprite);
     }
 }
 //# sourceMappingURL=SpriteComponent.js.map

@@ -46,13 +46,15 @@ export class Engine {
     this.modules.push(newModule);
   }  
 
-  public CreateEntityFromPrototype(prototype: EntityPrototype, template: TiledTemplate): number {
+  public CreateEntityFromPrototype(prototype: EntityPrototype, template: TiledTemplate): Transform {
     let resultID = AllocateEntityID();
     let transform = new Transform(resultID, this.SceneRoot);
-    transform.position = new Point(template.object.x, template.object.y);
 
+    console.log("Create Entity From Prototype");
+    console.log(prototype);
     let resultComponents = prototype.components.map(componentPrototype => {
       let newComponent = this.componentFactory.createFromPrototype(componentPrototype);
+      console.log(newComponent);
       newComponent.transform = transform;
       newComponent.ID = resultID;
       newComponent.Initialize(this, template);
@@ -65,24 +67,32 @@ export class Engine {
       });
     });
 
-    return resultID;
+    return transform;
   }
 
-  public CreateEneitytFromTiledTemplate(template: TiledTemplate): number {
+  public CreateEntitytFromTiledTemplate(template: TiledTemplate): Transform {
     if (template.object.properties == undefined) {
       console.error("Can't create entity from template without a prototype.");
-      return -1;
+      return null;
     }
     var prototypeProperty = template.object.properties.find(p => p.name == 'prototype');
     if (prototypeProperty == undefined) {
       console.error("Can't create entity from template without a prototype.");
-      return -1;
+      return null;
     }
     var prototype = this.AssetMap.get(prototypeProperty.value);
     if (prototype == undefined) {
       console.error(`Could not find prototype ${prototypeProperty.value}.`);
-      return -1;
+      return null;
     }
     return this.CreateEntityFromPrototype(prototype.asset, template);    
+  }
+
+  public CreateEntityFromTiledObject(object: TiledObject): Transform {
+    console.log(object);
+    var r = this.CreateEntitytFromTiledTemplate(object.templateAsset.asset);
+    console.log(r);
+    r.position = new Point(object.x, object.y); // Pass the TiledObject down?
+    return r;
   }
 }

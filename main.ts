@@ -37,6 +37,15 @@ export function Run() {
         entityPrototype.components.push({ type: "Tilemap", tilemapName: "assets/test-room.tmj" });
         engine.CreateEntityFromPrototype(entityPrototype, new TiledTemplate());
 
+        var tilemap = engine.AssetMap.get("assets/test-room.tmj").asset as TiledTilemap;
+        console.log(tilemap);
+        for (var layer of tilemap.layers)
+          if (layer.type == "objectgroup")
+            for (var definition of layer.objects)
+              if (definition.template != null && definition.template != "")
+                engine.CreateEntityFromTiledObject(definition);
+              
+
         var input = new Input();
         input.Bind("Space", "button");
         input.Initialize();

@@ -3,8 +3,6 @@ import { Engine } from "./Engine.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 
 export class Component {
-  public typeName: string = "Component";
-  
   public ID: number;
   public transform: Transform;
 

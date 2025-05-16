@@ -33,6 +33,13 @@ export function Run() {
             var entityPrototype = new EntityPrototype();
             entityPrototype.components.push({ type: "Tilemap", tilemapName: "assets/test-room.tmj" });
             engine.CreateEntityFromPrototype(entityPrototype, new TiledTemplate());
+            var tilemap = engine.AssetMap.get("assets/test-room.tmj").asset;
+            console.log(tilemap);
+            for (var layer of tilemap.layers)
+                if (layer.type == "objectgroup")
+                    for (var definition of layer.objects)
+                        if (definition.template != null && definition.template != "")
+                            engine.CreateEntityFromTiledObject(definition);
             var input = new Input();
             input.Bind("Space", "button");
             input.Initialize();
@@ -48,4 +55,4 @@ export function Run() {
     })
         .catch(error => console.error("Failed to load asset manifest."));
 }
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=Main.js.map

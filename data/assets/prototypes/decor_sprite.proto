@@ -1,5 +1,7 @@
-[
-   {
-      "type": "Sprite"
-   }
-]
+{
+   "components": [
+      {
+         "type": "Sprite"
+      }
+   ]
+}
