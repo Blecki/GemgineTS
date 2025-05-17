@@ -9,12 +9,14 @@ import { TiledTemplate } from "./TiledTemplate.js";
 import { TiledObject, TiledProperty } from "./TiledObject.js";
 import { Point } from "./Point.js";
 import { GameTime } from "./GameTime.js";
+import { initializeFromJSON } from "./JsonConverter.js";
 
 export class Engine {
   private modules: Module[] = [];
   public assetMap: Map<string, AssetReference>;
   public sceneRoot: Entity;
   public componentFactory: ComponentFactory;
+  public debugMode: boolean = false;
 
   constructor(assetMap: Map<string, AssetReference>) {
     this.assetMap = assetMap;
@@ -32,7 +34,7 @@ export class Engine {
 
   public render(context: RenderingContext) {
     for (var module of this.modules)
-      module.render(context);
+      module.render(this, context);
   }
 
   public run(context: RenderingContext, frameCallback: () => void) {
@@ -53,6 +55,7 @@ export class Engine {
     let entity = new Entity(resultID);
     parent.addChild(entity);
 
+    initializeFromJSON(prototype, entity);
     entity.components = prototype.components.map(componentPrototype => this.componentFactory.createFromPrototype(componentPrototype));
     entity.components.forEach(c => c.parent = entity);
     entity.components.forEach(c => c.initialize(this, template));

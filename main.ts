@@ -16,6 +16,7 @@ import { Animation } from "./Animation.js";
 import { SpriteAnimator } from "./SpriteAnimator.js";
 import { AnimationModule } from "./AnimationModule.js";
 import { Camera } from "./Camera.js";
+import { DebugGizmoComponent } from "./RenderModule.js";
 
 export function Run() {
   loadJSON("data/", "manifest.json")
@@ -36,9 +37,13 @@ export function Run() {
 
       loader.loadAssets("data/", manifest, (assets) => { 
         const engine = new Engine(assets);
+
+        engine.debugMode = true;
+
         engine.componentFactory.addComponentType("Sprite", () => new SpriteComponent());
         engine.componentFactory.addComponentType("Tilemap", () => new TilemapComponent());
         engine.componentFactory.addComponentType("SpriteAnimator", () => new SpriteAnimator());
+        engine.componentFactory.addComponentType("DebugGizmo", () => new DebugGizmoComponent()); 
         var renderModule = new RenderModule();
         engine.addModule(renderModule);
         engine.addModule(new AnimationModule());

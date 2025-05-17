@@ -1,34 +1,32 @@
-class PendingSprite {
-    image;
-    position;
-    sourceRect;
-    sortY;
-    constructor(image, position, sourceRect, sortY) {
-        this.image = image;
-        this.position = position;
-        this.sourceRect = sourceRect;
-        this.sortY = sortY;
-    }
-}
 export class RenderingContext {
     canvas;
     context;
-    pendingSprites;
+    pendingDrawTasks;
     constructor(canvas, context) {
         this.canvas = canvas;
         this.context = context;
-        this.pendingSprites = [];
+        this.pendingDrawTasks = [];
     }
     drawSprite(sprite, position) {
-        this.pendingSprites.push(new PendingSprite(sprite.image, position, sprite.sourceRect, 1));
+        this.pendingDrawTasks.push((context, camera) => {
+            context.drawImage(sprite.image, sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height, position.x - camera.position.x, position.y - camera.position.y, sprite.sourceRect.width, sprite.sourceRect.height);
+        });
     }
-    drawSpriteFromSourceRect(image, rect, position) {
-        this.pendingSprites.push(new PendingSprite(image, position, rect, 1));
+    drawImage(image, sourceRect, position) {
+        this.pendingDrawTasks.push((context, camera) => {
+            context.drawImage(image, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, position.x - camera.position.x, position.y - camera.position.y, sourceRect.width, sourceRect.height);
+        });
     }
-    flushSprites(camera) {
-        for (var s of this.pendingSprites)
-            this.context.drawImage(s.image, s.sourceRect.x, s.sourceRect.y, s.sourceRect.width, s.sourceRect.height, s.position.x - camera.position.x, s.position.y - camera.position.y, s.sourceRect.width, s.sourceRect.height);
-        this.pendingSprites = [];
+    drawRectangle(rect, color) {
+        this.pendingDrawTasks.push((context, camera) => {
+            context.fillStyle = color;
+            context.fillRect(rect.x - camera.position.x, rect.y - camera.position.y, rect.width, rect.height);
+        });
+    }
+    flush(camera) {
+        for (var t of this.pendingDrawTasks)
+            t(this.context, camera);
+        this.pendingDrawTasks = [];
     }
     clearScreen() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);

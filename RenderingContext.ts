@@ -3,48 +3,50 @@ import { Point } from "./Point.js";
 import { Rect } from "./Rect.js";
 import { Camera } from "./Camera.js";
 
-class PendingSprite {
-  public image: ImageBitmap;
-  public position: Point;
-  public sourceRect: Rect;
-  public sortY: number;
-
-  constructor(image: ImageBitmap, position: Point, sourceRect: Rect, sortY: number) {
-    this.image = image;
-    this.position = position;
-    this.sourceRect = sourceRect;
-    this.sortY = sortY;
-  }
-}
+type DrawTask = (context: CanvasRenderingContext2D, camera: Camera) => void;
 
 export class RenderingContext {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
-  private pendingSprites: PendingSprite[];
+  private pendingDrawTasks: DrawTask[];
 
   constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
     this.canvas = canvas;
     this.context = context;
-    this.pendingSprites = [];
+    this.pendingDrawTasks = [];
   }
 
   public drawSprite(sprite: Sprite, position: Point) {
-    this.pendingSprites.push(new PendingSprite(sprite.image, position, sprite.sourceRect, 1));
+    this.pendingDrawTasks.push((context, camera) => { 
+      context.drawImage(sprite.image, 
+        sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height,
+        position.x - camera.position.x, 
+        position.y - camera.position.y, 
+        sprite.sourceRect.width, sprite.sourceRect.height); 
+    });
   }
   
-  public drawSpriteFromSourceRect(image: ImageBitmap, rect: Rect, position: Point) {
-    this.pendingSprites.push(new PendingSprite(image, position, rect, 1));
+  public drawImage(image: ImageBitmap, sourceRect: Rect, position: Point) {
+    this.pendingDrawTasks.push((context, camera) => { 
+      context.drawImage(image, 
+        sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height,
+        position.x - camera.position.x, 
+        position.y - camera.position.y, 
+        sourceRect.width, sourceRect.height); 
+    });
   }
 
-  public flushSprites(camera: Camera) {
-    for (var s of this.pendingSprites)
-      this.context.drawImage(
-        s.image, 
-        s.sourceRect.x, s.sourceRect.y, s.sourceRect.width, s.sourceRect.height, 
-        s.position.x - camera.position.x, 
-        s.position.y - camera.position.y, 
-        s.sourceRect.width, s.sourceRect.height);
-    this.pendingSprites = [];
+  public drawRectangle(rect: Rect, color: string) {
+    this.pendingDrawTasks.push((context, camera) => {
+      context.fillStyle = color;
+      context.fillRect(rect.x - camera.position.x, rect.y - camera.position.y, rect.width, rect.height);
+    });
+  }
+  
+  public flush(camera: Camera) {
+    for (var t of this.pendingDrawTasks)
+      t(this.context, camera);
+    this.pendingDrawTasks = [];
   }
 
   public clearScreen() {
