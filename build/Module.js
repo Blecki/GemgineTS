@@ -1,6 +1,6 @@
 export class Module {
     entityCreated(entity) { }
     update() { }
-    render(context) { }
+    render(engine, context) { }
 }
 //# sourceMappingURL=Module.js.map

@@ -22,7 +22,7 @@ export class TilemapComponent extends RenderComponent {
                         continue;
                     var cellRect = this.tilemap.tilesets[0].tilesetAsset.getTileRect(cellValue - 1);
                     var tilesetImage = this.tilemap.tilesets[0].tilesetAsset.imageAsset;
-                    context.drawSpriteFromSourceRect(tilesetImage, cellRect, basePoint.add(new Point(x * this.tilemap.tilewidth, y * this.tilemap.tileheight)));
+                    context.drawImage(tilesetImage, cellRect, basePoint.add(new Point(x * this.tilemap.tilewidth, y * this.tilemap.tileheight)));
                 }
         }
     }

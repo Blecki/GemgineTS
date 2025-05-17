@@ -1,4 +1,5 @@
 {
+   "size": { "x": 16, "y": 16 },
    "components": [
       {
          "type": "Sprite"
@@ -6,6 +7,9 @@
       {
          "type": "SpriteAnimator",
          "animation": "assets/bunny-animation.anim"
+      },
+      {
+         "type": "DebugGizmo"
       }
    ]
 }

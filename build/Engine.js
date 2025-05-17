@@ -3,11 +3,13 @@ import { allocateEntityID } from "./AllocateEntityID.js";
 import { ComponentFactory } from "./Component.js";
 import { Point } from "./Point.js";
 import { GameTime } from "./GameTime.js";
+import { initializeFromJSON } from "./JsonConverter.js";
 export class Engine {
     modules = [];
     assetMap;
     sceneRoot;
     componentFactory;
+    debugMode = false;
     constructor(assetMap) {
         this.assetMap = assetMap;
         for (const [key, value] of assetMap) {
@@ -22,7 +24,7 @@ export class Engine {
     }
     render(context) {
         for (var module of this.modules)
-            module.render(context);
+            module.render(this, context);
     }
     run(context, frameCallback) {
         GameTime.update();
@@ -39,6 +41,7 @@ export class Engine {
         let resultID = allocateEntityID();
         let entity = new Entity(resultID);
         parent.addChild(entity);
+        initializeFromJSON(prototype, entity);
         entity.components = prototype.components.map(componentPrototype => this.componentFactory.createFromPrototype(componentPrototype));
         entity.components.forEach(c => c.parent = entity);
         entity.components.forEach(c => c.initialize(this, template));
