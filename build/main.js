@@ -41,13 +41,13 @@ export function Run() {
             engine.addModule(new AnimationModule());
             var entityPrototype = new EntityPrototype();
             entityPrototype.components.push({ type: "Tilemap", tilemapName: "assets/test-room.tmj" });
-            engine.createEntityFromPrototype(entityPrototype, new TiledTemplate());
+            engine.createEntityFromPrototype(engine.sceneRoot, entityPrototype, new TiledTemplate());
             var tilemap = engine.assetMap.get("assets/test-room.tmj").asset;
             for (var layer of tilemap.layers)
                 if (layer.type == "objectgroup")
                     for (var definition of layer.objects)
                         if (definition.template != null && definition.template != "")
-                            engine.createEntityFromTiledObject(definition);
+                            engine.createEntityFromTiledObject(engine.sceneRoot, definition);
             var input = new Input();
             input.bind("KeyA", "west");
             input.bind("KeyW", "north");

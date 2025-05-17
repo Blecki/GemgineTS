@@ -8,5 +8,11 @@ export class Point {
     add(other) {
         return new Point(this.x + other.x, this.y + other.y);
     }
+    negate() {
+        return new Point(-this.x, -this.y);
+    }
+    sub(other) {
+        return new Point(this.x - other.x, this.y - other.y);
+    }
 }
 //# sourceMappingURL=Point.js.map

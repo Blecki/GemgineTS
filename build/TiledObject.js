@@ -1,5 +1,6 @@
 import { initializeFromJSON } from "./JsonConverter.js";
 import pathCombine from "./PathCombine.js";
+import { Point } from "./Point.js";
 export class TiledProperty {
     name;
     type;
@@ -10,6 +11,7 @@ export class TiledObject {
     height;
     id;
     name;
+    polygon;
     properties;
     rotation;
     template;
@@ -24,6 +26,8 @@ export class TiledObject {
             this.templateAsset = engine.assetMap.get(pathCombine(self.directory(), this.template));
         if (this.properties != undefined)
             this.properties = this.properties.map(t => { var n = new TiledProperty(); initializeFromJSON(t, n); return n; });
+        if (this.polygon != undefined)
+            this.polygon = this.polygon.map(t => new Point(t.x, t.y));
     }
 }
 //# sourceMappingURL=TiledObject.js.map

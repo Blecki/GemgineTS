@@ -21,7 +21,7 @@ export class Engine {
     for (const [key, value] of assetMap) {
       value.resolveDependencies(this);
     }      
-    this.sceneRoot = new Entity(0, null);
+    this.sceneRoot = new Entity(0);
     this.componentFactory = new ComponentFactory();
   }
 
@@ -48,9 +48,10 @@ export class Engine {
     this.modules.push(newModule);
   }  
 
-  public createEntityFromPrototype(prototype: EntityPrototype, template: TiledTemplate): Entity {
+  public createEntityFromPrototype(parent: Entity, prototype: EntityPrototype, template: TiledTemplate): Entity {
     let resultID = allocateEntityID();
-    let entity = new Entity(resultID, this.sceneRoot);
+    let entity = new Entity(resultID);
+    parent.addChild(entity);
 
     entity.components = prototype.components.map(componentPrototype => this.componentFactory.createFromPrototype(componentPrototype));
     entity.components.forEach(c => c.parent = entity);
@@ -61,7 +62,7 @@ export class Engine {
     return entity;
   }
 
-  public createEntitytFromTiledTemplate(template: TiledTemplate): Entity {
+  public createEntitytFromTiledTemplate(parent: Entity, template: TiledTemplate): Entity {
     if (template.object.properties == undefined) {
       console.error("Can't create entity from template without a prototype.");
       return null;
@@ -76,12 +77,12 @@ export class Engine {
       console.error(`Could not find prototype ${prototypeProperty.value}.`);
       return null;
     }
-    return this.createEntityFromPrototype(prototype.asset, template);    
+    return this.createEntityFromPrototype(parent, prototype.asset, template);    
   }
 
-  public createEntityFromTiledObject(object: TiledObject): Entity {
-    var r = this.createEntitytFromTiledTemplate(object.templateAsset.asset);
-    r.position = new Point(object.x, object.y); // Pass the TiledObject down?
+  public createEntityFromTiledObject(parent: Entity, object: TiledObject): Entity {
+    var r = this.createEntitytFromTiledTemplate(parent, object.templateAsset.asset);
+    r.localPosition = new Point(object.x, object.y); // Pass the TiledObject down?
     return r;
   }
 }

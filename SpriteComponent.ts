@@ -10,7 +10,7 @@ export class SpriteComponent extends RenderComponent {
   public sprite: Sprite;
   
   public render(context: RenderingContext) {
-    context.drawSprite(this.sprite, this.parent.position);
+    context.drawSprite(this.sprite, this.parent.globalPosition);
   }
 
   public initialize(engine: Engine, template: TiledTemplate): void {
