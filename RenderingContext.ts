@@ -26,7 +26,7 @@ export class RenderingContext {
     });
   }
   
-  public drawImage(image: ImageBitmap, sourceRect: Rect, position: Point) {
+  public drawImage(image: ImageBitmap | OffscreenCanvas, sourceRect: Rect, position: Point) {
     this.pendingDrawTasks.push((context, camera) => { 
       context.drawImage(image, 
         sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height,

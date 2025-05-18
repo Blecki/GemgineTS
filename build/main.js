@@ -42,8 +42,10 @@ export function Run() {
             var renderModule = new RenderModule();
             engine.addModule(renderModule);
             engine.addModule(new AnimationModule());
+            var firstChamber = engine.assetMap.get("assets/test-room.tmj").asset;
+            var layer = firstChamber.layers[0];
             var entityPrototype = new EntityPrototype();
-            entityPrototype.components.push({ type: "Tilemap", tilemapName: "assets/test-room.tmj" });
+            entityPrototype.components.push({ type: "Tilemap", tilemap: firstChamber, layer: layer });
             engine.createEntityFromPrototype(engine.sceneRoot, entityPrototype, new TiledTemplate());
             var tilemap = engine.assetMap.get("assets/test-room.tmj").asset;
             for (var layer of tilemap.layers)

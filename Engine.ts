@@ -17,6 +17,8 @@ export class Engine {
   public sceneRoot: Entity;
   public componentFactory: ComponentFactory;
   public debugMode: boolean = false;
+  public fpsQueue: number[];
+
 
   constructor(assetMap: Map<string, AssetReference>) {
     this.assetMap = assetMap;
@@ -25,17 +27,28 @@ export class Engine {
     }      
     this.sceneRoot = new Entity(0);
     this.componentFactory = new ComponentFactory();
+    this.fpsQueue = [];
   }
 
   public update() {
+    var start = performance.now();
     for (var module of this.modules) 
       module.update();
+    var end = performance.now();
+    this.fpsQueue.push(end - start);
+    if (this.fpsQueue.length > 200) this.fpsQueue.shift();
   }
 
   public render(context: RenderingContext) {
     for (var module of this.modules)
       module.render(this, context);
 
+    
+    let averageFrameTime = this.fpsQueue.reduce((sum, val) => sum + val, 0) / this.fpsQueue.length;
+    context.context.fillStyle = 'black';
+    context.context.textAlign = 'left';
+    context.context.textBaseline = 'top';
+    context.context.fillText(averageFrameTime.toString(), 5, 25);
   }
 
   public run(context: RenderingContext, frameCallback: () => void) {
