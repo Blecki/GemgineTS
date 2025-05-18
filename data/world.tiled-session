@@ -3,17 +3,22 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "assets/test-room2.tmj",
+    "activeFile": "assets/test-room.tmj",
     "console.history": [
         "world"
     ],
     "expandedProjectPaths": [
+        "assets/templates",
         "assets",
         "."
     ],
     "fileStates": {
-        "assets/template.tsj": {
+        "assets/bunny_tiles.tsj": {
             "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "assets/template.tsj": {
+            "scaleInDock": 4,
             "scaleInEditor": 1
         },
         "assets/template.tsx": {
@@ -22,11 +27,11 @@
             "scaleInEditor": 1
         },
         "assets/test-room.tmj": {
-            "scale": 0.75,
-            "selectedLayer": 0,
+            "scale": 3,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 286.6666666666667,
-                "y": 159.3333333333333
+                "x": 269.83333333333326,
+                "y": 176.33333333333334
             }
         },
         "assets/test-room.tmx": {
@@ -67,13 +72,15 @@
     "openFiles": [
         "assets/test-room.tmj",
         "assets/test-room2.tmj",
-        "assets/template.tsj"
+        "assets/template.tsj",
+        "assets/bunny_tiles.tsj"
     ],
     "project": "world.tiled-project",
     "recentFiles": [
-        "assets/test-room.tmj",
+        "assets/bunny_tiles.tsj",
         "assets/template.tsj",
         "assets/test-room2.tmj",
+        "assets/test-room.tmj",
         "assets/template.tsx"
     ],
     "tileset.lastUsedFormat": "json",
