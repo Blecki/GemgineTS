@@ -35,6 +35,7 @@ export class Engine {
   public render(context: RenderingContext) {
     for (var module of this.modules)
       module.render(this, context);
+
   }
 
   public run(context: RenderingContext, frameCallback: () => void) {

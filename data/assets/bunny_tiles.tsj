@@ -1,0 +1,14 @@
+{ "columns":3,
+ "image":"brown-rabbit.png",
+ "imageheight":96,
+ "imagewidth":72,
+ "margin":0,
+ "name":"bunny_tiles",
+ "spacing":0,
+ "tilecount":12,
+ "tiledversion":"1.11.2",
+ "tileheight":24,
+ "tilewidth":24,
+ "type":"tileset",
+ "version":"1.11"
+}

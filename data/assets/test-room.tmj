@@ -85,6 +85,12 @@
                  "template":"templates\/pot.tj",
                  "x":48,
                  "y":64
+                }, 
+                {
+                 "id":13,
+                 "template":"templates\/bunny.tj",
+                 "x":0,
+                 "y":24
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -93,7 +99,7 @@
          "y":0
         }],
  "nextlayerid":3,
- "nextobjectid":12,
+ "nextobjectid":14,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

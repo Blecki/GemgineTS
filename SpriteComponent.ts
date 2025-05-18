@@ -5,12 +5,13 @@ import { Sprite } from "./Sprite.js";
 import { AssetReference } from "./AssetReference.js";
 import { TiledInlineTileset } from "./TiledTilemap.js";
 import { TiledTemplate } from "./TiledTemplate.js";
+import { Point } from "./Point.js";
 
 export class SpriteComponent extends RenderComponent {
   public sprite: Sprite;
   
   public render(context: RenderingContext) {
-    context.drawSprite(this.sprite, this.parent.globalPosition);
+    context.drawSprite(this.sprite, this.parent.globalPosition.sub(this.parent.pivot));
   }
 
   public initialize(engine: Engine, template: TiledTemplate): void {

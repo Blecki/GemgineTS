@@ -8,5 +8,7 @@
   "assets/prototypes/decor_sprite.proto",
   "assets/brown-rabbit.png",
   "assets/bunny-animation.anim",
-  "assets/prototypes/animated_bunny.proto"
+  "assets/prototypes/animated_bunny.proto",
+  "assets/bunny_tiles.tsj",
+  "assets/templates/bunny.tj"
 ]
