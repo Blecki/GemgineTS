@@ -14,7 +14,7 @@ export class TiledObjectGroup {
     y;
     resolveDependencies(self, engine) {
         if (this.objects != undefined) {
-            this.objects = this.objects.map(t => { var n = new TiledObject(); initializeFromJSON(t, n); return n; });
+            this.objects = this.objects.map(t => { let n = new TiledObject(); initializeFromJSON(t, n); return n; });
             this.objects.forEach(t => t.resolveDependencies(self, engine));
         }
     }
@@ -24,7 +24,7 @@ export class TiledTile {
     objectgroup;
     resolveDependencies(self, engine) {
         if (this.objectgroup != undefined) {
-            var n = new TiledObjectGroup();
+            let n = new TiledObjectGroup();
             initializeFromJSON(this.objectgroup, n);
             this.objectgroup = n;
         }
@@ -49,7 +49,7 @@ export class TiledTileset {
     resolveDependencies(self, engine) {
         this.imageAsset = engine.assetMap.get(pathCombine(self.directory(), this.image)).asset;
         if (this.tiles != undefined) {
-            this.tiles = this.tiles.map(t => { var n = new TiledTile(); initializeFromJSON(t, n); return n; });
+            this.tiles = this.tiles.map(t => { let n = new TiledTile(); initializeFromJSON(t, n); return n; });
             this.tiles.forEach(t => t.resolveDependencies(self, engine));
         }
     }

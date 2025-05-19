@@ -22,7 +22,7 @@ export class TiledWorld {
   public type: string;
 
   public resolveDependencies(self: AssetReference, engine: Engine) {
-    this.maps = this.maps.map(m => { var n = new TiledWorldMap(); initializeFromJSON(m, n); return n; });
+    this.maps = this.maps.map(m => { let n = new TiledWorldMap(); initializeFromJSON(m, n); return n; });
     this.maps.forEach(t => t.resolveDependencies(self, engine));
   }
 }

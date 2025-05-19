@@ -1,8 +1,8 @@
 export default function pathCombine(...args) {
-    var parts = [];
+    let parts = [];
     const argsAsArray = Array.from(Array.isArray(args[0]) ? args[0] : args);
     argsAsArray.forEach(a => parts = parts.concat(a.split('/')));
-    var r = [];
+    let r = [];
     parts.forEach(p => {
         if (p == '' || p == '/' || p == '.')
             return;

@@ -15,7 +15,7 @@ export class TiledWorld {
     onlyShowAdjacentMaps;
     type;
     resolveDependencies(self, engine) {
-        this.maps = this.maps.map(m => { var n = new TiledWorldMap(); initializeFromJSON(m, n); return n; });
+        this.maps = this.maps.map(m => { let n = new TiledWorldMap(); initializeFromJSON(m, n); return n; });
         this.maps.forEach(t => t.resolveDependencies(self, engine));
     }
 }

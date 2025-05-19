@@ -14,12 +14,12 @@ export class AssetLoader {
         return match ? match[1] : '';
     }
     getLoaderPromise(basePath, path) {
-        var extension = this.getFileExtension(path);
+        let extension = this.getFileExtension(path);
         if (this.loaders.has(extension))
             return this.loaders.get(extension)(basePath, path);
         else {
             console.error(`Unknown asset type: ${extension}`);
-            return new Promise(async (resolve, reject) => { resolve(new AssetReference(path, null)); });
+            return Promise.resolve(new AssetReference(path, null));
         }
     }
     async loadAssets_ex(baseUrl, assetUrls) {

@@ -9,7 +9,7 @@ export class Component {
 }
 
 export class ComponentFactory {
-  private typeMap: Map<string, () => Component>;
+  private readonly typeMap: Map<string, () => Component>;
 
   constructor() {
     this.typeMap = new Map<string, () => Component>;
@@ -27,8 +27,8 @@ export class ComponentFactory {
   }
 
   createFromPrototype(prototype) {
-    var component = this.create(prototype.type);
-    for (var property in prototype) 
+    let component = this.create(prototype.type);
+    for (let property in prototype) 
       component[property] = prototype[property];
     return component;
   }

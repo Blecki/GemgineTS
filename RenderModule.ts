@@ -7,11 +7,11 @@ import { Engine } from "./Engine.js";
 import { GameTime } from "./GameTime.js";
 
 export class RenderComponent extends Component {
-  public render(context: RenderingContext) {}
+  public render(context: RenderingContext):void {}
 }
 
 export class DebugGizmoComponent extends Component {  
-  public render(context: RenderingContext) {
+  public render(context: RenderingContext):void {
     context.context.globalAlpha = 0.5;
     context.context.globalCompositeOperation = "source-over";
     context.drawRectangle(this.parent.globalBounds, 'red');

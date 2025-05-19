@@ -5,7 +5,7 @@ function create<T>(type: (new () => T)): T {
 }
 
 export function initializeFromJSON(source: any, destination: any) {
-  for (var property in source) 
+  for (let property in source) 
     destination[property] = source[property];
 }
 
@@ -17,8 +17,8 @@ export function loadAndConvertJSON<T>(creationFunction: () => T) {
         reject(new Error(`Failed to load JSON at ${path}`));
         return;
       }
-      var json = await response.json();
-      var result = creationFunction();
+      let json = await response.json();
+      let result = creationFunction();
       initializeFromJSON(json, result);
       resolve(new AssetReference(path, result));
     });

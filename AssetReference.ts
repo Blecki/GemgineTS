@@ -1,7 +1,7 @@
 import { Engine } from "./Engine.js";
 
 interface Asset {
-  resolveDependencies(reference: AssetReference, engine: Engine);
+  resolveDependencies(reference: AssetReference, engine: Engine): void;
 }
 
 export class AssetReference {

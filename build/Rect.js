@@ -10,10 +10,10 @@ export class Rect {
         this.height = height;
     }
     set(center, size) {
-        var x = center.x - (size.x / 2);
-        var y = center.y - (size.y / 2);
-        var width = size.x;
-        var height = size.y;
+        this.x = center.x - (size.x / 2);
+        this.y = center.y - (size.y / 2);
+        this.width = size.x;
+        this.height = size.y;
     }
 }
 //# sourceMappingURL=Rect.js.map

@@ -9,7 +9,6 @@ export class TilemapComponent extends RenderComponent {
     cachedCanvas;
     cachedRender;
     getTile(tilemap, tile) {
-        console.log(tilemap);
         for (let i = tilemap.tilesets.length - 1; i >= 0; i--) {
             if (tile > tilemap.tilesets[i].firstgid)
                 return [tilemap.tilesets[i], tile - tilemap.tilesets[i].firstgid];
@@ -27,7 +26,6 @@ export class TilemapComponent extends RenderComponent {
                 if (cellValue == 0)
                     continue;
                 let [tileset, tile] = this.getTile(this.tilemap, cellValue);
-                console.log(tile);
                 let cellRect = tileset.tilesetAsset.getTileRect(tile);
                 context.drawImage(tileset.tilesetAsset.imageAsset, cellRect.x, cellRect.y, cellRect.width, cellRect.height, x * this.tilemap.tilewidth, y * this.tilemap.tileheight, this.tilemap.tilewidth, this.tilemap.tileheight);
             }
