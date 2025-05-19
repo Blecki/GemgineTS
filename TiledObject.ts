@@ -31,7 +31,7 @@ export class TiledObject {
       this.templateAsset = engine.assetMap.get(pathCombine(self.directory(), this.template));
 
     if (this.properties != undefined)
-      this.properties = this.properties.map(t => { var n = new TiledProperty(); initializeFromJSON(t, n); return n; });
+      this.properties = this.properties.map(t => { let n = new TiledProperty(); initializeFromJSON(t, n); return n; });
 
     if (this.polygon != undefined)
       this.polygon = this.polygon.map(t => new Point(t.x, t.y));

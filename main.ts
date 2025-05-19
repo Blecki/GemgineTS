@@ -1,5 +1,5 @@
 import { AssetLoader } from "./AssetLoader.js";
-import { RenderModule } from "./RenderModule.js";
+import { RenderModule, DebugGizmoComponent } from "./RenderModule.js";
 import { RenderingContext } from "./RenderingContext.js";
 import { Engine } from "./Engine.js";
 import { EntityPrototype } from "./EntityPrototype.js";
@@ -16,7 +16,6 @@ import { Animation } from "./Animation.js";
 import { SpriteAnimator } from "./SpriteAnimator.js";
 import { AnimationModule } from "./AnimationModule.js";
 import { Camera } from "./Camera.js";
-import { DebugGizmoComponent } from "./RenderModule.js";
 
 export function Run() {
   loadJSON("data/", "manifest.json")
@@ -44,32 +43,32 @@ export function Run() {
         engine.componentFactory.addComponentType("Tilemap", () => new TilemapComponent());
         engine.componentFactory.addComponentType("SpriteAnimator", () => new SpriteAnimator());
         engine.componentFactory.addComponentType("DebugGizmo", () => new DebugGizmoComponent()); 
-        var renderModule = new RenderModule();
+        let renderModule = new RenderModule();
         engine.addModule(renderModule);
         engine.addModule(new AnimationModule());
 
-        var firstChamber = engine.assetMap.get("assets/test-room.tmj").asset as TiledTilemap;
-        var layer = firstChamber.layers[0];
-        var entityPrototype = new EntityPrototype();
+        let firstChamber = engine.assetMap.get("assets/test-room.tmj").asset as TiledTilemap;
+        let layer = firstChamber.layers[0];
+        let entityPrototype = new EntityPrototype();
         entityPrototype.components.push({ type: "Tilemap", tilemap: firstChamber, layer: layer });
         engine.createEntityFromPrototype(engine.sceneRoot, entityPrototype, new TiledTemplate());
 
-        var tilemap = engine.assetMap.get("assets/test-room.tmj").asset as TiledTilemap;
-        for (var layer of tilemap.layers)
+        let tilemap = engine.assetMap.get("assets/test-room.tmj").asset as TiledTilemap;
+        for (let layer of tilemap.layers)
           if (layer.type == "objectgroup")
-            for (var definition of layer.objects)
+            for (let definition of layer.objects)
               if (definition.template != null && definition.template != "")
                 engine.createEntityFromTiledObject(engine.sceneRoot, definition);
               
 
-        var input = new Input();
+        let input = new Input();
         input.bind("KeyA", "west");
         input.bind("KeyW", "north");
         input.bind("KeyS", "south");
         input.bind("KeyD", "east");
         input.initialize();
 
-        var camera = new Camera();
+        let camera = new Camera();
         renderModule.setCamera(camera);
 
         engine.run(new RenderingContext(canvas, ctx), () => {

@@ -46,7 +46,7 @@ export class Input {
         return null;
     }
     check(action) {
-        var input = this.tryGetRecentInput(action, 500);
+        let input = this.tryGetRecentInput(action, 500);
         if (input != null) {
             this.markHandled(input);
             return true;

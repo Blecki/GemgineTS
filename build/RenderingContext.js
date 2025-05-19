@@ -24,7 +24,7 @@ export class RenderingContext {
         });
     }
     flush(camera) {
-        for (var t of this.pendingDrawTasks)
+        for (let t of this.pendingDrawTasks)
             t(this.context, camera);
         this.pendingDrawTasks = [];
     }

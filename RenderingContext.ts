@@ -44,7 +44,7 @@ export class RenderingContext {
   }
   
   public flush(camera: Camera) {
-    for (var t of this.pendingDrawTasks)
+    for (let t of this.pendingDrawTasks)
       t(this.context, camera);
     this.pendingDrawTasks = [];
   }

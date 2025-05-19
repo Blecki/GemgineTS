@@ -19,7 +19,7 @@ export class Entity {
   }
 
   public get globalBounds(): Rect {
-    var gp = this.globalPosition;
+    let gp = this.globalPosition;
     return new Rect(gp.x - this.pivot.x, gp.y - this.pivot.y, this.size.x, this.size.y);
   }
   

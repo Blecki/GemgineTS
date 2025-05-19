@@ -61,7 +61,7 @@ export class Input {
   }
 
   check(action: string): boolean {
-    var input = this.tryGetRecentInput(action, 500);
+    let input = this.tryGetRecentInput(action, 500);
     if (input != null) {
       this.markHandled(input);
       return true;

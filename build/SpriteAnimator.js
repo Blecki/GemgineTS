@@ -15,7 +15,7 @@ export class SpriteAnimator extends AnimationComponent {
     }
     animate() {
         this.currentPlace += GameTime.getDeltaTime();
-        var currentFrame = Math.floor(this.currentPlace / this.animationAsset.frametime) % this.animationAsset.frames.length;
+        let currentFrame = Math.floor(this.currentPlace / this.animationAsset.frametime) % this.animationAsset.frames.length;
         this.sprite.sprite = new Sprite(this.animationAsset.spriteSheetAsset, new Rect(this.animationAsset.spriteWidth * this.animationAsset.frames[currentFrame].x, this.animationAsset.spriteHeight * this.animationAsset.frames[currentFrame].y, this.animationAsset.spriteWidth, this.animationAsset.spriteHeight));
     }
 }

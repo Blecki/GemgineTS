@@ -17,8 +17,8 @@ export class ComponentFactory {
         return new Component();
     }
     createFromPrototype(prototype) {
-        var component = this.create(prototype.type);
-        for (var property in prototype)
+        let component = this.create(prototype.type);
+        for (let property in prototype)
             component[property] = prototype[property];
         return component;
     }

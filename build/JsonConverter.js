@@ -3,7 +3,7 @@ function create(type) {
     return new type();
 }
 export function initializeFromJSON(source, destination) {
-    for (var property in source)
+    for (let property in source)
         destination[property] = source[property];
 }
 export function loadAndConvertJSON(creationFunction) {
@@ -14,8 +14,8 @@ export function loadAndConvertJSON(creationFunction) {
                 reject(new Error(`Failed to load JSON at ${path}`));
                 return;
             }
-            var json = await response.json();
-            var result = creationFunction();
+            let json = await response.json();
+            let result = creationFunction();
             initializeFromJSON(json, result);
             resolve(new AssetReference(path, result));
         });

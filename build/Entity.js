@@ -14,7 +14,7 @@ export class Entity {
         return new Rect(this.localPosition.x - this.pivot.x, this.localPosition.y - this.pivot.y, this.size.x, this.size.y);
     }
     get globalBounds() {
-        var gp = this.globalPosition;
+        let gp = this.globalPosition;
         return new Rect(gp.x - this.pivot.x, gp.y - this.pivot.y, this.size.x, this.size.y);
     }
     pivot = new Point(0, 0);

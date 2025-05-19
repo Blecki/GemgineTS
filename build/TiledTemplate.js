@@ -9,13 +9,13 @@ export class TiledTemplate {
     resolveDependencies(self, engine) {
         this.basePath = self.directory();
         if (this.tileset != undefined) {
-            var n = new TiledInlineTileset();
+            let n = new TiledInlineTileset();
             initializeFromJSON(this.tileset, n);
             this.tileset = n;
             this.tileset.resolveDependencies(self, engine);
         }
         if (this.object != undefined) {
-            var o = new TiledObject();
+            let o = new TiledObject();
             initializeFromJSON(this.object, o);
             this.object = o;
             o.resolveDependencies(self, engine);

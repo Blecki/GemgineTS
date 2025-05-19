@@ -13,7 +13,7 @@ export class Engine {
     fpsQueue;
     constructor(assetMap) {
         this.assetMap = assetMap;
-        for (const [key, value] of assetMap) {
+        for (const [, value] of assetMap) {
             value.resolveDependencies(this);
         }
         this.sceneRoot = new Entity(0);
@@ -21,16 +21,16 @@ export class Engine {
         this.fpsQueue = [];
     }
     update() {
-        var start = performance.now();
-        for (var module of this.modules)
+        let start = performance.now();
+        for (let module of this.modules)
             module.update();
-        var end = performance.now();
+        let end = performance.now();
         this.fpsQueue.push(end - start);
         if (this.fpsQueue.length > 200)
             this.fpsQueue.shift();
     }
     render(context) {
-        for (var module of this.modules)
+        for (let module of this.modules)
             module.render(this, context);
         let averageFrameTime = this.fpsQueue.reduce((sum, val) => sum + val, 0) / this.fpsQueue.length;
         context.context.fillStyle = 'black';
@@ -65,12 +65,12 @@ export class Engine {
             console.error("Can't create entity from template without a prototype.");
             return null;
         }
-        var prototypeProperty = template.object.properties.find(p => p.name == 'prototype');
+        let prototypeProperty = template.object.properties.find(p => p.name == 'prototype');
         if (prototypeProperty == undefined) {
             console.error("Can't create entity from template without a prototype.");
             return null;
         }
-        var prototype = this.assetMap.get(prototypeProperty.value);
+        let prototype = this.assetMap.get(prototypeProperty.value);
         if (prototype == undefined) {
             console.error(`Could not find prototype ${prototypeProperty.value}.`);
             return null;
@@ -78,7 +78,7 @@ export class Engine {
         return this.createEntityFromPrototype(parent, prototype.asset, template);
     }
     createEntityFromTiledObject(parent, object) {
-        var r = this.createEntitytFromTiledTemplate(parent, object.templateAsset.asset);
+        let r = this.createEntitytFromTiledTemplate(parent, object.templateAsset.asset);
         r.localPosition = new Point(object.x, object.y); // Pass the TiledObject down?
         return r;
     }
