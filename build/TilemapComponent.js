@@ -8,32 +8,39 @@ export class TilemapComponent extends RenderComponent {
     cacheState = CacheState.Empty;
     cachedCanvas;
     cachedRender;
-    initialize(engine, template) {
+    getTile(tilemap, tile) {
+        console.log(tilemap);
+        for (let i = tilemap.tilesets.length - 1; i >= 0; i--) {
+            if (tile > tilemap.tilesets[i].firstgid)
+                return [tilemap.tilesets[i], tile - tilemap.tilesets[i].firstgid];
+        }
+        return [tilemap.tilesets[0], tile];
     }
     updateCache() {
         this.cacheState = CacheState.Priming;
-        var canvasDims = new Point(this.layer.width * this.tilemap.tilewidth, this.layer.height * this.tilemap.tileheight);
+        const canvasDims = new Point(this.layer.width * this.tilemap.tilewidth, this.layer.height * this.tilemap.tileheight);
         this.cachedCanvas = new OffscreenCanvas(canvasDims.x, canvasDims.y);
-        var context = this.cachedCanvas.getContext('2d');
-        for (var x = 0; x < this.layer.width; ++x)
-            for (var y = 0; y < this.layer.height; ++y) {
-                var cellValue = this.layer.data[(y * this.layer.width) + x];
+        let context = this.cachedCanvas.getContext('2d');
+        for (let x = 0; x < this.layer.width; ++x) {
+            for (let y = 0; y < this.layer.height; ++y) {
+                let cellValue = this.layer.data[(y * this.layer.width) + x];
                 if (cellValue == 0)
                     continue;
-                var cellRect = this.tilemap.tilesets[0].tilesetAsset.getTileRect(cellValue - 1); // Todo: Actually get the correct tile when there are multiple tilesets.
-                var tilesetImage = this.tilemap.tilesets[0].tilesetAsset.imageAsset;
-                context.drawImage(tilesetImage, cellRect.x, cellRect.y, cellRect.width, cellRect.height, x * this.tilemap.tilewidth, y * this.tilemap.tileheight, this.tilemap.tilewidth, this.tilemap.tileheight);
+                let [tileset, tile] = this.getTile(this.tilemap, cellValue);
+                console.log(tile);
+                let cellRect = tileset.tilesetAsset.getTileRect(tile);
+                context.drawImage(tileset.tilesetAsset.imageAsset, cellRect.x, cellRect.y, cellRect.width, cellRect.height, x * this.tilemap.tilewidth, y * this.tilemap.tileheight, this.tilemap.tilewidth, this.tilemap.tileheight);
             }
+        }
         createImageBitmap(this.cachedCanvas).then(bitmap => {
             this.cachedRender = bitmap;
             this.cacheState = CacheState.Ready;
-            //this.cachedCanvas = null;
         });
     }
     render(context) {
         if (this.cacheState == CacheState.Empty)
             this.updateCache();
-        var basePoint = this.parent.globalPosition;
+        let basePoint = this.parent.globalPosition;
         basePoint.x += this.layer.x;
         basePoint.y += this.layer.y;
         if (this.cacheState == CacheState.Priming)
