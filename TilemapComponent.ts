@@ -1,11 +1,8 @@
 import { Rect } from "./Rect.js";
 import { RenderComponent } from "./RenderModule.js";
 import { Point } from "./Point.js";
-import { TiledTilemap } from "./TiledTilemap.js";
+import { TiledTilemap, TiledLayer, TiledInlineTileset } from "./TiledTilemap.js";
 import { RenderingContext} from "./RenderingContext.js";
-import { Engine } from "./Engine.js";
-import { TiledTemplate } from "./TiledTemplate.js";
-import { TiledLayer } from "./TiledTilemap.js";
 import { CacheState } from "./CacheState.js";
 
 export class TilemapComponent extends RenderComponent {
@@ -15,43 +12,46 @@ export class TilemapComponent extends RenderComponent {
   private cachedCanvas: OffscreenCanvas;
   private cachedRender: ImageBitmap;
 
-  public initialize(engine: Engine, template: TiledTemplate) {
-    
+  private getTile(tilemap: TiledTilemap, tile: number): [tileset: TiledInlineTileset, tile: number]  {
+    for (let i = tilemap.tilesets.length - 1; i >= 0; i--) {
+      if (tile > tilemap.tilesets[i].firstgid) return [tilemap.tilesets[i], tile - tilemap.tilesets[i].firstgid];
+    }
+    return [tilemap.tilesets[0], tile];
   }
 
   private updateCache() {
     this.cacheState = CacheState.Priming;
 
-    var canvasDims = new Point(this.layer.width * this.tilemap.tilewidth, this.layer.height * this.tilemap.tileheight);
+    const canvasDims = new Point(this.layer.width * this.tilemap.tilewidth, this.layer.height * this.tilemap.tileheight);
     this.cachedCanvas = new OffscreenCanvas(canvasDims.x, canvasDims.y);
-    var context = this.cachedCanvas.getContext('2d');
+    let context = this.cachedCanvas.getContext('2d');
     
-    for (var x = 0; x < this.layer.width; ++x)
-      for (var y = 0; y < this.layer.height; ++y)
+    for (let x = 0; x < this.layer.width; ++x) {
+      for (let y = 0; y < this.layer.height; ++y)
       {
-        var cellValue = this.layer.data[(y * this.layer.width) + x];
+        let cellValue = this.layer.data[(y * this.layer.width) + x];
         if (cellValue == 0) continue;
-        var cellRect = this.tilemap.tilesets[0].tilesetAsset.getTileRect(cellValue - 1); // Todo: Actually get the correct tile when there are multiple tilesets.
-        var tilesetImage = this.tilemap.tilesets[0].tilesetAsset.imageAsset;
-        context.drawImage(tilesetImage,
+        let [tileset, tile] = this.getTile(this.tilemap, cellValue);
+        let cellRect = tileset.tilesetAsset.getTileRect(tile); 
+        context.drawImage(tileset.tilesetAsset.imageAsset,
           cellRect.x, cellRect.y, cellRect.width, cellRect.height,
           x * this.tilemap.tilewidth, y * this.tilemap.tileheight,
           this.tilemap.tilewidth, this.tilemap.tileheight);
       }
+    }
 
-      createImageBitmap(this.cachedCanvas).then(bitmap => {
-        this.cachedRender = bitmap;
-        this.cacheState = CacheState.Ready;
-        //this.cachedCanvas = null;
-      });
+    createImageBitmap(this.cachedCanvas).then(bitmap => {
+      this.cachedRender = bitmap;
+      this.cacheState = CacheState.Ready;
+    });
   }
 
   public render(context: RenderingContext) {
     if (this.cacheState == CacheState.Empty)
       this.updateCache();
-    var basePoint = this.parent.globalPosition;
-      basePoint.x += this.layer.x;
-      basePoint.y += this.layer.y;
+    let basePoint = this.parent.globalPosition;
+    basePoint.x += this.layer.x;
+    basePoint.y += this.layer.y;
     if (this.cacheState == CacheState.Priming)
       context.drawImage(this.cachedCanvas, new Rect(0, 0, this.cachedCanvas.width, this.cachedCanvas.height), basePoint);
     else if (this.cacheState == CacheState.Ready)

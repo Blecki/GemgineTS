@@ -8,14 +8,17 @@
         "world"
     ],
     "expandedProjectPaths": [
-        "assets/templates",
+        ".",
         "assets",
-        "."
+        "assets/templates"
     ],
     "fileStates": {
         "assets/bunny_tiles.tsj": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "assets/grass.tsj": {
+            "scaleInDock": 1
         },
         "assets/template.tsj": {
             "scaleInDock": 4,
@@ -28,10 +31,10 @@
         },
         "assets/test-room.tmj": {
             "scale": 3,
-            "selectedLayer": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 251.66666666666663,
-                "y": 159.83333333333331
+                "x": 99.99999999999997,
+                "y": 110.16666666666666
             }
         },
         "assets/test-room.tmx": {
