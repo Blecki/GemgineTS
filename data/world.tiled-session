@@ -30,8 +30,8 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 269.83333333333326,
-                "y": 176.33333333333334
+                "x": 251.66666666666663,
+                "y": 159.83333333333331
             }
         },
         "assets/test-room.tmx": {
@@ -46,8 +46,8 @@
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 3500,
-                "y": 1206.6666666666665
+                "x": 240,
+                "y": 159.3333333333333
             }
         },
         "assets/test-room2.tmx": {
@@ -85,7 +85,7 @@
     ],
     "tileset.lastUsedFormat": "json",
     "tileset.tileSize": {
-        "height": 24,
-        "width": 24
+        "height": 16,
+        "width": 16
     }
 }

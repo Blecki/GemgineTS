@@ -10,5 +10,7 @@
   "assets/bunny-animation.anim",
   "assets/prototypes/animated_bunny.proto",
   "assets/bunny_tiles.tsj",
-  "assets/templates/bunny.tj"
+  "assets/templates/bunny.tj",
+  "assets/tiles.png",
+  "assets/grass.tsj"
 ]
