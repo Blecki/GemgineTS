@@ -1,5 +1,5 @@
-import { initializeFromJSON } from "./JsonConverter.js";
-import pathCombine from "./PathCombine.js";
+import { initializeFromJSON } from "../JsonConverter.js";
+import pathCombine from "../PathCombine.js";
 import { TiledObject } from "./TiledObject.js";
 export class TiledLayer {
     class;

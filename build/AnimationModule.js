@@ -1,15 +1,12 @@
-import { Component } from "./Component.js";
 import { Module } from "./Module.js";
-export class AnimationComponent extends Component {
-    animate() {
-        throw new Error("Not Implemented");
-    }
-}
 export class AnimationModule extends Module {
     animatables = [];
+    isAnimatable(object) {
+        return 'animate' in object;
+    }
     entityCreated(entity) {
         entity.components.forEach(component => {
-            if (component instanceof AnimationComponent) {
+            if (this.isAnimatable(component)) {
                 this.animatables.push(component);
             }
         });

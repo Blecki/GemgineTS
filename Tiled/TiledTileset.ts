@@ -1,8 +1,8 @@
-import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
-import { Rect } from "./Rect.js";
-import pathCombine from "./PathCombine.js";
-import { initializeFromJSON } from "./JsonConverter.js";
+import { AssetReference } from "../AssetReference.js";
+import { Engine } from "../Engine.js";
+import { Rect } from "../Rect.js";
+import pathCombine from "../PathCombine.js";
+import { initializeFromJSON } from "../JsonConverter.js";
 import { TiledObject } from "./TiledObject.js";
 
 export class TiledObjectGroup {

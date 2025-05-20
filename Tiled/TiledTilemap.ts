@@ -1,11 +1,12 @@
-import { AssetReference } from "./AssetReference.js";
-import { initializeFromJSON } from "./JsonConverter.js";
-import { Engine } from "./Engine.js";
+import { AssetReference } from "../AssetReference.js";
+import { initializeFromJSON } from "../JsonConverter.js";
+import { Engine } from "../Engine.js";
 import { TiledTileset } from "./TiledTileset.js";
-import pathCombine from "./PathCombine.js";
+import pathCombine from "../PathCombine.js";
 import { TiledObject  } from "./TiledObject.js";
 
 export class TiledLayer {
+  public class: string;
   public data: number[];
   public draworder: string;
   public height: number;

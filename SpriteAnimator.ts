@@ -1,13 +1,13 @@
 import { Engine } from "./Engine.js";
 import { SpriteComponent } from "./SpriteComponent.js";
-import { TiledTemplate } from "./TiledTemplate.js";
-import { AnimationComponent } from "./AnimationModule.js";
+import { TiledTemplate } from "./Tiled/TiledTemplate.js";
+import { Component } from "./Component.js";
 import { GameTime } from "./GameTime.js";
 import { Animation } from "./Animation.js";
 import { Sprite } from "./Sprite.js";
 import { Rect } from "./Rect.js";
 
-export class SpriteAnimator extends AnimationComponent {
+export class SpriteAnimator extends Component {
   public animation: string;
 
   private sprite: SpriteComponent;

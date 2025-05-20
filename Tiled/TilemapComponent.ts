@@ -1,9 +1,11 @@
-import { Rect } from "./Rect.js";
-import { RenderComponent } from "./RenderModule.js";
-import { Point } from "./Point.js";
+import { Rect } from "../Rect.js";
+import { Point } from "../Point.js";
 import { TiledTilemap, TiledLayer, TiledInlineTileset } from "./TiledTilemap.js";
-import { RenderingContext} from "./RenderingContext.js";
-import { CacheState } from "./CacheState.js";
+import { RenderingContext} from "../RenderingContext.js";
+import { CacheState } from "../CacheState.js";
+import { Engine } from "../Engine.js";
+import { TiledTemplate } from "./TiledTemplate.js";
+import { RenderComponent } from "../RenderModule.js";
 
 export class TilemapComponent extends RenderComponent {
   public layer: TiledLayer;
@@ -11,6 +13,10 @@ export class TilemapComponent extends RenderComponent {
   private cacheState: CacheState = CacheState.Empty;
   private cachedCanvas: OffscreenCanvas;
   private cachedRender: ImageBitmap;
+
+  public initialize(engine: Engine, template: TiledTemplate) {
+    this.parent.size = new Point(this.layer.width * this.tilemap.tilewidth, this.layer.height * this.tilemap.tileheight);
+  }  
 
   private getTile(tilemap: TiledTilemap, tile: number): [tileset: TiledInlineTileset, tile: number]  {
     for (let i = tilemap.tilesets.length - 1; i >= 0; i--) {

@@ -1,7 +1,7 @@
-import { Rect } from "./Rect.js";
-import { Point } from "./Point.js";
-import { CacheState } from "./CacheState.js";
-import { RenderComponent } from "./RenderModule.js";
+import { Rect } from "../Rect.js";
+import { Point } from "../Point.js";
+import { CacheState } from "../CacheState.js";
+import { RenderComponent } from "../RenderModule.js";
 export class TilemapComponent extends RenderComponent {
     layer;
     tilemap;

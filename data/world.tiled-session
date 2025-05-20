@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "assets/leaf2.tsj",
+    "activeFile": "assets/test-room.tmj",
     "console.history": [
         "world"
     ],
@@ -43,7 +43,7 @@
         },
         "assets/test-room.tmj": {
             "scale": 3,
-            "selectedLayer": 3,
+            "selectedLayer": 2,
             "viewCenter": {
                 "x": 125.33333333333333,
                 "y": 24.166666666666657
@@ -61,7 +61,7 @@
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 240,
+                "x": 239.99999999999997,
                 "y": 159.3333333333333
             }
         },
@@ -95,13 +95,13 @@
     ],
     "project": "world.tiled-project",
     "recentFiles": [
-        "assets/test-room.tmj",
-        "assets/test-room2.tmj",
-        "assets/template.tsj",
-        "assets/bunny_tiles.tsj",
-        "assets/shadows.tsj",
-        "assets/leaf.tsj",
         "assets/leaf2.tsj",
+        "assets/leaf.tsj",
+        "assets/shadows.tsj",
+        "assets/bunny_tiles.tsj",
+        "assets/template.tsj",
+        "assets/test-room2.tmj",
+        "assets/test-room.tmj",
         "assets/template.tsx"
     ],
     "tileset.lastUsedFormat": "json",
