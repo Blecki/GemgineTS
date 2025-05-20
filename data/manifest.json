@@ -12,5 +12,11 @@
   "assets/bunny_tiles.tsj",
   "assets/templates/bunny.tj",
   "assets/tiles.png",
-  "assets/grass.tsj"
+  "assets/grass.tsj",
+  "assets/leaf.png",
+  "assets/leaf.tsj",
+  "assets/leaf2.png",
+  "assets/leaf2.tsj",
+  "assets/shadows.png",
+  "assets/shadows.tsj"
 ]
