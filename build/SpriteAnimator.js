@@ -1,9 +1,9 @@
 import { SpriteComponent } from "./SpriteComponent.js";
-import { AnimationComponent } from "./AnimationModule.js";
+import { Component } from "./Component.js";
 import { GameTime } from "./GameTime.js";
 import { Sprite } from "./Sprite.js";
 import { Rect } from "./Rect.js";
-export class SpriteAnimator extends AnimationComponent {
+export class SpriteAnimator extends Component {
     animation;
     sprite;
     animationAsset;

@@ -7,11 +7,17 @@ import { Engine } from "./Engine.js";
 import { GameTime } from "./GameTime.js";
 
 export class RenderComponent extends Component {
-  public render(context: RenderingContext):void {}
+  public renderLayer: number;
+  public render(context: RenderingContext):void { /* Default implementation */ }
 }
 
-export class DebugGizmoComponent extends Component {  
-  public render(context: RenderingContext):void {
+interface RenderableComponent {
+  renderLayer: number;
+  render(context: RenderingContext):void;
+}
+
+export class DebugGizmoComponent extends RenderComponent {  
+  public render(context: RenderingContext): void {
     context.context.globalAlpha = 0.5;
     context.context.globalCompositeOperation = "source-over";
     context.drawRectangle(this.parent.globalBounds, 'red');
@@ -19,41 +25,37 @@ export class DebugGizmoComponent extends Component {
 }
 
 export class RenderModule extends Module {
-  private renderables: RenderComponent[] = [];
-  private debugGizmos: DebugGizmoComponent[] = [];
+  private readonly renderables: RenderableComponent[] = [];
   public camera: Camera;
   public fpsQueue: number[];
+  public renderLayers: string[];
 
-  constructor() {
+  
+  private isRenderable(object: any): object is RenderableComponent {
+    return 'render' in object;
+  }
+
+  constructor(renderLayers: string[]) {
     super();
     this.fpsQueue = [];
+    this.renderLayers = renderLayers;
   }
 
   entityCreated(entity: Entity) {
     entity.components.forEach(component => {
-      if (component instanceof RenderComponent) {
+      if (this.isRenderable(component)) {
         this.renderables.push(component);
       }
-
-      if (component instanceof DebugGizmoComponent) {
-        this.debugGizmos.push(component);
-      }
     });
-  }
-
-  update() {
   }
 
   render(engine: Engine, context: RenderingContext) {
     context.context.globalAlpha = 1;
     context.context.globalCompositeOperation = 'source-over';
-    for (var renderable of this.renderables)
-      renderable.render(context);
-    context.flush(this.camera);
 
-    if (engine.debugMode) {
-      for (var debugGizmo of this.debugGizmos)
-        debugGizmo.render(context);
+    for (let layer = 0; layer < this.renderLayers.length; layer += 1) {
+      for (let renderable of this.renderables)
+        if (renderable.renderLayer == layer) renderable.render(context);
       context.flush(this.camera);
     }
 

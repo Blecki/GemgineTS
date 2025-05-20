@@ -1,8 +1,8 @@
-import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
-import { initializeFromJSON } from "./JsonConverter.js";
-import pathCombine from "./PathCombine.js";
-import { Point } from "./Point.js";
+import { AssetReference } from "../AssetReference.js";
+import { Engine } from "../Engine.js";
+import { initializeFromJSON } from "../JsonConverter.js";
+import pathCombine from "../PathCombine.js";
+import { Point } from "../Point.js";
 
 export class TiledProperty {
   public name: string;

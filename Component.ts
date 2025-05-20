@@ -1,6 +1,6 @@
 import { Entity } from "./Entity.js";
 import { Engine } from "./Engine.js";
-import { TiledTemplate } from "./TiledTemplate.js";
+import { TiledTemplate } from "./Tiled/TiledTemplate.js";
 
 export class Component {
   public parent: Entity;

@@ -2,9 +2,10 @@ import { Component } from "./Component.js";
 import { Module } from "./Module.js";
 import { GameTime } from "./GameTime.js";
 export class RenderComponent extends Component {
+    renderLayer;
     render(context) { }
 }
-export class DebugGizmoComponent extends Component {
+export class DebugGizmoComponent extends RenderComponent {
     render(context) {
         context.context.globalAlpha = 0.5;
         context.context.globalCompositeOperation = "source-over";
@@ -13,34 +14,31 @@ export class DebugGizmoComponent extends Component {
 }
 export class RenderModule extends Module {
     renderables = [];
-    debugGizmos = [];
     camera;
     fpsQueue;
-    constructor() {
+    renderLayers;
+    isRenderable(object) {
+        return 'render' in object;
+    }
+    constructor(renderLayers) {
         super();
         this.fpsQueue = [];
+        this.renderLayers = renderLayers;
     }
     entityCreated(entity) {
         entity.components.forEach(component => {
-            if (component instanceof RenderComponent) {
+            if (this.isRenderable(component)) {
                 this.renderables.push(component);
             }
-            if (component instanceof DebugGizmoComponent) {
-                this.debugGizmos.push(component);
-            }
         });
-    }
-    update() {
     }
     render(engine, context) {
         context.context.globalAlpha = 1;
         context.context.globalCompositeOperation = 'source-over';
-        for (var renderable of this.renderables)
-            renderable.render(context);
-        context.flush(this.camera);
-        if (engine.debugMode) {
-            for (var debugGizmo of this.debugGizmos)
-                debugGizmo.render(context);
+        for (let layer = 0; layer < this.renderLayers.length; layer += 1) {
+            for (let renderable of this.renderables)
+                if (renderable.renderLayer == layer)
+                    renderable.render(context);
             context.flush(this.camera);
         }
         this.fpsQueue.push(GameTime.getDeltaTime());
