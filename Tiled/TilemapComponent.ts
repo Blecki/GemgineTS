@@ -6,7 +6,9 @@ import { CacheState } from "../CacheState.js";
 import { Engine } from "../Engine.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { RenderComponent } from "../RenderModule.js";
+import { componentType } from "../Component.js";
 
+@componentType("Tilemap")
 export class TilemapComponent extends RenderComponent {
   public layer: TiledLayer;
   public tilemap: TiledTilemap;

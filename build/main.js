@@ -1,5 +1,5 @@
 import { AssetLoader } from "./AssetLoader.js";
-import { RenderModule, DebugGizmoComponent } from "./RenderModule.js";
+import { RenderModule } from "./RenderModule.js";
 import { RenderingContext } from "./RenderingContext.js";
 import { Engine } from "./Engine.js";
 import { EntityPrototype } from "./EntityPrototype.js";
@@ -10,12 +10,9 @@ import { TiledTileset } from "./Tiled/TiledTileset.js";
 import { TiledTilemap } from "./Tiled/TiledTilemap.js";
 import { TiledWorld } from "./Tiled/TiledWorld.js";
 import { TiledTemplate } from "./Tiled/TiledTemplate.js";
-import { SpriteComponent } from "./SpriteComponent.js";
 import { Animation } from "./Animation.js";
-import { SpriteAnimator } from "./SpriteAnimator.js";
 import { AnimationModule } from "./AnimationModule.js";
 import { Camera } from "./Camera.js";
-import { PlayerControllerComponent } from "./PlayerControllerComponent.js";
 import { UpdateModule } from "./UpdateModule.js";
 export function Run() {
     loadJSON("data/", "manifest.json")
@@ -35,11 +32,6 @@ export function Run() {
         loader.loadAssets("data/", manifest, (assets) => {
             const engine = new Engine(assets);
             engine.debugMode = true;
-            engine.componentFactory.addComponentType("Sprite", () => new SpriteComponent());
-            engine.componentFactory.addComponentType("Tilemap", () => new TilemapComponent());
-            engine.componentFactory.addComponentType("SpriteAnimator", () => new SpriteAnimator());
-            engine.componentFactory.addComponentType("DebugGizmo", () => new DebugGizmoComponent());
-            engine.componentFactory.addComponentType("PlayerController", () => new PlayerControllerComponent());
             let renderLayers = ["ground", "objects", "lighting", "overlay", "gui"];
             engine.addModule(new UpdateModule());
             engine.addModule(new AnimationModule());
