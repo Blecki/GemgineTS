@@ -1,8 +1,9 @@
 import { Engine } from "./Engine.js";
-import { Component } from "./Component.js";
+import { Component, componentType } from "./Component.js";
 import { Input } from "./Input.js";
 import { TiledTemplate } from "./Tiled/TiledTemplate.js";
 
+@componentType("PlayerController")
 export class PlayerControllerComponent extends Component {
   private input: Input;
 

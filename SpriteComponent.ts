@@ -3,7 +3,9 @@ import { RenderingContext } from "./RenderingContext.js";
 import { Sprite } from "./Sprite.js";
 import { TiledTemplate } from "./Tiled/TiledTemplate.js";
 import { RenderComponent } from "./RenderModule.js";
+import { componentType } from "./Component.js";
 
+@componentType("Sprite")
 export class SpriteComponent extends RenderComponent {
   public sprite: Sprite;
   

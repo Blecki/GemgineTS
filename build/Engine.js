@@ -1,6 +1,6 @@
 import { Entity } from "./Entity.js";
 import { allocateEntityID } from "./AllocateEntityID.js";
-import { ComponentFactory } from "./Component.js";
+import { ComponentFactory } from "./ComponentFactory.js";
 import { Point } from "./Point.js";
 import { GameTime } from "./GameTime.js";
 import { initializeFromJSON } from "./JsonConverter.js";
@@ -8,7 +8,6 @@ export class Engine {
     modules = [];
     assetMap;
     sceneRoot;
-    componentFactory;
     debugMode = false;
     fpsQueue;
     constructor(assetMap) {
@@ -17,7 +16,6 @@ export class Engine {
             value.resolveDependencies(this);
         }
         this.sceneRoot = new Entity(0);
-        this.componentFactory = new ComponentFactory();
         this.fpsQueue = [];
     }
     update() {
@@ -54,7 +52,7 @@ export class Engine {
         let entity = new Entity(resultID);
         parent.addChild(entity);
         initializeFromJSON(prototype, entity);
-        entity.components = prototype.components.map(componentPrototype => this.componentFactory.createFromPrototype(componentPrototype));
+        entity.components = prototype.components.map(componentPrototype => ComponentFactory.createFromPrototype(componentPrototype));
         entity.components.forEach(c => c.parent = entity);
         entity.components.forEach(c => c.initialize(this, template));
         this.modules.forEach(module => module.entityCreated(entity));

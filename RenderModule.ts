@@ -1,4 +1,4 @@
-import { Component } from "./Component.js";
+import { Component, componentType } from "./Component.js";
 import { Module } from "./Module.js";
 import { RenderingContext } from "./RenderingContext.js";
 import { Entity } from "./Entity.js";
@@ -16,6 +16,7 @@ interface RenderableComponent {
   render(context: RenderingContext):void;
 }
 
+@componentType("DebugGizmo")
 export class DebugGizmoComponent extends RenderComponent {  
   public render(context: RenderingContext): void {
     context.context.globalAlpha = 0.5;

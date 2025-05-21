@@ -4,7 +4,8 @@ import { RenderingContext } from "./RenderingContext.js";
 import { Entity } from "./Entity.js";
 import { AssetReference } from "./AssetReference.js";
 import { allocateEntityID } from "./AllocateEntityID.js";
-import { Component, ComponentFactory } from "./Component.js";
+import { Component } from "./Component.js";
+import { ComponentFactory } from "./ComponentFactory.js";
 import { TiledTemplate } from "./Tiled/TiledTemplate.js";
 import { TiledObject, TiledProperty } from "./Tiled/TiledObject.js";
 import { Point } from "./Point.js";
@@ -15,7 +16,6 @@ export class Engine {
   private readonly modules: Module[] = [];
   public assetMap: Map<string, AssetReference>;
   public sceneRoot: Entity;
-  public componentFactory: ComponentFactory;
   public debugMode: boolean = false;
   public fpsQueue: number[];
 
@@ -26,7 +26,6 @@ export class Engine {
       value.resolveDependencies(this);
     }      
     this.sceneRoot = new Entity(0);
-    this.componentFactory = new ComponentFactory();
     this.fpsQueue = [];
   }
 
@@ -70,7 +69,7 @@ export class Engine {
     parent.addChild(entity);
 
     initializeFromJSON(prototype, entity);
-    entity.components = prototype.components.map(componentPrototype => this.componentFactory.createFromPrototype(componentPrototype));
+    entity.components = prototype.components.map(componentPrototype => ComponentFactory.createFromPrototype(componentPrototype));
     entity.components.forEach(c => c.parent = entity);
     entity.components.forEach(c => c.initialize(this, template));
 
