@@ -1,6 +1,3 @@
-import { Entity } from "./Entity.js";
-import { Engine } from "./Engine.js";
-import { TiledTemplate } from "./Tiled/TiledTemplate.js";
 import { Component } from "./Component.js";
 
 export class ComponentFactory {
@@ -11,6 +8,7 @@ export class ComponentFactory {
   public static addComponentType(name: string, createFunctor:  new () => Component): void {
     ComponentFactory.typeMap ??= new Map<string,  new () => Component>;
     ComponentFactory.typeMap.set(name, createFunctor);
+    console.log(name);
   }
 
   public static create(name: string): Component {

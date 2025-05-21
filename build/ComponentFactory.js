@@ -5,6 +5,7 @@ export class ComponentFactory {
     static addComponentType(name, createFunctor) {
         ComponentFactory.typeMap ??= new Map;
         ComponentFactory.typeMap.set(name, createFunctor);
+        console.log(name);
     }
     static create(name) {
         const Constructor = ComponentFactory.typeMap.get(name);

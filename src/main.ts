@@ -1,5 +1,5 @@
 import { AssetLoader } from "./AssetLoader.js";
-import { RenderModule, DebugGizmoComponent } from "./RenderModule.js";
+import { RenderModule } from "./RenderModule.js";
 import { RenderingContext } from "./RenderingContext.js";
 import { Engine } from "./Engine.js";
 import { EntityPrototype } from "./EntityPrototype.js";
@@ -14,8 +14,12 @@ import { Animation } from "./Animation.js";
 import { AnimationModule } from "./AnimationModule.js";
 import { Camera } from "./Camera.js";
 import { UpdateModule } from "./UpdateModule.js";
+import { RenderLayers } from "./RenderLayers.js";
+import "./SpriteComponent.js";
+import "./PlayerControllerComponent.js";
 
 export function Run() {
+  console.log("Starting Engine");
   loadJSON("data/", "manifest.json")
     .then(asset => {
       let manifest = asset.asset as string[];
@@ -37,11 +41,9 @@ export function Run() {
 
         engine.debugMode = true;
 
-        let renderLayers = [ "ground", "objects", "lighting", "overlay", "gui" ];
-
         engine.addModule(new UpdateModule());
         engine.addModule(new AnimationModule());
-        let renderModule = new RenderModule(renderLayers);
+        let renderModule = new RenderModule();
         engine.addModule(renderModule);
 
         let tilemap = engine.assetMap.get("assets/test-room.tmj").asset as TiledTilemap;
@@ -56,7 +58,7 @@ export function Run() {
             prototype.components.push({ type: "Tilemap", tilemap: tilemap, layer: layer });
             let newEntity = engine.createEntityFromPrototype(engine.sceneRoot, prototype, new TiledTemplate());
             let tilemapComponent = newEntity.getComponent(TilemapComponent);
-            if (tilemapComponent != null) tilemapComponent.renderLayer = renderLayers.indexOf(layer.class);
+            if (tilemapComponent != null) tilemapComponent.renderLayer = RenderLayers[layer.class];
           }
         }
 
@@ -64,6 +66,7 @@ export function Run() {
         let camera = new Camera();
         renderModule.setCamera(camera);
 
+        console.log(engine.sceneRoot);
         engine.run(new RenderingContext(canvas, ctx), () => {
           
         });

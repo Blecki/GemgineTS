@@ -5,6 +5,7 @@ import { Entity } from "./Entity.js";
 import { Camera } from "./Camera.js";
 import { Engine } from "./Engine.js";
 import { GameTime } from "./GameTime.js";
+import { RenderLayers } from "./RenderLayers.js";
 
 export class RenderComponent extends Component {
   public renderLayer: number;
@@ -29,17 +30,15 @@ export class RenderModule extends Module {
   private readonly renderables: RenderableComponent[] = [];
   public camera: Camera;
   public fpsQueue: number[];
-  public renderLayers: string[];
 
   
   private isRenderable(object: any): object is RenderableComponent {
     return 'render' in object;
   }
 
-  constructor(renderLayers: string[]) {
+  constructor() {
     super();
     this.fpsQueue = [];
-    this.renderLayers = renderLayers;
   }
 
   entityCreated(entity: Entity) {
@@ -54,10 +53,14 @@ export class RenderModule extends Module {
     context.context.globalAlpha = 1;
     context.context.globalCompositeOperation = 'source-over';
 
-    for (let layer = 0; layer < this.renderLayers.length; layer += 1) {
-      for (let renderable of this.renderables)
-        if (renderable.renderLayer == layer) renderable.render(context);
-      context.flush(this.camera);
+    for (let layer in RenderLayers) {
+      let layerNum = Number(RenderLayers[layer]);
+      if (!Number.isNaN(layerNum)) {
+        for (let renderable of this.renderables) {
+          if (renderable.renderLayer == layerNum) renderable.render(context);
+        }
+        context.flush(this.camera);
+      }
     }
 
     this.fpsQueue.push(GameTime.getDeltaTime());

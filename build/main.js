@@ -14,7 +14,11 @@ import { Animation } from "./Animation.js";
 import { AnimationModule } from "./AnimationModule.js";
 import { Camera } from "./Camera.js";
 import { UpdateModule } from "./UpdateModule.js";
+import { RenderLayers } from "./RenderLayers.js";
+import "./SpriteComponent.js";
+import "./PlayerControllerComponent.js";
 export function Run() {
+    console.log("Starting Engine");
     loadJSON("data/", "manifest.json")
         .then(asset => {
         let manifest = asset.asset;
@@ -32,10 +36,9 @@ export function Run() {
         loader.loadAssets("data/", manifest, (assets) => {
             const engine = new Engine(assets);
             engine.debugMode = true;
-            let renderLayers = ["ground", "objects", "lighting", "overlay", "gui"];
             engine.addModule(new UpdateModule());
             engine.addModule(new AnimationModule());
-            let renderModule = new RenderModule(renderLayers);
+            let renderModule = new RenderModule();
             engine.addModule(renderModule);
             let tilemap = engine.assetMap.get("assets/test-room.tmj").asset;
             for (let layer of tilemap.layers) {
@@ -50,11 +53,12 @@ export function Run() {
                     let newEntity = engine.createEntityFromPrototype(engine.sceneRoot, prototype, new TiledTemplate());
                     let tilemapComponent = newEntity.getComponent(TilemapComponent);
                     if (tilemapComponent != null)
-                        tilemapComponent.renderLayer = renderLayers.indexOf(layer.class);
+                        tilemapComponent.renderLayer = RenderLayers[layer.class];
                 }
             }
             let camera = new Camera();
             renderModule.setCamera(camera);
+            console.log(engine.sceneRoot);
             engine.run(new RenderingContext(canvas, ctx), () => {
             });
         });
