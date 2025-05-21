@@ -35,6 +35,7 @@ var __runInitializers = (this && this.__runInitializers) || function (thisArg, i
 import { Sprite } from "./Sprite.js";
 import { RenderComponent } from "./RenderModule.js";
 import { componentType } from "./Component.js";
+import { RenderLayers } from "./RenderLayers.js";
 let SpriteComponent = (() => {
     let _classDecorators = [componentType("Sprite")];
     let _classDescriptor;
@@ -56,7 +57,7 @@ let SpriteComponent = (() => {
         }
         initialize(engine, template) {
             this.sprite = new Sprite(template.tileset.tilesetAsset.imageAsset, template.tileset.tilesetAsset.getTileRect(template.object.gid - 1));
-            this.renderLayer = 1;
+            this.renderLayer = RenderLayers.Objects;
         }
     };
     return SpriteComponent = _classThis;

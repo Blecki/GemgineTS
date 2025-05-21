@@ -35,6 +35,7 @@ var __runInitializers = (this && this.__runInitializers) || function (thisArg, i
 import { Component, componentType } from "./Component.js";
 import { Module } from "./Module.js";
 import { GameTime } from "./GameTime.js";
+import { RenderLayers } from "./RenderLayers.js";
 export class RenderComponent extends Component {
     renderLayer;
     render(context) { }
@@ -67,14 +68,12 @@ export class RenderModule extends Module {
     renderables = [];
     camera;
     fpsQueue;
-    renderLayers;
     isRenderable(object) {
         return 'render' in object;
     }
-    constructor(renderLayers) {
+    constructor() {
         super();
         this.fpsQueue = [];
-        this.renderLayers = renderLayers;
     }
     entityCreated(entity) {
         entity.components.forEach(component => {
@@ -86,11 +85,15 @@ export class RenderModule extends Module {
     render(engine, context) {
         context.context.globalAlpha = 1;
         context.context.globalCompositeOperation = 'source-over';
-        for (let layer = 0; layer < this.renderLayers.length; layer += 1) {
-            for (let renderable of this.renderables)
-                if (renderable.renderLayer == layer)
-                    renderable.render(context);
-            context.flush(this.camera);
+        for (let layer in RenderLayers) {
+            let layerNum = Number(RenderLayers[layer]);
+            if (!Number.isNaN(layerNum)) {
+                for (let renderable of this.renderables) {
+                    if (renderable.renderLayer == layerNum)
+                        renderable.render(context);
+                }
+                context.flush(this.camera);
+            }
         }
         this.fpsQueue.push(GameTime.getDeltaTime());
         if (this.fpsQueue.length > 200)

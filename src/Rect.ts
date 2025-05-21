@@ -20,4 +20,17 @@ export class Rect {
     this.width = size.x;
     this.height = size.y;
   }
+
+  public overlaps(other: Rect): boolean {
+    return (
+        this.x < other.x + other.width &&
+        this.x + this.width > other.x &&
+        this.y < other.y + other.height &&
+        this.y + this.height > other.y
+    );
+  }
+
+  public get area(): number {
+    return this.width * this.height;
+  }
 }

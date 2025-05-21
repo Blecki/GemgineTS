@@ -62,17 +62,18 @@ export class Input {
 
   check(action: string): boolean {
     let input = this.tryGetRecentInput(action, 500);
-    if (input != null) {
-      this.markHandled(input);
-      return true;
-    }
+    return input != null;
   }
 
   /**
    * Marks a specific input event as handled.
    */
-   markHandled(event: InputEvent): void {
-    event.handled = true;
+   markHandled(action: string): void {
+     for (const ev of this.inputEvents) {
+      if (ev.action === action) {
+        ev.handled = true;
+      }
+    }
   }
 
   /**
