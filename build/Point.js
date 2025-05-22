@@ -5,6 +5,9 @@ export class Point {
         this.x = x;
         this.y = y;
     }
+    copy() {
+        return new Point(this.x, this.y);
+    }
     add(other) {
         return new Point(this.x + other.x, this.y + other.y);
     }

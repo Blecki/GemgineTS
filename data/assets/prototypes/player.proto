@@ -8,6 +8,9 @@
       {
          "type": "SpriteAnimator",
          "animation": "assets/bunny-animation.anim"
+      },
+      {
+         "type": "PlayerController"
       }
    ]
 }

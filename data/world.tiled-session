@@ -8,8 +8,8 @@
         "world"
     ],
     "expandedProjectPaths": [
-        "assets",
         "assets/templates",
+        "assets",
         "."
     ],
     "fileStates": {
@@ -42,11 +42,14 @@
             "scaleInEditor": 1
         },
         "assets/test-room.tmj": {
-            "scale": 3,
-            "selectedLayer": 2,
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 125.33333333333333,
-                "y": 24.166666666666657
+                "x": 113.25,
+                "y": 95.75
             }
         },
         "assets/test-room.tmx": {
@@ -61,8 +64,8 @@
             "scale": 0.75,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 239.99999999999997,
-                "y": 159.3333333333333
+                "x": 239.33333333333331,
+                "y": 159.33333333333331
             }
         },
         "assets/test-room2.tmx": {

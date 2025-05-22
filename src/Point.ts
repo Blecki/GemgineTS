@@ -8,6 +8,10 @@ export class Point {
     this.y = y;
   }
 
+  public copy(): Point {
+    return new Point(this.x, this.y);
+  }
+
   public add(other: Point): Point {
     return new Point(this.x + other.x, this.y + other.y);
   }

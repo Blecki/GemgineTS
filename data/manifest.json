@@ -18,5 +18,9 @@
   "assets/leaf2.png",
   "assets/leaf2.tsj",
   "assets/shadows.png",
-  "assets/shadows.tsj"
+  "assets/shadows.tsj",
+  "assets/templates/player.tj",
+  "assets/templates/spawn.tj",
+  "assets/prototypes/player.proto",
+  "assets/prototypes/spawn.proto"
 ]

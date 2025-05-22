@@ -46,8 +46,12 @@ export class Input {
         return null;
     }
     check(action) {
-        let input = this.tryGetRecentInput(action, 500);
-        return input != null;
+        for (const ev of this.inputEvents) {
+            if (ev.action === action && !ev.handled && ev.pressed) {
+                return true;
+            }
+        }
+        return false;
     }
     /**
      * Marks a specific input event as handled.
