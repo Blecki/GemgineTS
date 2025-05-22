@@ -1,0 +1,24 @@
+{ "object":
+    {
+     "gid":1,
+     "height":24,
+     "id":2,
+     "name":"",
+     "properties":[
+            {
+             "name":"prototype",
+             "type":"string",
+             "value":"assets\/prototypes\/player.proto"
+            }],
+     "rotation":0,
+     "type":"",
+     "visible":true,
+     "width":24
+    },
+ "tileset":
+    {
+     "firstgid":1,
+     "source":"..\/bunny_tiles.tsj"
+    },
+ "type":"template"
+}

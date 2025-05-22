@@ -40,22 +40,12 @@ export function Run() {
             engine.addModule(new AnimationModule());
             let renderModule = new RenderModule();
             engine.addModule(renderModule);
-            let tilemap = engine.assetMap.get("assets/test-room.tmj").asset;
-            for (let layer of tilemap.layers) {
-                if (layer.type == "objectgroup") {
-                    for (let definition of layer.objects)
-                        if (definition.template != null && definition.template != "")
-                            engine.createEntityFromTiledObject(engine.sceneRoot, definition);
+            let spawnedEntities = spawnTilemap(engine, "assets/test-room/tmj");
+            for (let se of spawnedEntities)
+                if (se.name == 'spawn') {
+                    let player = engine.createEntitytFromTiledTemplate(engine.sceneRoot, engine.assetMap.get("assets/templates/player.tj").asset);
+                    player.localPosition = se.localPosition.copy();
                 }
-                if (layer.type == "tilelayer") {
-                    let prototype = new EntityPrototype();
-                    prototype.components.push({ type: "Tilemap", tilemap: tilemap, layer: layer });
-                    let newEntity = engine.createEntityFromPrototype(engine.sceneRoot, prototype, new TiledTemplate());
-                    let tilemapComponent = newEntity.getComponent(TilemapComponent);
-                    if (tilemapComponent != null)
-                        tilemapComponent.renderLayer = RenderLayers[layer.class];
-                }
-            }
             let camera = new Camera();
             renderModule.setCamera(camera);
             console.log(engine.sceneRoot);
@@ -64,5 +54,31 @@ export function Run() {
         });
     })
         .catch(error => console.error("Failed to load asset manifest."));
+}
+function spawnEntities(engine, layer) {
+    let r = [];
+    for (let definition of layer.objects)
+        if (definition.template != null && definition.template != "")
+            r.push(engine.createEntityFromTiledObject(engine.sceneRoot, definition));
+    return r;
+}
+function spawnTilemap(engine, path) {
+    let tilemap = engine.assetMap.get("assets/test-room.tmj").asset;
+    let r = [];
+    for (let layer of tilemap.layers) {
+        if (layer.type == "objectgroup") {
+            r.push(...spawnEntities(engine, layer));
+        }
+        else if (layer.type == "tilelayer") {
+            let prototype = new EntityPrototype();
+            prototype.components.push({ type: "Tilemap", tilemap: tilemap, layer: layer });
+            let newEntity = engine.createEntityFromPrototype(engine.sceneRoot, prototype, new TiledTemplate());
+            let tilemapComponent = newEntity.getComponent(TilemapComponent);
+            if (tilemapComponent != null)
+                tilemapComponent.renderLayer = RenderLayers[layer.class];
+            r.push(newEntity);
+        }
+    }
+    return r;
 }
 //# sourceMappingURL=main.js.map

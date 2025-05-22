@@ -72,7 +72,6 @@ export class Engine {
     entity.components = prototype.components.map(componentPrototype => ComponentFactory.createFromPrototype(componentPrototype));
     entity.components.forEach(c => c.parent = entity);
     entity.components.forEach(c => c.initialize(this, template));
-
     this.modules.forEach(module => module.entityCreated(entity));
 
     return entity;
@@ -93,12 +92,17 @@ export class Engine {
       console.error(`Could not find prototype ${prototypeProperty.value}.`);
       return null;
     }
-    return this.createEntityFromPrototype(parent, prototype.asset, template);    
+    let r = this.createEntityFromPrototype(parent, prototype.asset, template); 
+    if (template.object.name !== null && template.object.name != "")
+      r.name = template.object.name;
+    return r;  
   }
 
   public createEntityFromTiledObject(parent: Entity, object: TiledObject): Entity {
     let r = this.createEntitytFromTiledTemplate(parent, object.templateAsset.asset);
     r.localPosition = new Point(object.x, object.y); // Pass the TiledObject down?
+    if (object.name !== null && object.name != "")
+      r.name = object.name;
     return r;
   }
 }

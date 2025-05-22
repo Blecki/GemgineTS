@@ -6,6 +6,7 @@ import { QuadTree } from "./QuadTree.js";
 export class Entity {
   public ID: number;
   public parent: Entity;
+  public name: string;
   public storageNode: QuadTree;
 
   public localPosition: Point = new Point(0, 0);
