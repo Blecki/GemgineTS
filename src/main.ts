@@ -49,9 +49,10 @@ export function Run() {
         engine.addModule(renderModule);
 
         let spawnedEntities = spawnTilemap(engine, "assets/test-room/tmj");
+        let player: Entity = null;
         for (let se of spawnedEntities)
           if (se.name == 'spawn') {
-            let player = engine.createEntitytFromTiledTemplate(engine.sceneRoot, engine.assetMap.get("assets/templates/player.tj").asset);
+            player = engine.createEntitytFromTiledTemplate(engine.sceneRoot, engine.assetMap.get("assets/templates/player.tj").asset);
             player.localPosition = se.localPosition.copy();
           }
                  
@@ -60,7 +61,7 @@ export function Run() {
 
         console.log(engine.sceneRoot);
         engine.run(new RenderingContext(canvas, ctx), () => {
-          
+          camera.position = player.globalPosition.copy();
         });
       });
     })

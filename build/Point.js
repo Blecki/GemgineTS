@@ -17,5 +17,8 @@ export class Point {
     sub(other) {
         return new Point(this.x - other.x, this.y - other.y);
     }
+    truncate() {
+        return new Point(Math.floor(this.x), Math.floor(this.y));
+    }
 }
 //# sourceMappingURL=Point.js.map

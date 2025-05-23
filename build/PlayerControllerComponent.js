@@ -34,6 +34,7 @@ var __runInitializers = (this && this.__runInitializers) || function (thisArg, i
 };
 import { Component, componentType } from "./Component.js";
 import { Input } from "./Input.js";
+import { GameTime } from "./GameTime.js";
 let PlayerControllerComponent = (() => {
     let _classDecorators = [componentType("PlayerController")];
     let _classDescriptor;
@@ -50,6 +51,7 @@ let PlayerControllerComponent = (() => {
             __runInitializers(_classThis, _classExtraInitializers);
         }
         input;
+        speed = 32;
         initialize(engine, template) {
             this.input = new Input();
             this.input.bind("KeyA", "west");
@@ -60,13 +62,13 @@ let PlayerControllerComponent = (() => {
         }
         update() {
             if (this.input.check("west"))
-                this.parent.localPosition.x -= 1;
+                this.parent.localPosition.x -= (this.speed * GameTime.getDeltaTime());
             if (this.input.check("north"))
-                this.parent.localPosition.y -= 1;
+                this.parent.localPosition.y -= (this.speed * GameTime.getDeltaTime());
             if (this.input.check("south"))
-                this.parent.localPosition.y += 1;
+                this.parent.localPosition.y += (this.speed * GameTime.getDeltaTime());
             if (this.input.check("east"))
-                this.parent.localPosition.x += 1;
+                this.parent.localPosition.x += (this.speed * GameTime.getDeltaTime());
             this.input.cleanup();
         }
     };

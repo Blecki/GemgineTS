@@ -2,10 +2,12 @@ import { Engine } from "./Engine.js";
 import { Component, componentType } from "./Component.js";
 import { Input } from "./Input.js";
 import { TiledTemplate } from "./Tiled/TiledTemplate.js";
+import { GameTime } from "./GameTime.js";
 
 @componentType("PlayerController")
 export class PlayerControllerComponent extends Component {
   private input: Input;
+  private speed: number = 32;
 
   public initialize(engine: Engine, template: TiledTemplate) {
     this.input = new Input();
@@ -17,10 +19,10 @@ export class PlayerControllerComponent extends Component {
   }
 
   public update() {
-    if (this.input.check("west")) this.parent.localPosition.x -= 1;
-    if (this.input.check("north")) this.parent.localPosition.y -= 1;
-    if (this.input.check("south")) this.parent.localPosition.y += 1;
-    if (this.input.check("east")) this.parent.localPosition.x += 1;
+    if (this.input.check("west")) this.parent.localPosition.x -= (this.speed * GameTime.getDeltaTime());
+    if (this.input.check("north")) this.parent.localPosition.y -= (this.speed * GameTime.getDeltaTime());
+    if (this.input.check("south")) this.parent.localPosition.y += (this.speed * GameTime.getDeltaTime());
+    if (this.input.check("east")) this.parent.localPosition.x += (this.speed * GameTime.getDeltaTime());
     this.input.cleanup();
   }
 }
