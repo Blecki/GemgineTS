@@ -17,21 +17,23 @@ export class RenderingContext {
   }
 
   public drawSprite(sprite: Sprite, position: Point) {
+    let integerPosition = position.truncate();
     this.pendingDrawTasks.push((context, camera) => { 
       context.drawImage(sprite.image, 
         sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height,
-        position.x - camera.position.x, 
-        position.y - camera.position.y, 
+        integerPosition.x + camera.drawOffset.x, 
+        integerPosition.y + camera.drawOffset.y, 
         sprite.sourceRect.width, sprite.sourceRect.height); 
     });
   }
   
   public drawImage(image: ImageBitmap | OffscreenCanvas, sourceRect: Rect, position: Point) {
+    let integerPosition = position.truncate();
     this.pendingDrawTasks.push((context, camera) => { 
       context.drawImage(image, 
         sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height,
-        position.x - camera.position.x, 
-        position.y - camera.position.y, 
+        integerPosition.x + camera.drawOffset.x, 
+        integerPosition.y + camera.drawOffset.y, 
         sourceRect.width, sourceRect.height); 
     });
   }
@@ -39,11 +41,13 @@ export class RenderingContext {
   public drawRectangle(rect: Rect, color: string) {
     this.pendingDrawTasks.push((context, camera) => {
       context.fillStyle = color;
-      context.fillRect(rect.x - camera.position.x, rect.y - camera.position.y, rect.width, rect.height);
+      context.fillRect(rect.x + camera.drawOffset.x, rect.y + camera.drawOffset.y, rect.width, rect.height);
     });
   }
   
   public flush(camera: Camera) {
+    let halfOffset = new Point(this.canvas.width / 2, this.canvas.height / 2);
+    camera.drawOffset = camera.position.negate().add(halfOffset).truncate();
     for (let t of this.pendingDrawTasks)
       t(this.context, camera);
     this.pendingDrawTasks = [];

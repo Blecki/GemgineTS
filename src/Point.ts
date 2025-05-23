@@ -23,4 +23,8 @@ export class Point {
   public sub(other: Point): Point {
     return new Point(this.x - other.x, this.y - other.y);
   }
+
+  public truncate(): Point {
+    return new Point(Math.floor(this.x), Math.floor(this.y));
+  }
 }
