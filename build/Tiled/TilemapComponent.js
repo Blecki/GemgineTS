@@ -52,34 +52,46 @@ let TilemapComponent = (() => {
             if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
             __runInitializers(_classThis, _classExtraInitializers);
         }
-        layer;
-        tilemap;
+        layer = undefined;
+        tilemap = undefined;
         cacheState = CacheState.Empty;
-        cachedCanvas;
-        cachedRender;
+        cachedCanvas = undefined;
+        cachedRender = undefined;
         initialize(engine, template) {
-            this.parent.size = new Point(this.layer.width * this.tilemap.tilewidth, this.layer.height * this.tilemap.tileheight);
+            this.parent.size = new Point((this.layer?.width ?? 1) * (this.tilemap?.tilewidth ?? 16), (this.layer?.height ?? 1) * (this.tilemap?.tileheight ?? 16));
         }
         getTile(tilemap, tile) {
+            if (tilemap.tilesets == undefined)
+                return [null, 0];
             for (let i = tilemap.tilesets.length - 1; i >= 0; i--) {
-                if (tile > tilemap.tilesets[i].firstgid)
-                    return [tilemap.tilesets[i], tile - tilemap.tilesets[i].firstgid];
+                if (tile > (tilemap.tilesets[i].firstgid ?? 0))
+                    return [tilemap.tilesets[i], tile - (tilemap.tilesets[i].firstgid ?? 0)];
             }
-            return [tilemap.tilesets[0], tile];
+            return [tilemap?.tilesets[0], tile];
         }
         updateCache() {
+            if (this.layer == undefined || this.tilemap == undefined)
+                return;
             this.cacheState = CacheState.Priming;
-            const canvasDims = new Point(this.layer.width * this.tilemap.tilewidth, this.layer.height * this.tilemap.tileheight);
+            const canvasDims = new Point((this.layer.width ?? 1) * (this.tilemap.tilewidth ?? 16), (this.layer.height ?? 1) * (this.tilemap.tileheight ?? 16));
             this.cachedCanvas = new OffscreenCanvas(canvasDims.x, canvasDims.y);
             let context = this.cachedCanvas.getContext('2d');
-            for (let x = 0; x < this.layer.width; ++x) {
-                for (let y = 0; y < this.layer.height; ++y) {
-                    let cellValue = this.layer.data[(y * this.layer.width) + x];
+            if (context == null)
+                return;
+            for (let x = 0; x < (this.layer.width ?? 1); ++x) {
+                for (let y = 0; y < (this.layer.height ?? 1); ++y) {
+                    let cellValue = 0;
+                    if (this.layer.data != undefined)
+                        cellValue = this.layer.data[(y * (this.layer.width ?? 1)) + x] ?? 0;
                     if (cellValue == 0)
                         continue;
                     let [tileset, tile] = this.getTile(this.tilemap, cellValue);
-                    let cellRect = tileset.tilesetAsset.getTileRect(tile);
-                    context.drawImage(tileset.tilesetAsset.imageAsset, cellRect.x, cellRect.y, cellRect.width, cellRect.height, x * this.tilemap.tilewidth, y * this.tilemap.tileheight, this.tilemap.tilewidth, this.tilemap.tileheight);
+                    let cellRect = tileset?.tilesetAsset?.getTileRect(tile ?? 0);
+                    if (cellRect == null)
+                        continue;
+                    if (tileset?.tilesetAsset?.imageAsset == null)
+                        continue;
+                    context.drawImage(tileset.tilesetAsset?.imageAsset, cellRect.x, cellRect.y, cellRect.width, cellRect.height, x * (this.tilemap.tilewidth ?? 16), y * (this.tilemap.tileheight ?? 16), (this.tilemap.tilewidth ?? 16), (this.tilemap.tileheight ?? 16));
                 }
             }
             createImageBitmap(this.cachedCanvas).then(bitmap => {
@@ -91,12 +103,12 @@ let TilemapComponent = (() => {
             if (this.cacheState == CacheState.Empty)
                 this.updateCache();
             let basePoint = this.parent.globalPosition;
-            basePoint.x += this.layer.x;
-            basePoint.y += this.layer.y;
-            if (this.cacheState == CacheState.Priming)
+            basePoint.x += this.layer?.x ?? 0;
+            basePoint.y += this.layer?.y ?? 0;
+            if (this.cacheState == CacheState.Priming && this.cachedCanvas != null)
                 context.drawImage(this.cachedCanvas, new Rect(0, 0, this.cachedCanvas.width, this.cachedCanvas.height), basePoint);
-            else if (this.cacheState == CacheState.Ready)
-                context.drawImage(this.cachedRender, new Rect(0, 0, this.cachedCanvas.width, this.cachedCanvas.height), basePoint);
+            else if (this.cacheState == CacheState.Ready && this.cachedRender != null)
+                context.drawImage(this.cachedRender, new Rect(0, 0, this.cachedRender.width, this.cachedRender.height), basePoint);
         }
     };
     return TilemapComponent = _classThis;

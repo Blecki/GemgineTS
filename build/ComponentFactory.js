@@ -1,4 +1,5 @@
 import { Component } from "./Component.js";
+import { initializeFromJSON } from "./JsonConverter.js";
 export class ComponentFactory {
     static typeMap;
     constructor() { }
@@ -7,16 +8,15 @@ export class ComponentFactory {
         ComponentFactory.typeMap.set(name, createFunctor);
         console.log(name);
     }
-    static create(name) {
+    static create(name, parent) {
         const Constructor = ComponentFactory.typeMap.get(name);
         if (Constructor)
-            return new Constructor();
-        return new Component();
+            return new Constructor(parent);
+        return new Component(parent);
     }
-    static createFromPrototype(prototype) {
-        let component = ComponentFactory.create(prototype.type);
-        for (let property in prototype)
-            component[property] = prototype[property];
+    static createFromPrototype(prototype, parent) {
+        let component = ComponentFactory.create(prototype.type, parent);
+        initializeFromJSON(prototype, component);
         return component;
     }
 }

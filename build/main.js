@@ -14,9 +14,10 @@ import { Animation } from "./Animation.js";
 import { AnimationModule } from "./AnimationModule.js";
 import { Camera } from "./Camera.js";
 import { UpdateModule } from "./UpdateModule.js";
-import { RenderLayers } from "./RenderLayers.js";
+import { RenderLayersMapping } from "./RenderLayers.js";
 import "./SpriteComponent.js";
 import "./PlayerControllerComponent.js";
+import { Point } from "./Point.js";
 export function Run() {
     console.log("Starting Engine");
     loadJSON("data/", "manifest.json")
@@ -25,6 +26,10 @@ export function Run() {
         const canvas = document.getElementById('myCanvas');
         canvas.style.imageRendering = 'pixelated';
         const ctx = canvas.getContext('2d');
+        if (ctx == null) {
+            console.error("Failed to get context");
+            return;
+        }
         ctx.imageSmoothingEnabled = false;
         const loader = new AssetLoader();
         loader.addLoader("tmj", loadAndConvertJSON(() => new TiledTilemap()));
@@ -44,14 +49,15 @@ export function Run() {
             let player = null;
             for (let se of spawnedEntities)
                 if (se.name == 'spawn') {
-                    player = engine.createEntitytFromTiledTemplate(engine.sceneRoot, engine.assetMap.get("assets/templates/player.tj").asset);
-                    player.localPosition = se.localPosition.copy();
+                    player = engine.createEntitytFromTiledTemplate(engine.sceneRoot, engine.getAsset("assets/templates/player.tj").asset);
+                    if (player)
+                        player.localPosition = se.localPosition.copy();
                 }
             let camera = new Camera();
             renderModule.setCamera(camera);
             console.log(engine.sceneRoot);
             engine.run(new RenderingContext(canvas, ctx), () => {
-                camera.position = player.globalPosition.copy();
+                camera.position = player?.globalPosition?.copy() ?? new Point(0, 0);
             });
         });
     })
@@ -59,28 +65,33 @@ export function Run() {
 }
 function spawnEntities(engine, layer) {
     let r = [];
-    for (let definition of layer.objects)
-        if (definition.template != null && definition.template != "")
-            r.push(engine.createEntityFromTiledObject(engine.sceneRoot, definition));
+    if (layer.objects)
+        for (let definition of layer.objects)
+            if (definition.template != null && definition.template != "") {
+                let newEntity = engine.createEntityFromTiledObject(engine.sceneRoot, definition);
+                if (newEntity)
+                    r.push(newEntity);
+            }
     return r;
 }
 function spawnTilemap(engine, path) {
-    let tilemap = engine.assetMap.get("assets/test-room.tmj").asset;
+    let tilemap = engine.getAsset("assets/test-room.tmj").asset;
     let r = [];
-    for (let layer of tilemap.layers) {
-        if (layer.type == "objectgroup") {
-            r.push(...spawnEntities(engine, layer));
+    if (tilemap.layers)
+        for (let layer of tilemap.layers) {
+            if (layer.type == "objectgroup") {
+                r.push(...spawnEntities(engine, layer));
+            }
+            else if (layer.type == "tilelayer") {
+                let prototype = new EntityPrototype();
+                prototype.components.push({ type: "Tilemap", tilemap: tilemap, layer: layer });
+                let newEntity = engine.createEntityFromPrototype(engine.sceneRoot, prototype, new TiledTemplate());
+                let tilemapComponent = newEntity.getComponent(TilemapComponent);
+                if (tilemapComponent != null && layer.class != undefined)
+                    tilemapComponent.renderLayer = RenderLayersMapping[layer.class];
+                r.push(newEntity);
+            }
         }
-        else if (layer.type == "tilelayer") {
-            let prototype = new EntityPrototype();
-            prototype.components.push({ type: "Tilemap", tilemap: tilemap, layer: layer });
-            let newEntity = engine.createEntityFromPrototype(engine.sceneRoot, prototype, new TiledTemplate());
-            let tilemapComponent = newEntity.getComponent(TilemapComponent);
-            if (tilemapComponent != null)
-                tilemapComponent.renderLayer = RenderLayers[layer.class];
-            r.push(newEntity);
-        }
-    }
     return r;
 }
 //# sourceMappingURL=main.js.map

@@ -50,7 +50,7 @@ let PlayerControllerComponent = (() => {
             if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
             __runInitializers(_classThis, _classExtraInitializers);
         }
-        input;
+        input = null;
         speed = 32;
         initialize(engine, template) {
             this.input = new Input();
@@ -61,15 +61,15 @@ let PlayerControllerComponent = (() => {
             this.input.initialize();
         }
         update() {
-            if (this.input.check("west"))
+            if (this.input?.check("west"))
                 this.parent.localPosition.x -= (this.speed * GameTime.getDeltaTime());
-            if (this.input.check("north"))
+            if (this.input?.check("north"))
                 this.parent.localPosition.y -= (this.speed * GameTime.getDeltaTime());
-            if (this.input.check("south"))
+            if (this.input?.check("south"))
                 this.parent.localPosition.y += (this.speed * GameTime.getDeltaTime());
-            if (this.input.check("east"))
+            if (this.input?.check("east"))
                 this.parent.localPosition.x += (this.speed * GameTime.getDeltaTime());
-            this.input.cleanup();
+            this.input?.cleanup();
         }
     };
     return PlayerControllerComponent = _classThis;

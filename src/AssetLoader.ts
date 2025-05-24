@@ -24,7 +24,7 @@ export class AssetLoader {
     let extension = this.getFileExtension(path);
 
     if (this.loaders.has(extension))
-      return this.loaders.get(extension)(basePath, path);
+      return this.loaders.get(extension)?.(basePath, path) ?? Promise.resolve(new AssetReference(path, null));
     else
     {
       console.error(`Unknown asset type: ${extension}`);

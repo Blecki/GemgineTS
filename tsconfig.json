@@ -4,7 +4,8 @@
     "module": "ES2022",
     "outDir": "build",
     "sourceMap": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "strict": true
   },
   "include": [
     "src"

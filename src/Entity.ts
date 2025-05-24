@@ -5,9 +5,9 @@ import { QuadTree } from "./QuadTree.js";
 
 export class Entity {
   public ID: number;
-  public parent: Entity;
-  public name: string;
-  public storageNode: QuadTree;
+  public parent: Entity | null;
+  public name: string = "unnamed";
+  public storageNode: QuadTree | null = null;
 
   public localPosition: Point = new Point(0, 0);
   public get globalPosition(): Point {
@@ -43,7 +43,7 @@ export class Entity {
     this.children.push(other);
   }
 
-  public getComponent<T>(t: new () => T): T | undefined {
+  public getComponent<T>(t: new (parent: Entity) => T): T | undefined {
     return this.components.find((component) => component instanceof t) as T;
   }
 }

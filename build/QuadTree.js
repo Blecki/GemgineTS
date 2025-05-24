@@ -24,8 +24,9 @@ export class QuadTree {
             }
             else {
                 this.subdivide();
-                for (let leaf of this.leaves)
-                    leaf.insert(point);
+                if (this.leaves != null)
+                    for (let leaf of this.leaves)
+                        leaf.insert(point);
             }
         }
     }

@@ -5,26 +5,26 @@ import pathCombine from "../PathCombine.js";
 import { Point } from "../Point.js";
 
 export class TiledProperty {
-  public name: string;
-  public type: string;
-  public value: string;
+  public name: string | undefined = undefined;
+  public type: string | undefined = undefined;
+  public value: string | undefined = undefined;
 }
 
 export class TiledObject {
-  public gid: number;
-  public height: number;
-  public id: number;
-  public name: string;
-  public polygon: Point[];
-  public properties: TiledProperty[];
-  public rotation: number;
-  public template: string;
-  public type: string;
-  public visible: boolean;
-  public width: number;
-  public x: number;
-  public y: number;
-  public templateAsset: AssetReference;
+  public gid: number | undefined = undefined;
+  public height: number | undefined = undefined;
+  public id: number | undefined = undefined;
+  public name: string | undefined = undefined;
+  public polygon: Point[] | undefined = undefined;
+  public properties: TiledProperty[] | undefined = undefined;
+  public rotation: number | undefined = undefined;
+  public template: string | undefined = undefined;
+  public type: string | undefined = undefined;
+  public visible: boolean | undefined = undefined;
+  public width: number | undefined = undefined;
+  public x: number | undefined = undefined;
+  public y: number | undefined = undefined;
+  public templateAsset: AssetReference | undefined = undefined;
 
   public resolveDependencies(self: AssetReference, engine: Engine) {
     if (this.template != null && this.template != "")

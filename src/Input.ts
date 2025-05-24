@@ -14,7 +14,7 @@ export class Input {
 
 
   initialize(): void {
-    window.addEventListener('keydown', function(e) {
+    window.addEventListener('keydown', function(this: Input, e: KeyboardEvent) {
       const action = this.actionMap[e.code];
       if (!action) return;
 
@@ -31,7 +31,7 @@ export class Input {
       }
     }.bind(this));
 
-    window.addEventListener('keyup', function(e) {
+    window.addEventListener('keyup', function(this: Input, e: KeyboardEvent) {
       const action = this.actionMap[e.code];
       if (!action) return;
 
@@ -88,7 +88,7 @@ export class Input {
     for (let i = this.inputEvents.length - 1; i >= 0; i--) {
       const ev = this.inputEvents[i];
       if (ev.pressed) continue;
-      const eventAge = now - ev.upTime;
+      const eventAge = now - (ev.upTime ?? 0);
       if (eventAge > this.maxHistoryTime) {
         this.inputEvents.splice(i, 1);
       }

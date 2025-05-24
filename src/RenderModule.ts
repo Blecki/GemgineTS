@@ -8,7 +8,7 @@ import { GameTime } from "./GameTime.js";
 import { RenderLayers } from "./RenderLayers.js";
 
 export class RenderComponent extends Component {
-  public renderLayer: number;
+  public renderLayer: number = RenderLayers.Ground;
   public render(context: RenderingContext):void { /* Default implementation */ }
 }
 
@@ -28,7 +28,7 @@ export class DebugGizmoComponent extends RenderComponent {
 
 export class RenderModule extends Module {
   private readonly renderables: RenderableComponent[] = [];
-  public camera: Camera;
+  public camera: Camera | null = null;
   public fpsQueue: number[];
 
   
@@ -50,6 +50,8 @@ export class RenderModule extends Module {
   }
 
   render(engine: Engine, context: RenderingContext) {
+    if (this.camera == null) return;
+
     context.context.globalAlpha = 1;
     context.context.globalCompositeOperation = 'source-over';
 

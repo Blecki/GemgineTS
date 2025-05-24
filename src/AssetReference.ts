@@ -13,16 +13,17 @@ export class AssetReference {
     this.asset = asset;
   }
 
-  public directory() {
+  public directory(): string {
     const separator = this.path.lastIndexOf('/');
 
     if (separator === -1) {
       return ""; 
     }
+
     return this.path.substring(0, separator + 1);
   }
 
-  public resolveDependencies(engine: Engine) {
+  public resolveDependencies(engine: Engine): void {
     if (this.asset !== null && this.asset !== undefined && typeof(this.asset.resolveDependencies) === 'function')
       this.asset.resolveDependencies(this, engine);
   }

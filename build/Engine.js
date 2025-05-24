@@ -1,4 +1,5 @@
 import { Entity } from "./Entity.js";
+import { AssetReference } from "./AssetReference.js";
 import { allocateEntityID } from "./AllocateEntityID.js";
 import { ComponentFactory } from "./ComponentFactory.js";
 import { Point } from "./Point.js";
@@ -17,6 +18,9 @@ export class Engine {
         }
         this.sceneRoot = new Entity(0);
         this.fpsQueue = [];
+    }
+    getAsset(path) {
+        return this.assetMap?.get(path) ?? new AssetReference(path, null);
     }
     update() {
         let start = performance.now();
@@ -52,37 +56,41 @@ export class Engine {
         let entity = new Entity(resultID);
         parent.addChild(entity);
         initializeFromJSON(prototype, entity);
-        entity.components = prototype.components.map(componentPrototype => ComponentFactory.createFromPrototype(componentPrototype));
+        entity.components = prototype.components.map(componentPrototype => ComponentFactory.createFromPrototype(componentPrototype, entity));
         entity.components.forEach(c => c.parent = entity);
         entity.components.forEach(c => c.initialize(this, template));
         this.modules.forEach(module => module.entityCreated(entity));
         return entity;
     }
     createEntitytFromTiledTemplate(parent, template) {
-        if (template.object.properties == undefined) {
+        if (template.object?.properties == undefined) {
             console.error("Can't create entity from template without a prototype.");
             return null;
         }
         let prototypeProperty = template.object.properties.find(p => p.name == 'prototype');
-        if (prototypeProperty == undefined) {
+        if (prototypeProperty?.value == undefined) {
             console.error("Can't create entity from template without a prototype.");
             return null;
         }
-        let prototype = this.assetMap.get(prototypeProperty.value);
+        let prototype = this.getAsset(prototypeProperty.value);
         if (prototype == undefined) {
             console.error(`Could not find prototype ${prototypeProperty.value}.`);
             return null;
         }
         let r = this.createEntityFromPrototype(parent, prototype.asset, template);
-        if (template.object.name !== null && template.object.name != "")
+        if (template.object.name != undefined && template.object.name !== null && template.object.name != "")
             r.name = template.object.name;
         return r;
     }
     createEntityFromTiledObject(parent, object) {
+        if (object.templateAsset == undefined)
+            return null;
         let r = this.createEntitytFromTiledTemplate(parent, object.templateAsset.asset);
-        r.localPosition = new Point(object.x, object.y); // Pass the TiledObject down?
-        if (object.name !== null && object.name != "")
-            r.name = object.name;
+        if (r != null) {
+            r.localPosition = new Point(object.x ?? 0, object.y ?? 0); // Pass the TiledObject down?
+            if (object.name !== undefined && object.name != "")
+                r.name = object.name;
+        }
         return r;
     }
 }

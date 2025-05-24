@@ -53,6 +53,9 @@ let Component = (() => {
             __runInitializers(_classThis, _classExtraInitializers);
         }
         parent;
+        constructor(parent) {
+            this.parent = parent;
+        }
         initialize(engine, template) { }
     };
     return Component = _classThis;

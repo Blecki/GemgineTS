@@ -72,7 +72,7 @@ export class Input {
             const ev = this.inputEvents[i];
             if (ev.pressed)
                 continue;
-            const eventAge = now - ev.upTime;
+            const eventAge = now - (ev.upTime ?? 0);
             if (eventAge > this.maxHistoryTime) {
                 this.inputEvents.splice(i, 1);
             }
