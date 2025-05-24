@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{EF430647-C855-4419-9A65-7887C48F2DA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManifestGenerator", "tools\ManifestGenerator\ManifestGenerator.csproj", "{B23BB7ED-04D6-427F-9659-5B758C215324}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B23BB7ED-04D6-427F-9659-5B758C215324}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B23BB7ED-04D6-427F-9659-5B758C215324}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B23BB7ED-04D6-427F-9659-5B758C215324}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B23BB7ED-04D6-427F-9659-5B758C215324}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B23BB7ED-04D6-427F-9659-5B758C215324} = {EF430647-C855-4419-9A65-7887C48F2DA2}
+	EndGlobalSection
+EndGlobal

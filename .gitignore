@@ -1,1 +1,8 @@
-data/world.tild-session
+data/world.tiled-session
+
+[Dd]ebug/
+[Rr]elease/
+x64/
+[Bb]in/
+[Oo]bj/
+.vscode/
