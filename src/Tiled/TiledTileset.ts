@@ -6,15 +6,15 @@ import { initializeFromJSON } from "../JsonConverter.js";
 import { TiledObject } from "./TiledObject.js";
 
 export class TiledObjectGroup {
-  public draworder: string;
-  public id: number;
-  public name: string;
-  public objects: TiledObject[];
-  public opacity: number;
-  public type: string;
-  public visible: boolean;
-  public x: number;
-  public y: number;
+  public draworder: string | undefined = undefined;
+  public id: number | undefined = undefined;
+  public name: string | undefined = undefined;
+  public objects: TiledObject[] | undefined = undefined;
+  public opacity: number | undefined = undefined;
+  public type: string | undefined = undefined;
+  public visible: boolean | undefined = undefined;
+  public x: number | undefined = undefined;
+  public y: number | undefined = undefined;
 
   public resolveDependencies(self: AssetReference, engine: Engine) {
     if (this.objects != undefined) {
@@ -25,8 +25,8 @@ export class TiledObjectGroup {
 }
 
 export class TiledTile {
-  public id: number;
-  public objectgroup: TiledObjectGroup;
+  public id: number | undefined = undefined;
+  public objectgroup: TiledObjectGroup | undefined = undefined;
 
   public resolveDependencies(self: AssetReference, engine: Engine) {
     if (this.objectgroup != undefined) {
@@ -38,24 +38,25 @@ export class TiledTile {
 }
 
 export class TiledTileset {
-  public columns: number;
-  public image: string;
-  public imageheight: number;
-  public imagewidth: number;
-  public margin: number;
-  public name: string;
-  public spacing: number;
-  public tilecount: number;
-  public tiledversion: string;
-  public tileheight: number;
-  public tiles: TiledTile[];
-  public tilewidth: number;
-  public type: string;
-  public version: string;
-  public imageAsset: ImageBitmap;
+  public columns: number | undefined = undefined;
+  public image: string | undefined = undefined;
+  public imageheight: number | undefined = undefined;
+  public imagewidth: number | undefined = undefined;
+  public margin: number | undefined = undefined;
+  public name: string | undefined = undefined;
+  public spacing: number | undefined = undefined;
+  public tilecount: number | undefined = undefined;
+  public tiledversion: string | undefined = undefined;
+  public tileheight: number | undefined = undefined;
+  public tiles: TiledTile[] | undefined = undefined;
+  public tilewidth: number | undefined = undefined;
+  public type: string | undefined = undefined;
+  public version: string | undefined = undefined;
+  public imageAsset: ImageBitmap | undefined = undefined;
 
   public resolveDependencies(self: AssetReference, engine: Engine) {
-    this.imageAsset = engine.assetMap.get(pathCombine(self.directory(), this.image)).asset as ImageBitmap;
+    if (this.image != undefined) 
+      this.imageAsset = engine.getAsset(pathCombine(self.directory(), this.image)).asset as ImageBitmap;
     if (this.tiles != undefined) {
       this.tiles = this.tiles.map(t => { let n = new TiledTile(); initializeFromJSON(t, n); return n; });
       this.tiles.forEach(t => t.resolveDependencies(self, engine));
@@ -63,6 +64,10 @@ export class TiledTileset {
   }
 
   public getTileRect(index: number): Rect {
-    return new Rect((index % this.columns) * this.tilewidth, Math.floor(index / this.columns) * this.tileheight, this.tilewidth, this.tileheight);
+    return new Rect(
+      (index % (this.columns ?? 1)) * (this.tilewidth ?? 16), 
+      Math.floor(index / (this.columns ?? 1)) * (this.tileheight ?? 16), 
+      this.tilewidth ?? 16, 
+      this.tileheight ?? 16);
   }
 }

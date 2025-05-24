@@ -7,4 +7,11 @@ export var RenderLayers;
     RenderLayers[RenderLayers["GUI"] = 4] = "GUI";
 })(RenderLayers || (RenderLayers = {}));
 ;
+export const RenderLayersMapping = {
+    "Ground": RenderLayers.Ground,
+    "Objects": RenderLayers.Objects,
+    "Lighting": RenderLayers.Lighting,
+    "Overlay": RenderLayers.Overlay,
+    "GUI": RenderLayers.GUI
+};
 //# sourceMappingURL=RenderLayers.js.map

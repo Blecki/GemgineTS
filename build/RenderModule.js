@@ -37,7 +37,7 @@ import { Module } from "./Module.js";
 import { GameTime } from "./GameTime.js";
 import { RenderLayers } from "./RenderLayers.js";
 export class RenderComponent extends Component {
-    renderLayer;
+    renderLayer = RenderLayers.Ground;
     render(context) { }
 }
 let DebugGizmoComponent = (() => {
@@ -66,7 +66,7 @@ let DebugGizmoComponent = (() => {
 export { DebugGizmoComponent };
 export class RenderModule extends Module {
     renderables = [];
-    camera;
+    camera = null;
     fpsQueue;
     isRenderable(object) {
         return 'render' in object;
@@ -83,6 +83,8 @@ export class RenderModule extends Module {
         });
     }
     render(engine, context) {
+        if (this.camera == null)
+            return;
         context.context.globalAlpha = 1;
         context.context.globalCompositeOperation = 'source-over';
         for (let layer in RenderLayers) {

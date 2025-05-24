@@ -2,10 +2,10 @@ import { initializeFromJSON } from "../JsonConverter.js";
 import { TiledObject } from "./TiledObject.js";
 import { TiledInlineTileset } from "./TiledTilemap.js";
 export class TiledTemplate {
-    object;
-    tileset;
-    type;
-    basePath;
+    object = undefined;
+    tileset = undefined;
+    type = undefined;
+    basePath = undefined;
     resolveDependencies(self, engine) {
         this.basePath = self.directory();
         if (this.tileset != undefined) {

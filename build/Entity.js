@@ -3,8 +3,8 @@ import { Rect } from "./Rect.js";
 export class Entity {
     ID;
     parent;
-    name;
-    storageNode;
+    name = "unnamed";
+    storageNode = null;
     localPosition = new Point(0, 0);
     get globalPosition() {
         if (!this.parent)

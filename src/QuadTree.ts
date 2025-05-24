@@ -5,7 +5,7 @@ export class QuadTree {
   public readonly boundary: Rect;
   public readonly leafLimit: number;
   public readonly minimumLeafArea: number;
-  public leaves: QuadTree[];
+  public leaves: QuadTree[] | null;
   private items: Entity[] = [];
 
   constructor(boundary: Rect, leafLimit: number, minimumLeafArea: number, items: Entity[]) {
@@ -28,7 +28,9 @@ export class QuadTree {
       }
       else {
         this.subdivide();
-        for (let leaf of this.leaves) leaf.insert(point);
+        if (this.leaves != null) 
+          for (let leaf of (this.leaves as QuadTree[])) 
+            leaf.insert(point);
       }
     }
   }
@@ -48,6 +50,4 @@ export class QuadTree {
 
     this.items = [];
   }
-
-
 }

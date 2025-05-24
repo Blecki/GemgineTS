@@ -35,6 +35,7 @@ var __runInitializers = (this && this.__runInitializers) || function (thisArg, i
 import { SpriteComponent } from "./SpriteComponent.js";
 import { Component, componentType } from "./Component.js";
 import { GameTime } from "./GameTime.js";
+import { Animation } from "./Animation.js";
 import { Sprite } from "./Sprite.js";
 import { Rect } from "./Rect.js";
 let SpriteAnimatorComponent = (() => {
@@ -52,19 +53,26 @@ let SpriteAnimatorComponent = (() => {
             if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
             __runInitializers(_classThis, _classExtraInitializers);
         }
-        animation;
-        sprite;
-        animationAsset;
-        currentPlace;
+        constructor(parent) {
+            super(parent);
+        }
+        animation = null;
+        sprite = undefined;
+        animationAsset = null;
+        currentPlace = 0;
         initialize(engine, template) {
-            this.animationAsset = engine.assetMap.get(this.animation).asset;
+            this.animationAsset = engine.assetMap.get(this.animation ?? "")?.asset ?? new Animation();
             this.sprite = this.parent.getComponent(SpriteComponent);
             this.currentPlace = 0;
         }
         animate() {
-            this.currentPlace += GameTime.getDeltaTime();
-            let currentFrame = Math.floor(this.currentPlace / this.animationAsset.frametime) % this.animationAsset.frames.length;
-            this.sprite.sprite = new Sprite(this.animationAsset.spriteSheetAsset, new Rect(this.animationAsset.spriteWidth * this.animationAsset.frames[currentFrame].x, this.animationAsset.spriteHeight * this.animationAsset.frames[currentFrame].y, this.animationAsset.spriteWidth, this.animationAsset.spriteHeight));
+            if (this.sprite != null && this.animationAsset != null) {
+                this.currentPlace += GameTime.getDeltaTime();
+                let currentFrame = Math.floor(this.currentPlace / this.animationAsset.frametime) % this.animationAsset.frames.length;
+                if (this.animationAsset.spriteSheetAsset != null) {
+                    this.sprite.sprite = new Sprite(this.animationAsset.spriteSheetAsset, new Rect(this.animationAsset.spriteWidth * this.animationAsset.frames[currentFrame].x, this.animationAsset.spriteHeight * this.animationAsset.frames[currentFrame].y, this.animationAsset.spriteWidth, this.animationAsset.spriteHeight));
+                }
+            }
         }
     };
     return SpriteAnimatorComponent = _classThis;

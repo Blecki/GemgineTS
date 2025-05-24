@@ -4,7 +4,7 @@ import { TiledTemplate } from "./Tiled/TiledTemplate.js";
 import { ComponentFactory } from "./ComponentFactory.js";
 
 export function componentType(name: string) {
-  return function(ctr: new () => Component) {
+  return function(ctr: new (parent: Entity) => Component) {
     ComponentFactory.addComponentType(name, ctr);
   };
 }
@@ -12,6 +12,10 @@ export function componentType(name: string) {
 @componentType("Component")
 export class Component {
   public parent: Entity;
+
+  constructor(parent: Entity) {
+    this.parent = parent;
+  }
 
   public initialize(engine: Engine, template: TiledTemplate) { /* Default implementation */ }
 }
