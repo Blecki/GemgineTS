@@ -5,6 +5,19 @@ function create(type) {
 export function initializeFromJSON(source, destination) {
     for (let property in source)
         destination[property] = source[property];
+    return destination;
+}
+export function resolveInlineReference(baseReference, engine, source, type) {
+    if (source == undefined)
+        return undefined;
+    if (typeof source === "string")
+        return engine.getAsset(source).asset;
+    else {
+        let r = initializeFromJSON(source, new type());
+        if ('resolveDependencies' in r)
+            r.resolveDependencies(baseReference, engine);
+        return r;
+    }
 }
 export function loadAndConvertJSON(creationFunction) {
     return (basePath, path) => {

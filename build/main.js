@@ -10,14 +10,15 @@ import { TiledTileset } from "./Tiled/TiledTileset.js";
 import { TiledTilemap } from "./Tiled/TiledTilemap.js";
 import { TiledWorld } from "./Tiled/TiledWorld.js";
 import { TiledTemplate } from "./Tiled/TiledTemplate.js";
-import { Animation } from "./Animation.js";
-import { AnimationModule } from "./AnimationModule.js";
 import { Camera } from "./Camera.js";
 import { UpdateModule } from "./UpdateModule.js";
 import { RenderLayersMapping } from "./RenderLayers.js";
 import "./SpriteComponent.js";
 import "./PlayerControllerComponent.js";
 import { Point } from "./Point.js";
+import { GfxAsset } from "./GfxAsset.js";
+import { AssetReference } from "./AssetReference.js";
+import { AnimationSetAsset } from "./AnimationSetAsset.js";
 export function Run() {
     console.log("Starting Engine");
     loadJSON("data/", "manifest.json")
@@ -38,25 +39,30 @@ export function Run() {
         loader.addLoader("tj", loadAndConvertJSON(() => new TiledTemplate()));
         loader.addLoader("proto", loadAndConvertJSON(() => new EntityPrototype()));
         loader.addLoader("anim", loadAndConvertJSON(() => new Animation()));
+        loader.addLoader("gfx", loadAndConvertJSON(() => new GfxAsset()));
+        loader.addLoader("animset", loadAndConvertJSON(() => new AnimationSetAsset()));
         loader.loadAssets("data/", manifest, (assets) => {
             const engine = new Engine(assets);
             engine.debugMode = true;
             engine.addModule(new UpdateModule());
-            engine.addModule(new AnimationModule());
             let renderModule = new RenderModule();
             engine.addModule(renderModule);
             let spawnedEntities = spawnTilemap(engine, "assets/test-room/tmj");
             let player = null;
             for (let se of spawnedEntities)
                 if (se.name == 'spawn') {
-                    player = engine.createEntitytFromTiledTemplate(engine.sceneRoot, engine.getAsset("assets/templates/player.tj").asset);
+                    player = engine.createEntityFromPrototype(engine.sceneRoot, engine.getAsset("assets/prototypes/player.proto"), new TiledTemplate());
                     if (player)
                         player.localPosition = se.localPosition.copy();
                 }
+            //let npc = engine.getAsset("assets/test.npc").asset;
             let camera = new Camera();
             renderModule.setCamera(camera);
             console.log(engine.sceneRoot);
-            engine.run(new RenderingContext(canvas, ctx), () => {
+            let renderContext = new RenderingContext(canvas, ctx);
+            engine.run(renderContext, () => {
+                //renderContext.drawSprite(npc.gfx.getSprite(0, 0), new Point(0,0));
+                //renderContext.drawImage(npcImage as ImageBitmap, new Rect(0, 0, npcImage?.width ?? 1, npcImage?.height ?? 1), new Point(0,0));
                 camera.position = player?.globalPosition?.copy() ?? new Point(0, 0);
             });
         });
@@ -84,8 +90,9 @@ function spawnTilemap(engine, path) {
             }
             else if (layer.type == "tilelayer") {
                 let prototype = new EntityPrototype();
+                let assetReference = new AssetReference("", prototype);
                 prototype.components.push({ type: "Tilemap", tilemap: tilemap, layer: layer });
-                let newEntity = engine.createEntityFromPrototype(engine.sceneRoot, prototype, new TiledTemplate());
+                let newEntity = engine.createEntityFromPrototype(engine.sceneRoot, assetReference, new TiledTemplate());
                 let tilemapComponent = newEntity.getComponent(TilemapComponent);
                 if (tilemapComponent != null && layer.class != undefined)
                     tilemapComponent.renderLayer = RenderLayersMapping[layer.class];

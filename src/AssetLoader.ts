@@ -1,5 +1,6 @@
 import { AssetReference } from "./AssetReference.js";
 import { loadPNG } from "./PngLoader.js";
+import { loadBMP } from "./BmpLoader.js";
 import { loadJSON } from "./JsonLoader.js";
 
 type LoadFunction = (basePath: string, path: string) => Promise<AssetReference>;
@@ -8,7 +9,8 @@ export class AssetLoader {
 
   loaders: Map<string, LoadFunction> = new Map([
     ["png", loadPNG],
-    ["json", loadJSON]
+    ["json", loadJSON],
+    ["bmp", loadBMP]
   ]);
 
   public addLoader(extension: string, loader: LoadFunction) {

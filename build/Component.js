@@ -56,7 +56,7 @@ let Component = (() => {
         constructor(parent) {
             this.parent = parent;
         }
-        initialize(engine, template) { }
+        initialize(engine, template, prototypeAsset) { }
     };
     return Component = _classThis;
 })();

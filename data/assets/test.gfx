@@ -1,0 +1,34 @@
+{
+  "type": "composite",
+  "basePalette": "assets/dwarf/dwarf-palettes.bmp",
+  "isSheet": true,
+  "tileWidth": 48,
+  "tileHeight": 40,
+  "layers": [
+    {
+      "sheet": "assets/dwarf/body-female.bmp",
+      "palette": 15
+    },
+    {
+      "sheet": "assets/dwarf/clothing-robe.bmp",
+      "palette": 17
+    },
+    {
+      "sheet": "assets/dwarf/face-female.bmp",
+      "palette": 15
+    },
+    {
+      "sheet": "assets/dwarf/nose-beak.bmp",
+      "palette": 15
+    },
+    {
+      "sheet": "assets/dwarf/beard-braided.bmp",
+      "palette": 9
+    },
+    {
+      "sheet": "assets/dwarf/hair-boyish.bmp",
+      "palette": 9
+    }
+  ],
+  "animations": "assets/test.animset"
+}

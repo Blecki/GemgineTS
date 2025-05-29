@@ -2,6 +2,7 @@ import { Entity } from "./Entity.js";
 import { Engine } from "./Engine.js";
 import { TiledTemplate } from "./Tiled/TiledTemplate.js";
 import { ComponentFactory } from "./ComponentFactory.js";
+import { AssetReference } from "./AssetReference.js";
 
 export function componentType(name: string) {
   return function(ctr: new (parent: Entity) => Component) {
@@ -17,5 +18,5 @@ export class Component {
     this.parent = parent;
   }
 
-  public initialize(engine: Engine, template: TiledTemplate) { /* Default implementation */ }
+  public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference) { /* Default implementation */ }
 }
