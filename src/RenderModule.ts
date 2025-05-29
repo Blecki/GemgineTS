@@ -17,6 +17,10 @@ interface RenderableComponent {
   render(context: RenderingContext):void;
 }
 
+interface AnimateableComponent {
+  animate(): void;
+}
+
 @componentType("DebugGizmo")
 export class DebugGizmoComponent extends RenderComponent {  
   public render(context: RenderingContext): void {
@@ -28,12 +32,16 @@ export class DebugGizmoComponent extends RenderComponent {
 
 export class RenderModule extends Module {
   private readonly renderables: RenderableComponent[] = [];
+  private readonly animatables: AnimateableComponent[] = [];
   public camera: Camera | null = null;
   public fpsQueue: number[];
-
   
   private isRenderable(object: any): object is RenderableComponent {
     return 'render' in object;
+  }
+
+  private isAnimatable(object: any): object is AnimateableComponent {
+    return 'animate' in object;
   }
 
   constructor() {
@@ -46,10 +54,16 @@ export class RenderModule extends Module {
       if (this.isRenderable(component)) {
         this.renderables.push(component);
       }
+
+      if (this.isAnimatable(component)) {
+        this.animatables.push(component);
+      }
     });
   }
 
   render(engine: Engine, context: RenderingContext) {
+    this.animatables.forEach(a => a.animate());
+
     if (this.camera == null) return;
 
     context.context.globalAlpha = 1;

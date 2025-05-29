@@ -66,10 +66,14 @@ let DebugGizmoComponent = (() => {
 export { DebugGizmoComponent };
 export class RenderModule extends Module {
     renderables = [];
+    animatables = [];
     camera = null;
     fpsQueue;
     isRenderable(object) {
         return 'render' in object;
+    }
+    isAnimatable(object) {
+        return 'animate' in object;
     }
     constructor() {
         super();
@@ -80,9 +84,13 @@ export class RenderModule extends Module {
             if (this.isRenderable(component)) {
                 this.renderables.push(component);
             }
+            if (this.isAnimatable(component)) {
+                this.animatables.push(component);
+            }
         });
     }
     render(engine, context) {
+        this.animatables.forEach(a => a.animate());
         if (this.camera == null)
             return;
         context.context.globalAlpha = 1;

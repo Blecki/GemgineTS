@@ -1,10 +1,12 @@
 import { AssetReference } from "./AssetReference.js";
 import { loadPNG } from "./PngLoader.js";
+import { loadBMP } from "./BmpLoader.js";
 import { loadJSON } from "./JsonLoader.js";
 export class AssetLoader {
     loaders = new Map([
         ["png", loadPNG],
-        ["json", loadJSON]
+        ["json", loadJSON],
+        ["bmp", loadBMP]
     ]);
     addLoader(extension, loader) {
         this.loaders.set(extension, loader);

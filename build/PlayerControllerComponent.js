@@ -35,6 +35,7 @@ var __runInitializers = (this && this.__runInitializers) || function (thisArg, i
 import { Component, componentType } from "./Component.js";
 import { Input } from "./Input.js";
 import { GameTime } from "./GameTime.js";
+import { SpriteComponent } from "./SpriteComponent.js";
 let PlayerControllerComponent = (() => {
     let _classDecorators = [componentType("PlayerController")];
     let _classDescriptor;
@@ -52,6 +53,7 @@ let PlayerControllerComponent = (() => {
         }
         input = null;
         speed = 32;
+        sprite = undefined;
         initialize(engine, template) {
             this.input = new Input();
             this.input.bind("KeyA", "west");
@@ -59,16 +61,37 @@ let PlayerControllerComponent = (() => {
             this.input.bind("KeyS", "south");
             this.input.bind("KeyD", "east");
             this.input.initialize();
+            this.sprite = this.parent.getComponent(SpriteComponent);
         }
         update() {
-            if (this.input?.check("west"))
+            if (this.input?.check("west")) {
                 this.parent.localPosition.x -= (this.speed * GameTime.getDeltaTime());
-            if (this.input?.check("north"))
+                if (this.sprite != undefined) {
+                    this.sprite.facing = "west";
+                    this.sprite.playAnimation("walk", false);
+                }
+            }
+            if (this.input?.check("north")) {
                 this.parent.localPosition.y -= (this.speed * GameTime.getDeltaTime());
-            if (this.input?.check("south"))
+                if (this.sprite != undefined) {
+                    this.sprite.facing = "north";
+                    this.sprite.playAnimation("walk", false);
+                }
+            }
+            if (this.input?.check("south")) {
                 this.parent.localPosition.y += (this.speed * GameTime.getDeltaTime());
-            if (this.input?.check("east"))
+                if (this.sprite != undefined) {
+                    this.sprite.facing = "south";
+                    this.sprite.playAnimation("walk", false);
+                }
+            }
+            if (this.input?.check("east")) {
                 this.parent.localPosition.x += (this.speed * GameTime.getDeltaTime());
+                if (this.sprite != undefined) {
+                    this.sprite.facing = "east";
+                    this.sprite.playAnimation("walk", false);
+                }
+            }
             this.input?.cleanup();
         }
     };

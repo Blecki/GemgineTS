@@ -51,14 +51,15 @@ export class Engine {
     addModule(newModule) {
         this.modules.push(newModule);
     }
-    createEntityFromPrototype(parent, prototype, template) {
+    createEntityFromPrototype(parent, prototypeAsset, template) {
         let resultID = allocateEntityID();
         let entity = new Entity(resultID);
         parent.addChild(entity);
+        let prototype = prototypeAsset.asset;
         initializeFromJSON(prototype, entity);
         entity.components = prototype.components.map(componentPrototype => ComponentFactory.createFromPrototype(componentPrototype, entity));
         entity.components.forEach(c => c.parent = entity);
-        entity.components.forEach(c => c.initialize(this, template));
+        entity.components.forEach(c => c.initialize(this, template, prototypeAsset));
         this.modules.forEach(module => module.entityCreated(entity));
         return entity;
     }
@@ -77,7 +78,7 @@ export class Engine {
             console.error(`Could not find prototype ${prototypeProperty.value}.`);
             return null;
         }
-        let r = this.createEntityFromPrototype(parent, prototype.asset, template);
+        let r = this.createEntityFromPrototype(parent, prototype, template);
         if (template.object.name != undefined && template.object.name !== null && template.object.name != "")
             r.name = template.object.name;
         return r;
