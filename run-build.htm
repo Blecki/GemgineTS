@@ -11,16 +11,28 @@
   canvas {
     border: 1px solid black;
     background-color: #ffffff;
-    width: 512;
+    width: 1044;
     height: 448;
   }
 </style>
 </head>
 <body>
-  <canvas id="myCanvas" width="256" height="224"></canvas>
+  <div style="display: grid; grid-template-rows: 500px auto;">
+    <div>
+      <canvas id="myCanvas" width="522" height="224"></canvas>
+    </div>
+    <div id="debug_panel">
+      
+    </div>
+  </div>
   <script type="module">
     import { Run } from "./build/Main.js";
-    Run();
+    import { Debugger } from "./build/Debugger.js";
+    let engine = Run((engine) => {
+      console.log("Trace: Engine Callback");
+      let _debugger = new Debugger(document.getElementById("debug_panel"));
+      _debugger.debugObject(engine.sceneRoot);
+    });
   </script>
 </body>
 </html>

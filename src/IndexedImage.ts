@@ -1,5 +1,5 @@
-import { RawImage } from "./RawImage";
-import { Palette } from "./Palette";
+import { RawImage } from "./RawImage.js";
+import { Palette } from "./Palette.js";
 
 export class IndexedImage {
 	private readonly indices: number[];

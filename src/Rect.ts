@@ -33,4 +33,24 @@ export class Rect {
   public get area(): number {
     return this.width * this.height;
   }
+  
+  static enumerate(rect: Rect, callback: (x: number, y: number) => void): void {
+    for (let y = rect.y; y < rect.y + rect.height; y++) {
+          for (let x = rect.x; x < rect.x + rect.width; x++) {
+              callback(x, y);
+          }
+      }
+  }
+
+  static getRelativeDirection(a: Rect, b: Rect): string {
+    if (b.x >= a.x + a.width) return "east";
+    if (b.x + b.width <= a.x) return "west";
+    if (b.y >= a.y + a.height) return "south";
+    if (b.y + b.height <= a.y) return "north";
+    return "huh?";
+  }
+
+  public withOffset(point: Point): Rect {
+    return new Rect(this.x + point.x, this.y + point.y, this.width, this.height);
+  }
 }

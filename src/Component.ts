@@ -1,22 +1,19 @@
 import { Entity } from "./Entity.js";
 import { Engine } from "./Engine.js";
-import { TiledTemplate } from "./Tiled/TiledTemplate.js";
+import { TiledTemplate } from "./TiledTemplate.js";
 import { ComponentFactory } from "./ComponentFactory.js";
 import { AssetReference } from "./AssetReference.js";
 
 export function componentType(name: string) {
-  return function(ctr: new (parent: Entity) => Component) {
+  return function(ctr: new (json:object) => Component) {
     ComponentFactory.addComponentType(name, ctr);
   };
 }
 
-@componentType("Component")
 export class Component {
-  public parent: Entity;
+  public parent: Entity | null = null;
 
-  constructor(parent: Entity) {
-    this.parent = parent;
-  }
-
-  public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference) { /* Default implementation */ }
+  public constructor(prototype?:object) {}
+  public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference) {}
+  public awake(engine: Engine) {}
 }

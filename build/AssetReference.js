@@ -1,9 +1,20 @@
+import { Engine } from "./Engine.js";
 export class AssetReference {
     path;
     asset;
-    constructor(path, asset) {
-        this.path = path;
-        this.asset = asset;
+    constructor(first, asset) {
+        this.path = "";
+        if (first === undefined)
+            throw "Can't create undefined asset reference.";
+        if (typeof first === 'object') {
+            let p = first;
+            this.path = p.path;
+            this.asset = p.asset;
+        }
+        else if (typeof first === 'string') {
+            this.path = first;
+            this.asset = asset;
+        }
     }
     directory() {
         const separator = this.path.lastIndexOf('/');

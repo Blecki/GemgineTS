@@ -1,4 +1,4 @@
-import { Color } from "./Color.js";
+import { type Color } from "./Color.js";
 import { RawImage } from "./RawImage.js"
 
 export class Palette {

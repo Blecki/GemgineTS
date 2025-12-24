@@ -1,19 +1,30 @@
 import { Point } from "./Point.js";
-import { initializeFromJSON } from "./JsonConverter.js";
+import { AssetReference } from "./AssetReference.js";
+import { Engine } from "./Engine.js";
 export class AnimationAsset {
-    name = undefined;
-    direction = undefined;
-    frames = [];
+    name;
+    direction;
+    frames;
     resolveDependencies(self, engine) {
         this.frames ??= [];
-        this.frames = this.frames.map(f => initializeFromJSON(f, new Point(0, 0)));
+        this.frames = this.frames.map(f => new Point(f));
+    }
+    constructor(prototype) {
+        let p = prototype;
+        this.name = p?.name ?? "unnamed";
+        this.direction = p?.direction ?? "north";
+        this.frames = (p?.frames ?? []).map(f => new Point(f));
     }
 }
 export class AnimationSetAsset {
-    animations = [];
+    animations;
+    constructor(prototype) {
+        let p = prototype;
+        this.animations = (p?.animations ?? []).map(a => new AnimationAsset(a));
+    }
     resolveDependencies(self, engine) {
         this.animations ??= [];
-        this.animations = this.animations.map(a => initializeFromJSON(a, new AnimationAsset()));
+        this.animations = this.animations.map(a => new AnimationAsset(a));
         this.animations.forEach(a => a.resolveDependencies(self, engine));
     }
     getAnimation(name, direction) {

@@ -1,23 +1,16 @@
 import { AssetReference } from "./AssetReference.js";
-function create(type) {
-    return new type();
-}
-export function initializeFromJSON(source, destination) {
-    for (let property in source)
-        destination[property] = source[property];
-    return destination;
-}
+import { Engine } from "./Engine.js";
 export function resolveInlineReference(baseReference, engine, source, type) {
     if (source == undefined)
         return undefined;
     if (typeof source === "string")
         return engine.getAsset(source).asset;
-    else {
-        let r = initializeFromJSON(source, new type());
-        if ('resolveDependencies' in r)
-            r.resolveDependencies(baseReference, engine);
+    if (typeof source === "object") {
+        let r = new type(source);
+        r.resolveDependencies(baseReference, engine);
         return r;
     }
+    throw "Inline reference could not be resolved.";
 }
 export function loadAndConvertJSON(creationFunction) {
     return (basePath, path) => {
@@ -27,9 +20,9 @@ export function loadAndConvertJSON(creationFunction) {
                 reject(new Error(`Failed to load JSON at ${path}`));
                 return;
             }
-            let json = await response.json();
-            let result = creationFunction();
-            initializeFromJSON(json, result);
+            let text = await response.text();
+            let json = JSON.parse(text);
+            let result = creationFunction(json);
             resolve(new AssetReference(path, result));
         });
     };

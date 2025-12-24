@@ -1,83 +1,66 @@
-var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, decorators, contextIn, initializers, extraInitializers) {
-    function accept(f) { if (f !== void 0 && typeof f !== "function") throw new TypeError("Function expected"); return f; }
-    var kind = contextIn.kind, key = kind === "getter" ? "get" : kind === "setter" ? "set" : "value";
-    var target = !descriptorIn && ctor ? contextIn["static"] ? ctor : ctor.prototype : null;
-    var descriptor = descriptorIn || (target ? Object.getOwnPropertyDescriptor(target, contextIn.name) : {});
-    var _, done = false;
-    for (var i = decorators.length - 1; i >= 0; i--) {
-        var context = {};
-        for (var p in contextIn) context[p] = p === "access" ? {} : contextIn[p];
-        for (var p in contextIn.access) context.access[p] = contextIn.access[p];
-        context.addInitializer = function (f) { if (done) throw new TypeError("Cannot add initializers after decoration has completed"); extraInitializers.push(accept(f || null)); };
-        var result = (0, decorators[i])(kind === "accessor" ? { get: descriptor.get, set: descriptor.set } : descriptor[key], context);
-        if (kind === "accessor") {
-            if (result === void 0) continue;
-            if (result === null || typeof result !== "object") throw new TypeError("Object expected");
-            if (_ = accept(result.get)) descriptor.get = _;
-            if (_ = accept(result.set)) descriptor.set = _;
-            if (_ = accept(result.init)) initializers.unshift(_);
-        }
-        else if (_ = accept(result)) {
-            if (kind === "field") initializers.unshift(_);
-            else descriptor[key] = _;
-        }
-    }
-    if (target) Object.defineProperty(target, contextIn.name, descriptor);
-    done = true;
-};
-var __runInitializers = (this && this.__runInitializers) || function (thisArg, initializers, value) {
-    var useValue = arguments.length > 2;
-    for (var i = 0; i < initializers.length; i++) {
-        value = useValue ? initializers[i].call(thisArg, value) : initializers[i].call(thisArg);
-    }
-    return useValue ? value : void 0;
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import { Component, componentType } from "./Component.js";
 import { Module } from "./Module.js";
+import { RenderingContext } from "./RenderingContext.js";
+import { Entity } from "./Entity.js";
+import { Camera } from "./Camera.js";
+import { Engine } from "./Engine.js";
 import { GameTime } from "./GameTime.js";
 import { RenderLayers } from "./RenderLayers.js";
+import { TiledTemplate } from "./TiledTemplate.js";
+import { AssetReference } from "./AssetReference.js";
+import { Point } from "./Point.js";
+import { Rect } from "./Rect.js";
 export class RenderComponent extends Component {
     renderLayer = RenderLayers.Ground;
     render(context) { }
 }
-let DebugGizmoComponent = (() => {
-    let _classDecorators = [componentType("DebugGizmo")];
-    let _classDescriptor;
-    let _classExtraInitializers = [];
-    let _classThis;
-    let _classSuper = RenderComponent;
-    var DebugGizmoComponent = class extends _classSuper {
-        static { _classThis = this; }
-        static {
-            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
-            __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
-            DebugGizmoComponent = _classThis = _classDescriptor.value;
-            if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
-            __runInitializers(_classThis, _classExtraInitializers);
+let DebugGizmoComponent = class DebugGizmoComponent extends RenderComponent {
+    point = null;
+    initialize(engine, template, prototypeAsset) {
+        this.point = engine.getAsset("assets/point.png").asset;
+        this.renderLayer = RenderLayers.Overlay;
+    }
+    render(context) {
+        if (this.parent != null) {
+            context.drawRectangle(this.parent.globalBounds, 'rgba(255, 0, 0, 0.5)');
+            if (this.point != null)
+                context.drawImage(this.point, new Rect(0, 0, this.point.width, this.point.height), new Point(this.parent.globalPosition.x - 2, this.parent.globalPosition.y - 2));
         }
-        render(context) {
-            context.context.globalAlpha = 0.5;
-            context.context.globalCompositeOperation = "source-over";
-            context.drawRectangle(this.parent.globalBounds, 'red');
-        }
-    };
-    return DebugGizmoComponent = _classThis;
-})();
+    }
+};
+DebugGizmoComponent = __decorate([
+    componentType("DebugGizmo")
+], DebugGizmoComponent);
 export { DebugGizmoComponent };
 export class RenderModule extends Module {
     renderables = [];
     animatables = [];
     camera = null;
-    fpsQueue;
+    fpsQueue = [];
+    destinationCanvas;
+    destinationContext;
+    diffuseContext;
+    constructor(canvas) {
+        super();
+        this.destinationCanvas = canvas;
+        let ctx = this.destinationCanvas.getContext('2d');
+        if (ctx == null)
+            throw new Error("Failed to get 2D context");
+        this.destinationContext = ctx;
+        this.destinationContext.imageSmoothingEnabled = false;
+        this.diffuseContext = new RenderingContext(this.destinationCanvas.width, this.destinationCanvas.height);
+    }
     isRenderable(object) {
         return 'render' in object;
     }
     isAnimatable(object) {
         return 'animate' in object;
-    }
-    constructor() {
-        super();
-        this.fpsQueue = [];
     }
     entityCreated(entity) {
         entity.components.forEach(component => {
@@ -89,30 +72,34 @@ export class RenderModule extends Module {
             }
         });
     }
-    render(engine, context) {
+    render(engine) {
         this.animatables.forEach(a => a.animate());
+        this.diffuseContext.clearScreen();
         if (this.camera == null)
             return;
-        context.context.globalAlpha = 1;
-        context.context.globalCompositeOperation = 'source-over';
+        this.diffuseContext.context.globalAlpha = 1;
+        this.diffuseContext.context.globalCompositeOperation = 'source-over';
         for (let layer in RenderLayers) {
             let layerNum = Number(RenderLayers[layer]);
             if (!Number.isNaN(layerNum)) {
                 for (let renderable of this.renderables) {
                     if (renderable.renderLayer == layerNum)
-                        renderable.render(context);
+                        renderable.render(this.diffuseContext);
                 }
-                context.flush(this.camera);
             }
         }
+        this.diffuseContext.flush(this.camera);
         this.fpsQueue.push(GameTime.getDeltaTime());
         if (this.fpsQueue.length > 200)
             this.fpsQueue.shift();
+        // Final composition
+        this.destinationContext.clearRect(0, 0, this.destinationCanvas.width, this.destinationCanvas.height);
+        this.destinationContext.drawImage(this.diffuseContext.canvas, 0, 0);
         let averageFrameTime = this.fpsQueue.reduce((sum, val) => sum + val, 0) / this.fpsQueue.length;
-        context.context.fillStyle = 'black';
-        context.context.textAlign = 'left';
-        context.context.textBaseline = 'top';
-        context.context.fillText(Math.round(1 / averageFrameTime).toString(), 5, 5);
+        this.destinationContext.fillStyle = 'black';
+        this.destinationContext.textAlign = 'left';
+        this.destinationContext.textBaseline = 'top';
+        this.destinationContext.fillText(Math.round(1 / averageFrameTime).toString(), 5, 5);
     }
     setCamera(camera) {
         this.camera = camera;

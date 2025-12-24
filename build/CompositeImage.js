@@ -1,3 +1,5 @@
+import { IndexedImage } from "./IndexedImage.js";
+import { Palette } from "./Palette.js";
 export class CompositeImageLayer {
     baseImage = null;
     palette = null;

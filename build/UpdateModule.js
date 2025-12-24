@@ -1,4 +1,5 @@
 import { Module } from "./Module.js";
+import { Entity } from "./Entity.js";
 export class UpdateModule extends Module {
     updateables = [];
     isUpdateable(object) {

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 
 string rootDirectory = Directory.GetCurrentDirectory();
-string relativeAssetDirectory = "../../../../../data/";
+string relativeAssetDirectory = "../../data/";
 string dataDirectory = Path.GetFullPath(Path.Combine(rootDirectory, relativeAssetDirectory));
 var files = ListFiles(dataDirectory);
 var fileArray = files.Where(f => f.StartsWith("assets")).Select(f => f.Replace("\\", "/")).ToArray();

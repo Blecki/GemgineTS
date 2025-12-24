@@ -1,3 +1,4 @@
+import { Entity } from "./Entity.js";
 import { Rect } from "./Rect.js";
 export class QuadTree {
     boundary;

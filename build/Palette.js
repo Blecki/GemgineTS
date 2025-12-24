@@ -1,3 +1,5 @@
+import {} from "./Color.js";
+import { RawImage } from "./RawImage.js";
 export class Palette {
     colors;
     rawImage;

@@ -1,23 +1,20 @@
 import { Component } from "./Component.js";
-import { initializeFromJSON } from "./JsonConverter.js";
 export class ComponentFactory {
     static typeMap;
     constructor() { }
     static addComponentType(name, createFunctor) {
         ComponentFactory.typeMap ??= new Map;
         ComponentFactory.typeMap.set(name, createFunctor);
-        console.log(name);
     }
-    static create(name, parent) {
+    static create(name, prototype) {
         const Constructor = ComponentFactory.typeMap.get(name);
         if (Constructor)
-            return new Constructor(parent);
-        return new Component(parent);
+            return new Constructor(prototype);
+        console.log("Unknown component type: " + name);
+        return new Component(prototype);
     }
-    static createFromPrototype(prototype, parent) {
-        let component = ComponentFactory.create(prototype.type, parent);
-        initializeFromJSON(prototype, component);
-        return component;
+    static createFromBlueprint(prototype) {
+        return ComponentFactory.create(prototype.type, prototype);
     }
 }
 //# sourceMappingURL=ComponentFactory.js.map

@@ -1,0 +1,3 @@
+tsc : Build typescript
+npx webpack: Package dist
+To build manifest: CD into project and do dotnet run

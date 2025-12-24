@@ -1,0 +1,24 @@
+{ "object":
+    {
+     "gid":15,
+     "height":16,
+     "id":2,
+     "name":"",
+     "properties":[
+            {
+             "name":"prototype",
+             "type":"string",
+             "value":"assets/prototypes/decor_sprite.proto"
+            }],
+     "rotation":0,
+     "type":"",
+     "visible":true,
+     "width":16
+    },
+ "tileset":
+    {
+     "firstgid":1,
+     "source":"..\/template.tsj"
+    },
+ "type":"template"
+}

@@ -1,33 +1,49 @@
 import { IndexedImage } from "./IndexedImage.js";
 import { Palette } from "./Palette.js";
-import { initializeFromJSON, resolveInlineReference } from "./JsonConverter.js";
+import { AssetReference } from "./AssetReference.js";
+import { Engine } from "./Engine.js";
+import { resolveInlineReference } from "./JsonConverter.js";
 import { CompositeImage, CompositeImageLayer } from "./CompositeImage.js";
 import { Rect } from "./Rect.js";
 import { Sprite } from "./Sprite.js";
 import { AnimationSetAsset } from "./AnimationSetAsset.js";
 export class CompositeImageLayerAsset {
-    sheet = undefined;
-    palette = undefined;
+    sheet;
+    palette;
+    constructor(prototype) {
+        let p = prototype;
+        this.sheet = p?.sheet ?? "nosheet";
+        this.palette = p?.palette ?? 0;
+    }
 }
 export class GfxAsset {
-    type = undefined;
-    path = undefined;
-    basePalette = undefined;
-    layers = undefined;
-    isSheet = undefined;
-    tileWidth = undefined;
-    tileHeight = undefined;
-    animations = undefined;
-    fps = undefined;
-    currentAnimation = undefined;
+    type;
+    path;
+    basePalette;
+    layers;
+    isSheet;
+    tileWidth;
+    tileHeight;
+    animations;
+    fps;
+    currentAnimation;
     cachedImage = null;
+    resolvedAnimations = undefined;
+    constructor(prototype) {
+        let p = prototype;
+        this.type = p?.type ?? "none";
+        this.path = p?.path ?? "";
+        this.basePalette = p?.basePalette ?? "";
+        this.layers = (p?.layers ?? []).map(l => new CompositeImageLayerAsset(l));
+        this.isSheet = p?.isSheet ?? false;
+        this.tileWidth = p?.tileWidth ?? 0;
+        this.tileHeight = p?.tileHeight ?? 0;
+        this.animations = p?.animations;
+        this.fps = p?.fps ?? 10;
+        this.currentAnimation = p?.currentAnimation ?? "";
+    }
     resolveDependencies(reference, engine) {
-        console.log("ImageAsset Resolve Dependencies");
-        if (this.layers != undefined)
-            this.layers = this.layers.map(l => { let n = new CompositeImageLayerAsset(); initializeFromJSON(l, n); return n; });
-        this.isSheet ??= false;
-        this.animations = resolveInlineReference(reference, engine, this.animations, AnimationSetAsset);
-        this.fps ??= 10;
+        this.resolvedAnimations = resolveInlineReference(reference, engine, this.animations, AnimationSetAsset);
         this.loadImageCache(engine);
     }
     loadImageCache(engine) {
@@ -43,7 +59,6 @@ export class GfxAsset {
         if (this.type == "image") {
             this.cachedImage = engine.getAsset(this.path ?? "").asset;
         }
-        console.log(this);
     }
     getSprite(x, y) {
         if (this.cachedImage == null)
