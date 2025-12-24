@@ -3,38 +3,66 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "assets/test-room.tmj",
+    "activeFile": "assets/room0.tmj",
     "console.history": [
         "world"
     ],
     "expandedProjectPaths": [
         "assets/templates",
-        "assets",
-        "."
+        ".",
+        "assets"
     ],
     "fileStates": {
+        "assets/base-tileset.tsj": {
+            "scaleInDock": 5.5,
+            "scaleInEditor": 1
+        },
         "assets/bunny_tiles.tsj": {
             "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInEditor": 8
         },
         "assets/grass.tsj": {
             "scaleInDock": 1
         },
         "assets/leaf.tsj": {
             "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInEditor": 8
         },
         "assets/leaf2.tsj": {
             "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInEditor": 8
+        },
+        "assets/minitiles.tsj": {
+            "scaleInDock": 4,
+            "scaleInEditor": 8
+        },
+        "assets/minitiles2.tsj": {
+            "scaleInDock": 4,
+            "scaleInEditor": 8
+        },
+        "assets/room0.tmj": {
+            "scale": 4,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 156.125,
+                "y": 109.625
+            }
+        },
+        "assets/room1.tmj": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 823.3333333333333,
+                "y": 441.33333333333326
+            }
         },
         "assets/shadows.tsj": {
             "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInEditor": 8
         },
         "assets/template.tsj": {
             "scaleInDock": 4,
-            "scaleInEditor": 1
+            "scaleInEditor": 8
         },
         "assets/template.tsx": {
             "dynamicWrapping": false,
@@ -45,11 +73,11 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 2,
-            "selectedLayer": 1,
+            "scale": 1.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 113.25,
-                "y": 95.75
+                "x": 213.33333333333337,
+                "y": 229.3333333333333
             }
         },
         "assets/test-room.tmx": {
@@ -61,11 +89,11 @@
             }
         },
         "assets/test-room2.tmj": {
-            "scale": 0.75,
+            "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 239.33333333333331,
-                "y": 159.33333333333331
+                "x": 213.33333333333337,
+                "y": 45.33333333333337
             }
         },
         "assets/test-room2.tmx": {
@@ -75,41 +103,59 @@
                 "x": 766.6666666666667,
                 "y": 313.33333333333337
             }
+        },
+        "assets/untitled.tmj": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 100,
+                "y": 80.125
+            }
+        },
+        "assets/untitled3.tmj": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 95,
+                "y": 104.125
+            }
         }
     },
+    "last.externalTilesetPath": "C:/Users/d146n0/Desktop/GemgineTS/data/assets",
     "last.imagePath": "C:/Users/d146n0/Desktop/GemgineTS/data/assets",
-    "last.objectTemplatePath": "C:/Users/salli/Desktop/GemgineTS/data/assets/templates",
-    "last.worldFilePath": "C:/Users/salli/Desktop/GemgineTS/data/assets",
+    "last.objectTemplatePath": "C:/Users/d146n0/Desktop/GemgineTS/data/assets/templates",
+    "last.worldFilePath": "C:/Users/d146n0/Desktop/GemgineTS/data/assets",
     "loadedWorlds": [
-        "C:/Users/salli/Desktop/GemgineTS/data/assets/world.world",
-        "C:/Users/salli/Desktop/GemgineTS/data/assets/world.world"
+        "C:/Users/d146n0/Desktop/GemgineTS/data/assets/base-world.world"
     ],
+    "map.height": 16,
     "map.lastUsedFormat": "json",
-    "map.tileHeight": 16,
-    "map.tileWidth": 16,
+    "map.tileHeight": 8,
+    "map.tileWidth": 8,
+    "map.width": 20,
     "openFiles": [
-        "assets/test-room.tmj",
-        "assets/test-room2.tmj",
-        "assets/template.tsj",
-        "assets/bunny_tiles.tsj",
-        "assets/shadows.tsj",
-        "assets/leaf.tsj",
-        "assets/leaf2.tsj"
+        "assets/room0.tmj",
+        "assets/base-tileset.tsj"
     ],
     "project": "world.tiled-project",
     "recentFiles": [
+        "assets/base-tileset.tsj",
+        "assets/room0.tmj",
+        "assets/test-room.tmj",
+        "assets/test-room2.tmj",
+        "assets/room1.tmj",
+        "assets/untitled3.tmj",
+        "assets/minitiles.tsj",
+        "assets/untitled.tmj",
+        "assets/minitiles2.tsj",
         "assets/leaf2.tsj",
         "assets/leaf.tsj",
-        "assets/shadows.tsj",
-        "assets/bunny_tiles.tsj",
-        "assets/template.tsj",
-        "assets/test-room2.tmj",
-        "assets/test-room.tmj",
-        "assets/template.tsx"
+        "assets/shadows.tsj"
     ],
+    "tileset.lastUsedFilter": "JSON tileset files (*.tsj *.json)",
     "tileset.lastUsedFormat": "json",
     "tileset.tileSize": {
-        "height": 16,
-        "width": 16
+        "height": 8,
+        "width": 8
     }
 }

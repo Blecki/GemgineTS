@@ -1,0 +1,12 @@
+{
+   "pivot": { "x": 4, "y": 4 },
+   "size": { "x": 8, "y": 8 },
+   "components": [
+      {
+         "type": "Sprite"
+      },
+      {
+         "type": "DebugGizmo"
+      }
+   ]
+}

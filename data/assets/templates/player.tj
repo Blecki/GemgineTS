@@ -1,24 +1,24 @@
 { "object":
     {
-     "gid":1,
-     "height":24,
+     "gid":77,
+     "height":16,
      "id":2,
      "name":"",
      "properties":[
             {
-             "name":"prototype",
+             "name":"blueprint",
              "type":"string",
-             "value":"assets\/prototypes\/player.proto"
+             "value":"assets\/blueprints\/player.blueprint"
             }],
      "rotation":0,
      "type":"",
      "visible":true,
-     "width":24
+     "width":16
     },
  "tileset":
     {
      "firstgid":1,
-     "source":"..\/bunny_tiles.tsj"
+     "source":"..\/base-tileset.tsj"
     },
  "type":"template"
 }

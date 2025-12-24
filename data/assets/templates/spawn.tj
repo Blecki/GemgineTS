@@ -6,9 +6,9 @@
      "name":"spawn",
      "properties":[
             {
-             "name":"prototype",
+             "name":"blueprint",
              "type":"string",
-             "value":"assets\/prototypes\/spawn.proto"
+             "value":"assets\/blueprints\/spawn.blueprint"
             }],
      "rotation":0,
      "type":"spawn",

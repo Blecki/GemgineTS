@@ -1,16 +1,32 @@
 import { Engine } from "./Engine.js";
 
-interface Asset {
+export interface Asset {
   resolveDependencies(reference: AssetReference, engine: Engine): void;
+}
+
+type AssetReferencePrototype = {
+  path: string;
+  asset: any;
 }
 
 export class AssetReference {
   public path: string;
   public asset: any;
 
-  constructor(path: string, asset: any) {
-    this.path = path;
-    this.asset = asset;
+  constructor(prototype?:object);
+  constructor(path: string, asset: any);
+  constructor(first?: string | object, asset?: any) {
+    this.path = "";
+    if (first === undefined) throw "Can't create undefined asset reference.";
+    if (typeof first === 'object') {
+      let p = first as AssetReferencePrototype;
+      this.path = p.path;
+      this.asset = p.asset;
+    }
+    else if (typeof first === 'string') {
+      this.path = first;
+      this.asset = asset;
+    }
   }
 
   public directory(): string {

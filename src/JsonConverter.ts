@@ -1,29 +1,19 @@
-import { AssetReference } from "./AssetReference.js";
+import { AssetReference, type Asset } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
 
-function create<T>(type: (new () => T)): T {
-  return new type();
-}
-
-export function initializeFromJSON(source: any, destination: any): any {
-  for (let property in source) 
-    destination[property] = source[property];
-  return destination;
-}
-
-export function resolveInlineReference<T>(baseReference: AssetReference, engine: Engine, source: any, type: new () => T): T | undefined {
+export function resolveInlineReference<T extends Asset>(baseReference: AssetReference, engine: Engine, source: any, type: new (prototype:object) => T): T | undefined {
   if (source == undefined) return undefined;
   if (typeof source === "string")
     return engine.getAsset(source).asset as T;
-  else {
-    let r = initializeFromJSON(source, new type());
-    if ('resolveDependencies' in r) 
-      r.resolveDependencies(baseReference, engine);
+  if (typeof source === "object") {
+    let r = new type(source);
+    r.resolveDependencies(baseReference, engine);
     return r;
   }
+  throw "Inline reference could not be resolved.";
 }
 
-export function loadAndConvertJSON<T>(creationFunction: () => T) {
+export function loadAndConvertJSON<T>(creationFunction: (json:object) => T) {
   return (basePath: string, path: string): Promise<AssetReference> => {
     return new Promise<AssetReference>(async (resolve, reject) => {
       const response = await fetch(basePath + path);
@@ -31,9 +21,9 @@ export function loadAndConvertJSON<T>(creationFunction: () => T) {
         reject(new Error(`Failed to load JSON at ${path}`));
         return;
       }
-      let json = await response.json();
-      let result = creationFunction();
-      initializeFromJSON(json, result);
+      let text = await response.text();
+      let json = JSON.parse(text);
+      let result = creationFunction(json);
       resolve(new AssetReference(path, result));
     });
   }

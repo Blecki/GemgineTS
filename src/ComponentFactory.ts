@@ -1,28 +1,28 @@
 import { Component } from "./Component.js";
-import { initializeFromJSON } from "./JsonConverter.js";
-import { Entity } from "./Entity.js";
+
+export type ComponentBlueprint = {
+  type: string;
+}
 
 export class ComponentFactory {
-  private static typeMap: Map<string, new (parent: Entity) => Component>;
+  private static typeMap: Map<string, new (prototype:ComponentBlueprint) => Component>;
 
   private constructor() {}
 
-  public static addComponentType(name: string, createFunctor:  new (parent: Entity) => Component): void {
-    ComponentFactory.typeMap ??= new Map<string,  new (parent: Entity) => Component>;
+  public static addComponentType(name: string, createFunctor:  new (prototype:ComponentBlueprint) => Component): void {
+    ComponentFactory.typeMap ??= new Map<string,  new (prototype:ComponentBlueprint) => Component>;
     ComponentFactory.typeMap.set(name, createFunctor);
-    console.log(name);
   }
 
-  public static create(name: string, parent: Entity): Component {
+  public static create(name: string, prototype: ComponentBlueprint): Component {
     const Constructor = ComponentFactory.typeMap.get(name);
     if (Constructor)
-      return new Constructor(parent);
-    return new Component(parent);
+      return new Constructor(prototype);
+    console.log("Unknown component type: " + name);
+    return new Component(prototype);
   }
 
-  public static createFromPrototype(prototype: any, parent: Entity): Component {
-    let component = ComponentFactory.create(prototype.type, parent);
-    initializeFromJSON(prototype, component);
-    return component;
+  public static createFromBlueprint(prototype: ComponentBlueprint): Component {
+    return ComponentFactory.create(prototype.type, prototype);
   }
 }

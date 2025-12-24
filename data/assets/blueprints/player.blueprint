@@ -1,0 +1,22 @@
+{
+   "size": { "x": 16, "y": 16 },
+   "pivot": { "x": 7, "y": 15 },
+   "components": [
+      {
+         "type": "Sprite",
+         "gfx": "assets/test.gfx"
+      },
+      {
+         "type": "PlayerController"
+      },
+      {
+         "type": "Controller"
+      },
+      {
+         "type": "BoundsCollider"
+      },
+      {
+         "type": "DebugGizmo"
+      }
+   ]
+}

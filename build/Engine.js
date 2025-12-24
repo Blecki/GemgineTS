@@ -1,10 +1,19 @@
+import { EntityBlueprint } from "./EntityBlueprint.js";
+import { Module } from "./Module.js";
+import { RenderingContext } from "./RenderingContext.js";
 import { Entity } from "./Entity.js";
 import { AssetReference } from "./AssetReference.js";
 import { allocateEntityID } from "./AllocateEntityID.js";
+import { Component } from "./Component.js";
 import { ComponentFactory } from "./ComponentFactory.js";
+import { TiledTemplate } from "./TiledTemplate.js";
+import { TiledObject, TiledProperty } from "./TiledObject.js";
 import { Point } from "./Point.js";
 import { GameTime } from "./GameTime.js";
-import { initializeFromJSON } from "./JsonConverter.js";
+import { TiledLayer, TiledTilemap } from "./TiledTilemap.js";
+import { TilemapComponent } from "./TilemapComponent.js";
+import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
+import { RenderLayersMapping } from "./RenderLayers.js";
 export class Engine {
     modules = [];
     assetMap;
@@ -16,10 +25,12 @@ export class Engine {
         for (const [, value] of assetMap) {
             value.resolveDependencies(this);
         }
-        this.sceneRoot = new Entity(0);
+        this.sceneRoot = new Entity(0, {});
+        this.sceneRoot.name = "Scene Root";
         this.fpsQueue = [];
     }
     getAsset(path) {
+        console.log("ASSET REQUEST: " + path);
         return this.assetMap?.get(path) ?? new AssetReference(path, null);
     }
     update() {
@@ -31,54 +42,43 @@ export class Engine {
         if (this.fpsQueue.length > 200)
             this.fpsQueue.shift();
     }
-    render(context) {
-        for (let module of this.modules)
-            module.render(this, context);
-        let averageFrameTime = this.fpsQueue.reduce((sum, val) => sum + val, 0) / this.fpsQueue.length;
-        context.context.fillStyle = 'black';
-        context.context.textAlign = 'left';
-        context.context.textBaseline = 'top';
-        context.context.fillText(averageFrameTime.toString(), 5, 25);
-    }
-    run(context, frameCallback) {
+    run(frameCallback) {
         GameTime.update();
         this.update();
         frameCallback();
-        context.clearScreen();
-        this.render(context);
-        requestAnimationFrame(() => this.run(context, frameCallback));
+        requestAnimationFrame(() => this.run(frameCallback));
     }
     addModule(newModule) {
         this.modules.push(newModule);
     }
-    createEntityFromPrototype(parent, prototypeAsset, template) {
+    createEntityFromBlueprint(parent, blueprintAsset, template) {
         let resultID = allocateEntityID();
-        let entity = new Entity(resultID);
+        let entity = new Entity(resultID, blueprintAsset.asset);
         parent.addChild(entity);
-        let prototype = prototypeAsset.asset;
-        initializeFromJSON(prototype, entity);
-        entity.components = prototype.components.map(componentPrototype => ComponentFactory.createFromPrototype(componentPrototype, entity));
+        let blueprint = blueprintAsset.asset;
+        entity.components = blueprint.components.map(c => ComponentFactory.createFromBlueprint(c));
         entity.components.forEach(c => c.parent = entity);
-        entity.components.forEach(c => c.initialize(this, template, prototypeAsset));
+        entity.components.forEach(c => c.initialize(this, template, blueprintAsset));
         this.modules.forEach(module => module.entityCreated(entity));
+        entity.components.forEach(c => c.awake(this));
         return entity;
     }
     createEntitytFromTiledTemplate(parent, template) {
         if (template.object?.properties == undefined) {
-            console.error("Can't create entity from template without a prototype.");
+            console.error("Can't create entity from template without a blueprint.");
             return null;
         }
-        let prototypeProperty = template.object.properties.find(p => p.name == 'prototype');
-        if (prototypeProperty?.value == undefined) {
-            console.error("Can't create entity from template without a prototype.");
+        let blueprintProperty = template.object.properties.find(p => p.name == 'blueprint');
+        if (blueprintProperty?.value == undefined) {
+            console.error("Can't create entity from template without a blueprint.");
             return null;
         }
-        let prototype = this.getAsset(prototypeProperty.value);
-        if (prototype == undefined) {
-            console.error(`Could not find prototype ${prototypeProperty.value}.`);
+        let blueprint = this.getAsset(blueprintProperty.value);
+        if (blueprint == undefined) {
+            console.error(`Could not find prototype ${blueprintProperty.value}.`);
             return null;
         }
-        let r = this.createEntityFromPrototype(parent, prototype, template);
+        let r = this.createEntityFromBlueprint(parent, blueprint, template);
         if (template.object.name != undefined && template.object.name !== null && template.object.name != "")
             r.name = template.object.name;
         return r;
@@ -89,10 +89,48 @@ export class Engine {
         let r = this.createEntitytFromTiledTemplate(parent, object.templateAsset.asset);
         if (r != null) {
             r.localPosition = new Point(object.x ?? 0, object.y ?? 0); // Pass the TiledObject down?
+            r.localPosition = new Point(r.localPosition.x + r.pivot.x, r.localPosition.y - r.size.y + r.pivot.y);
             if (object.name !== undefined && object.name != "")
                 r.name = object.name;
         }
         return r;
+    }
+    createEntitiesFromTiledLayer(layer) {
+        let r = [];
+        if (layer.objects)
+            for (let definition of layer.objects)
+                if (definition.template != null && definition.template != "") {
+                    let newEntity = this.createEntityFromTiledObject(this.sceneRoot, definition);
+                    if (newEntity)
+                        r.push(newEntity);
+                }
+        return r;
+    }
+    createTilemapFromTiledTilemap(path) {
+        let tilemap = this.getAsset(path).asset;
+        let r = [];
+        if (tilemap.layers)
+            for (let layer of tilemap.layers) {
+                if (layer.type == "objectgroup") {
+                    r.push(...this.createEntitiesFromTiledLayer(layer));
+                }
+                else if (layer.type == "tilelayer") {
+                    let blueprint = new EntityBlueprint();
+                    let assetReference = new AssetReference("", blueprint);
+                    blueprint.components.push({ type: "Tilemap", tilemap: tilemap, layer: layer });
+                    blueprint.components.push({ type: "TilemapCollider" });
+                    let newEntity = this.createEntityFromBlueprint(this.sceneRoot, assetReference, new TiledTemplate());
+                    let tilemapComponent = newEntity.getComponent(TilemapComponent);
+                    if (tilemapComponent != null && layer.class != undefined)
+                        tilemapComponent.renderLayer = RenderLayersMapping[layer.class];
+                    newEntity.name = path;
+                    r.push(newEntity);
+                }
+            }
+        return r;
+    }
+    getModule(t) {
+        return this.modules.find((module) => module instanceof t);
     }
 }
 //# sourceMappingURL=Engine.js.map

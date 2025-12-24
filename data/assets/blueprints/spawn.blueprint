@@ -1,0 +1,10 @@
+{
+   "size": { "x": 8, "y": 8 },
+   "pivot": { "x": 4, "y": 4 },
+   "components": [
+      {
+         "type": "Tag",
+         "tag": "spawn"
+      }
+   ]
+}

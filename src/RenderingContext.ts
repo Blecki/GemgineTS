@@ -2,6 +2,7 @@ import { Sprite } from "./Sprite.js";
 import { Point } from "./Point.js";
 import { Rect } from "./Rect.js";
 import { Camera } from "./Camera.js";
+import { RawImage } from "./RawImage.js";
 
 type DrawTask = (context: CanvasRenderingContext2D, camera: Camera) => void;
 
@@ -10,9 +11,17 @@ export class RenderingContext {
   public context: CanvasRenderingContext2D;
   private pendingDrawTasks: DrawTask[];
 
-  constructor(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) {
-    this.canvas = canvas;
-    this.context = context;
+  constructor(targetWidth: number, targetHeight: number) {
+    this.canvas = document.createElement('canvas');
+    this.canvas.width = targetWidth;
+    this.canvas.height = targetHeight;
+    this.canvas.style.imageRendering = 'pixelated';
+
+    let ctx = this.canvas.getContext('2d');
+    if (ctx == null) throw new Error("Failed to get 2D context");
+    this.context = ctx;
+    this.context.imageSmoothingEnabled = false;
+    
     this.pendingDrawTasks = [];
   }
 
@@ -41,10 +50,29 @@ export class RenderingContext {
   public drawRectangle(rect: Rect, color: string) {
     this.pendingDrawTasks.push((context, camera) => {
       context.fillStyle = color;
-      context.fillRect(rect.x + camera.drawOffset.x, rect.y + camera.drawOffset.y, rect.width, rect.height);
+      context.fillRect(Math.floor(rect.x) + camera.drawOffset.x, Math.floor(rect.y) + camera.drawOffset.y, rect.width, rect.height);
     });
   }
-  
+
+  public drawString(text: string, position: Point, color: string) {
+    this.pendingDrawTasks.push((context, camera) => {
+      context.fillStyle = color;
+      context.textAlign = 'left';
+      context.textBaseline = 'top';
+      context.fillText(text, position.x + camera.drawOffset.x, position.y + camera.drawOffset.y);
+    });
+  }
+
+  public drawLine(start: Point, end: Point, color: string) {
+    this.pendingDrawTasks.push((context, camera) => {
+      context.strokeStyle = color;
+      context.beginPath();
+      context.moveTo(start.x + camera.drawOffset.x, start.y + camera.drawOffset.y);
+      context.lineTo(end.x + camera.drawOffset.x, end.y + camera.drawOffset.y);
+      context.stroke();
+    });
+  }
+
   public flush(camera: Camera) {
         this.context.globalAlpha = 1;
         this.context.globalCompositeOperation = 'source-over';
@@ -54,6 +82,10 @@ export class RenderingContext {
     for (let t of this.pendingDrawTasks)
       t(this.context, camera);
     this.pendingDrawTasks = [];
+  }
+
+  public asRawImage() : RawImage {
+    return new RawImage(this.context.getImageData(0, 0, this.canvas.width, this.canvas.height).data, this.canvas.width, this.canvas.height);
   }
 
   public clearScreen() {

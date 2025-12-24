@@ -1,3 +1,4 @@
+import { Point } from "./Point.js";
 export class Rect {
     x;
     y;
@@ -23,6 +24,27 @@ export class Rect {
     }
     get area() {
         return this.width * this.height;
+    }
+    static enumerate(rect, callback) {
+        for (let y = rect.y; y < rect.y + rect.height; y++) {
+            for (let x = rect.x; x < rect.x + rect.width; x++) {
+                callback(x, y);
+            }
+        }
+    }
+    static getRelativeDirection(a, b) {
+        if (b.x >= a.x + a.width)
+            return "east";
+        if (b.x + b.width <= a.x)
+            return "west";
+        if (b.y >= a.y + a.height)
+            return "south";
+        if (b.y + b.height <= a.y)
+            return "north";
+        return "huh?";
+    }
+    withOffset(point) {
+        return new Rect(this.x + point.x, this.y + point.y, this.width, this.height);
     }
 }
 //# sourceMappingURL=Rect.js.map

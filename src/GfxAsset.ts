@@ -2,41 +2,72 @@ import { IndexedImage } from "./IndexedImage.js";
 import { Palette } from "./Palette.js";
 import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
-import { initializeFromJSON, resolveInlineReference } from "./JsonConverter.js";
+import { resolveInlineReference } from "./JsonConverter.js";
 import { CompositeImage, CompositeImageLayer } from "./CompositeImage.js";
 import { Rect } from "./Rect.js";
 import { Sprite } from "./Sprite.js";
 import { AnimationSetAsset } from "./AnimationSetAsset.js";
 
+type CompositeImageLayerAssetPrototype = {
+    sheet: string;
+    palette: number;
+}
+
 export class CompositeImageLayerAsset {
-  public sheet: string | undefined = undefined;
-  public palette: number | undefined = undefined;
+  public sheet: string;
+  public palette: number;
+
+  constructor(prototype?:object) {
+    let p = prototype as CompositeImageLayerAssetPrototype;
+    this.sheet = p?.sheet ?? "nosheet";
+    this.palette = p?.palette ?? 0;
+  }
+}
+
+type GfxAssetPrototype = {
+  type: string;
+  path: string;
+  basePalette: string;
+  layers: object[];
+  isSheet: boolean;
+  tileWidth: number;
+  tileHeight: number;
+  animations: string | object;
+  fps: number;
+  currentAnimation: string;
 }
 
 export class GfxAsset {
-  public type: string | undefined = undefined;
-  public path: string | undefined = undefined;
-  public basePalette: string | undefined = undefined;
-  public layers: CompositeImageLayerAsset[] | undefined = undefined;
-  public isSheet: boolean | undefined = undefined;
-  public tileWidth: number | undefined = undefined;
-  public tileHeight: number | undefined = undefined;
-  public animations: AnimationSetAsset | undefined = undefined;
-  public fps: number | undefined = undefined;
-  public currentAnimation: string | undefined = undefined;
+  public type: string;
+  public path: string;
+  public basePalette: string;
+  public layers: CompositeImageLayerAsset[];
+  public isSheet: boolean;
+  public tileWidth: number;
+  public tileHeight: number;
+  public animations: string | object;
+  public fps: number;
+  public currentAnimation: string;
 
   private cachedImage: ImageBitmap | null = null;
+  public resolvedAnimations: AnimationSetAsset | undefined = undefined;
+
+  constructor(prototype?:object) {
+    let p = prototype as GfxAssetPrototype;
+    this.type = p?.type ?? "none";
+    this.path = p?.path ?? "";
+    this.basePalette = p?.basePalette ?? "";
+    this.layers = (p?.layers ?? []).map(l => new CompositeImageLayerAsset(l));
+    this.isSheet = p?.isSheet ?? false;
+    this.tileWidth = p?.tileWidth ?? 0;
+    this.tileHeight = p?.tileHeight ?? 0;
+    this.animations = p?.animations;
+    this.fps = p?.fps ?? 10;
+    this.currentAnimation = p?.currentAnimation ?? "";
+  }
 
   public resolveDependencies(reference: AssetReference, engine: Engine): void {  
-    console.log("ImageAsset Resolve Dependencies");
-
-    if (this.layers != undefined)
-      this.layers = this.layers.map(l => { let n = new CompositeImageLayerAsset(); initializeFromJSON(l, n); return n; });
-
-    this.isSheet ??= false;
-
-    this.animations = resolveInlineReference(reference, engine, this.animations, AnimationSetAsset);
-    this.fps ??= 10;
+    this.resolvedAnimations = resolveInlineReference(reference, engine, this.animations, AnimationSetAsset);
     this.loadImageCache(engine);
   }
 
@@ -54,8 +85,6 @@ export class GfxAsset {
     if (this.type == "image") {
       this.cachedImage = engine.getAsset(this.path ?? "").asset;
     }
-
-    console.log(this);
   }
 
   public getSprite(x: number, y: number): Sprite {
