@@ -1,6 +1,5 @@
 import { Component, componentType } from "./Component.js";
 import { Module } from "./Module.js";
-import { RenderingContext } from "./RenderingContext.js";
 import { Entity } from "./Entity.js";
 import { Camera } from "./Camera.js";
 import { Engine } from "./Engine.js";

@@ -1,11 +1,21 @@
 import {} from "./Color.js";
 import { Rect } from "./Rect.js";
 export class RawImage {
+    source;
     imageData;
     _width;
     _height;
     constructor(image, width, height) {
-        this.imageData = image;
+        if (image instanceof ImageData) {
+            this.source = image;
+            this.imageData = image.data;
+        }
+        else if (image instanceof Uint8ClampedArray) {
+            this.source = null;
+            this.imageData = image;
+        }
+        else
+            throw new Error("Huh?");
         this._width = width;
         this._height = height;
     }

@@ -2,7 +2,7 @@ import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
 import { TiledTileset } from "./TiledTileset.js";
 import pathCombine from "./PathCombine.js";
-import { TiledObject } from "./TiledObject.js";
+import { TiledObject, TiledProperty } from "./TiledObject.js";
 export class TiledLayer {
     class;
     data;
@@ -17,6 +17,7 @@ export class TiledLayer {
     width;
     x;
     y;
+    properties;
     constructor(prototype) {
         let p = prototype;
         this.class = p?.class ?? "Ground";
@@ -32,6 +33,7 @@ export class TiledLayer {
         this.width = p?.width ?? 0;
         this.x = p?.x ?? 0;
         this.y = p?.y ?? 0;
+        this.properties = (p?.properties ?? []).map(p => new TiledProperty(p));
     }
     resolveDependencies(self, engine) {
         this.objects.forEach(t => t.resolveDependencies(self, engine));

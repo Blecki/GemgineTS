@@ -1,17 +1,22 @@
 export var RenderLayers;
 (function (RenderLayers) {
-    RenderLayers[RenderLayers["Ground"] = 0] = "Ground";
+    RenderLayers[RenderLayers["Background"] = 0] = "Background";
     RenderLayers[RenderLayers["Objects"] = 1] = "Objects";
-    RenderLayers[RenderLayers["Lighting"] = 2] = "Lighting";
-    RenderLayers[RenderLayers["Overlay"] = 3] = "Overlay";
-    RenderLayers[RenderLayers["GUI"] = 4] = "GUI";
 })(RenderLayers || (RenderLayers = {}));
 ;
 export const RenderLayersMapping = {
-    "Ground": RenderLayers.Ground,
-    "Objects": RenderLayers.Objects,
-    "Lighting": RenderLayers.Lighting,
-    "Overlay": RenderLayers.Overlay,
-    "GUI": RenderLayers.GUI
+    "Background": RenderLayers.Background,
+    "Objects": RenderLayers.Objects
+};
+export var RenderChannels;
+(function (RenderChannels) {
+    RenderChannels[RenderChannels["Diffuse"] = 0] = "Diffuse";
+    RenderChannels[RenderChannels["Normals"] = 1] = "Normals";
+    RenderChannels[RenderChannels["Collision"] = 2] = "Collision";
+})(RenderChannels || (RenderChannels = {}));
+;
+export const RenderChannelsMapping = {
+    "Diffuse": RenderChannels.Diffuse,
+    "Normals": RenderChannels.Normals
 };
 //# sourceMappingURL=RenderLayers.js.map

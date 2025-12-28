@@ -1,6 +1,5 @@
 import { AssetLoader } from "./AssetLoader.js";
 import { RenderModule } from "./RenderModule.js";
-import { RenderingContext } from "./RenderingContext.js";
 import { Engine } from "./Engine.js";
 import { EntityBlueprint } from "./EntityBlueprint.js";
 import { Entity } from "./Entity.js";

@@ -1,10 +1,10 @@
 import { Engine } from "./Engine.js";
-import { RenderingContext } from "./RenderingContext.js";
+import { RenderContext } from "./RenderContext.js";
 import { Sprite } from "./Sprite.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { RenderComponent } from "./RenderModule.js";
 import { componentType } from "./Component.js";
-import { RenderLayers } from "./RenderLayers.js";
+import { RenderLayers, RenderChannels } from "./RenderLayers.js";
 import { AssetReference } from "./AssetReference.js";
 import { resolveInlineReference } from "./JsonConverter.js";
 import { Point } from "./Point.js";
@@ -35,14 +35,15 @@ export class SpriteComponent extends RenderComponent {
   private currentPlace: number = 0; 
   public facing: string | undefined = undefined; 
   
-  public render(context: RenderingContext) {
+  public render(context: RenderContext) {
     if (this.sprite != null && this.parent != null)
-      context.drawSprite(this.sprite, this.parent.globalPosition.sub(this.parent.pivot));
+      context.getTarget(this.renderLayer, this.renderChannel).drawSprite(this.sprite, this.parent.globalPosition.sub(this.parent.pivot));
   }
 
   public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference): void {
     console.log("Initializing sprite component");
     this.renderLayer = RenderLayers.Objects;
+    this.renderChannel = RenderChannels.Diffuse;
     this.gfxAsset = resolveInlineReference(prototypeAsset, engine, this.gfx, GfxAsset);
     this.facing ??= "south";
 
