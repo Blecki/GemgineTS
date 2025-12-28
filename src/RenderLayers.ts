@@ -1,15 +1,20 @@
 export enum RenderLayers {
-    Ground = 0,
-    Objects = 1,
-    Lighting = 2,
-    Overlay = 3,
-    GUI = 4
+    Background = 0,
+    Objects = 1
 };
 
 export const RenderLayersMapping: { [key: string]: RenderLayers } = {
-    "Ground": RenderLayers.Ground,
-    "Objects":  RenderLayers.Objects,
-    "Lighting": RenderLayers.Lighting,
-    "Overlay": RenderLayers.Overlay,
-    "GUI": RenderLayers.GUI
+    "Background": RenderLayers.Background,
+    "Objects":  RenderLayers.Objects
+};
+
+export enum RenderChannels {
+    Diffuse = 0,
+    Normals = 1,
+    Collision = 2
+};
+
+export const RenderChannelsMapping: { [key: string]: RenderChannels } = {
+    "Diffuse": RenderChannels.Diffuse,
+    "Normals": RenderChannels.Normals
 };

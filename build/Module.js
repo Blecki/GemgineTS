@@ -1,5 +1,5 @@
 import { Entity } from "./Entity.js";
-import { RenderingContext } from "./RenderingContext.js";
+import { RenderContext } from "./RenderContext.js";
 import { Engine } from "./Engine.js";
 export class Module {
     entityCreated(entity) { }

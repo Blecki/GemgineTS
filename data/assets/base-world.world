@@ -2,8 +2,8 @@
     "maps": [
         {
             "fileName": "room0.tmj",
-            "height": 128,
-            "width": 160,
+            "height": 112,
+            "width": 264,
             "x": 0,
             "y": 0
         }

@@ -8,12 +8,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Engine } from "./Engine.js";
-import { RenderingContext } from "./RenderingContext.js";
+import { RenderContext } from "./RenderContext.js";
 import { Sprite } from "./Sprite.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { RenderComponent } from "./RenderModule.js";
 import { componentType } from "./Component.js";
-import { RenderLayers } from "./RenderLayers.js";
+import { RenderLayers, RenderChannels } from "./RenderLayers.js";
 import { AssetReference } from "./AssetReference.js";
 import { resolveInlineReference } from "./JsonConverter.js";
 import { Point } from "./Point.js";
@@ -37,11 +37,12 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
     facing = undefined;
     render(context) {
         if (this.sprite != null && this.parent != null)
-            context.drawSprite(this.sprite, this.parent.globalPosition.sub(this.parent.pivot));
+            context.getTarget(this.renderLayer, this.renderChannel).drawSprite(this.sprite, this.parent.globalPosition.sub(this.parent.pivot));
     }
     initialize(engine, template, prototypeAsset) {
         console.log("Initializing sprite component");
         this.renderLayer = RenderLayers.Objects;
+        this.renderChannel = RenderChannels.Diffuse;
         this.gfxAsset = resolveInlineReference(prototypeAsset, engine, this.gfx, GfxAsset);
         this.facing ??= "south";
         if (this.gfxAsset != undefined) {

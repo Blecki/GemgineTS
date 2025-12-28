@@ -1,6 +1,5 @@
 import { EntityBlueprint } from "./EntityBlueprint.js";
 import { Module } from "./Module.js";
-import { RenderingContext } from "./RenderingContext.js";
 import { Entity } from "./Entity.js";
 import { AssetReference } from "./AssetReference.js";
 import { allocateEntityID } from "./AllocateEntityID.js";
@@ -13,7 +12,7 @@ import { GameTime } from "./GameTime.js";
 import { TiledLayer, TiledTilemap } from "./TiledTilemap.js";
 import { TilemapComponent } from "./TilemapComponent.js";
 import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
-import { RenderLayersMapping } from "./RenderLayers.js";
+import { RenderLayersMapping, RenderChannelsMapping, RenderChannels } from "./RenderLayers.js";
 
 export class Engine {
   private readonly modules: Module[] = [];
@@ -135,10 +134,10 @@ export class Engine {
           let blueprint = new EntityBlueprint();
           let assetReference = new AssetReference("", blueprint);
           blueprint.components.push({ type: "Tilemap", tilemap: tilemap, layer: layer } as ComponentBlueprint);
-          blueprint.components.push({ type: "TilemapCollider" });
+          var renderChannel = RenderChannelsMapping[layer.properties.filter(p => p.name == "Channel")[0].value];    
+          if (renderChannel == RenderChannels.Collision)
+            blueprint.components.push({ type: "TilemapCollider" });
           let newEntity = this.createEntityFromBlueprint(this.sceneRoot, assetReference, new TiledTemplate());
-          let tilemapComponent = newEntity.getComponent(TilemapComponent);
-          if (tilemapComponent != null && layer.class != undefined) tilemapComponent.renderLayer = RenderLayersMapping[layer.class];
           newEntity.name = path;
           r.push(newEntity);
         }

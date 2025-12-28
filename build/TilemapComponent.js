@@ -10,17 +10,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { Rect } from "./Rect.js";
 import { Point } from "./Point.js";
 import { TiledTilemap, TiledLayer, TiledInlineTileset } from "./TiledTilemap.js";
-import { RenderingContext } from "./RenderingContext.js";
+import { RenderContext } from "./RenderContext.js";
 import { CacheState } from "./CacheState.js";
 import { Engine } from "./Engine.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { RenderComponent } from "./RenderModule.js";
 import { componentType } from "./Component.js";
 import { Array2D } from "./Array2D.js";
-import { RenderLayers } from "./RenderLayers.js";
+import { RenderChannelsMapping, RenderLayers, RenderLayersMapping } from "./RenderLayers.js";
 import { TiledTile } from "./TiledTileset.js";
 import { PropertyGrid } from "./Debugger.js";
 import { Fluent } from "./Fluent.js";
+import { RenderChannels } from "./RenderLayers.js";
 let TilemapComponent = class TilemapComponent extends RenderComponent {
     layer;
     tilemap;
@@ -29,7 +30,6 @@ let TilemapComponent = class TilemapComponent extends RenderComponent {
     cachedRender = undefined;
     worldspaceOriginOffset = undefined;
     tileSize = undefined;
-    renderLayer = RenderLayers.Ground;
     createDebugger(name) {
         let grid = new PropertyGrid(this, name, ["layer", "tilemap", "worldspaceOriginOffset", "tileSize", "renderLayer"]);
         return grid.getElement();
@@ -40,7 +40,8 @@ let TilemapComponent = class TilemapComponent extends RenderComponent {
         this.layer = p?.layer ?? new TiledLayer();
         this.tilemap = p?.tilemap ?? new TiledTilemap();
         this.worldspaceOriginOffset = new Point(this.layer?.x ?? 0, this.layer?.y ?? 0);
-        this.renderLayer = RenderLayers.Ground;
+        this.renderLayer = RenderLayersMapping[p?.layer.properties.filter(p => p.name == "Layer")[0].value];
+        this.renderChannel = RenderChannelsMapping[p?.layer.properties.filter(p => p.name == "Channel")[0].value];
     }
     initialize(engine, template) {
         this.tileSize = new Point(this.tilemap.tilewidth, this.tilemap.tileheight);
@@ -49,7 +50,7 @@ let TilemapComponent = class TilemapComponent extends RenderComponent {
         if (tilemap.tilesets == undefined)
             return [null, 0];
         for (let i = tilemap.tilesets.length - 1; i >= 0; i--) {
-            if (tile > (tilemap.tilesets[i].firstgid ?? 0))
+            if (tile >= (tilemap.tilesets[i].firstgid ?? 0))
                 return [tilemap.tilesets[i], tile - (tilemap.tilesets[i].firstgid ?? 0)];
         }
         return [tilemap?.tilesets[0], tile];
@@ -85,6 +86,8 @@ let TilemapComponent = class TilemapComponent extends RenderComponent {
         });
     }
     render(context) {
+        if (this.renderChannel == RenderChannels.Collision)
+            return;
         if (this.cacheState == CacheState.Empty)
             this.updateCache();
         if (this.parent != null) {
@@ -92,9 +95,9 @@ let TilemapComponent = class TilemapComponent extends RenderComponent {
             basePoint.x += this.layer?.x ?? 0;
             basePoint.y += this.layer?.y ?? 0;
             if (this.cacheState == CacheState.Priming && this.cachedCanvas != null)
-                context.drawImage(this.cachedCanvas, new Rect(0, 0, this.cachedCanvas.width, this.cachedCanvas.height), basePoint);
+                context.getTarget(this.renderLayer, this.renderChannel).drawImage(this.cachedCanvas, new Rect(0, 0, this.cachedCanvas.width, this.cachedCanvas.height), basePoint);
             else if (this.cacheState == CacheState.Ready && this.cachedRender != null)
-                context.drawImage(this.cachedRender, new Rect(0, 0, this.cachedRender.width, this.cachedRender.height), basePoint);
+                context.getTarget(this.renderLayer, this.renderChannel).drawImage(this.cachedRender, new Rect(0, 0, this.cachedRender.width, this.cachedRender.height), basePoint);
         }
     }
     fillArray(callback) {
