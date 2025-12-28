@@ -1,0 +1,8 @@
+{
+  "type": "image",
+  "isSheet": true,
+  "tileWidth": 48,
+  "tileHeight": 64,
+  "path": "assets/antioch/idle.png",
+  "animations": "assets/marci.animset"
+}
