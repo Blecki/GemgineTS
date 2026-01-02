@@ -45,6 +45,10 @@ export class Point implements DebuggableObject {
     return new Point(this.x - other.x, this.y - other.y);
   }
 
+  public multiply(other: number): Point {
+    return new Point(this.x * other, this.y * other);
+  }
+
   public truncate(): Point {
     return new Point(Math.floor(this.x), Math.floor(this.y));
   }

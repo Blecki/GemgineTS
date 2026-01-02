@@ -3,23 +3,27 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "assets/room0.tmj",
     "console.history": [
         "world"
     ],
     "expandedProjectPaths": [
+        "assets/templates",
         ".",
-        "assets",
-        "assets/templates"
+        "assets"
     ],
     "fileStates": {
         "assets/base-tileset.tsj": {
-            "scaleInDock": 4,
+            "scaleInDock": 2,
             "scaleInEditor": 1
         },
         "assets/bunny_tiles.tsj": {
             "scaleInDock": 1,
             "scaleInEditor": 8
+        },
+        "assets/collision.tsj": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "assets/grass.tsj": {
             "scaleInDock": 1
@@ -41,18 +45,18 @@
             "scaleInEditor": 8
         },
         "assets/normal-tiles.tsj": {
-            "scaleInDock": 4,
+            "scaleInDock": 2,
             "scaleInEditor": 1
         },
         "assets/room0.tmj": {
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 8,
-            "selectedLayer": 0,
+            "scale": 4,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 44.5,
-                "y": 47.0625
+                "x": 245.75,
+                "y": 189.625
             }
         },
         "assets/room1.tmj": {
@@ -141,11 +145,13 @@
     "map.tileWidth": 16,
     "map.width": 33,
     "openFiles": [
+        "assets/room0.tmj"
     ],
     "project": "world.tiled-project",
     "recentFiles": [
-        "assets/base-tileset.tsj",
         "assets/room0.tmj",
+        "assets/collision.tsj",
+        "assets/base-tileset.tsj",
         "assets/normal-tiles.tsj",
         "assets/test-room.tmj",
         "assets/test-room2.tmj",
@@ -154,8 +160,7 @@
         "assets/minitiles.tsj",
         "assets/untitled.tmj",
         "assets/minitiles2.tsj",
-        "assets/leaf2.tsj",
-        "assets/leaf.tsj"
+        "assets/leaf2.tsj"
     ],
     "tileset.lastUsedFilter": "JSON tileset files (*.tsj *.json)",
     "tileset.lastUsedFormat": "json",

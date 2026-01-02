@@ -34,6 +34,7 @@ export class RenderContext {
   public prepAll() {
     this.renderTargets[RenderLayers.Background][RenderChannels.Diffuse].reset();
     this.renderTargets[RenderLayers.Background][RenderChannels.Normals].reset();
+    this.renderTargets[RenderLayers.Background][RenderChannels.Collision].reset();
     this.renderTargets[RenderLayers.Objects][RenderChannels.Diffuse].reset();
     this.renderTargets[RenderLayers.Objects][RenderChannels.Normals].reset();
   }
@@ -42,6 +43,7 @@ export class RenderContext {
   public flushAll(cam: Camera) {
     this.renderTargets[RenderLayers.Background][RenderChannels.Diffuse].flush(cam);
     this.renderTargets[RenderLayers.Background][RenderChannels.Normals].flush(cam);
+    this.renderTargets[RenderLayers.Background][RenderChannels.Collision].flush(cam);
     this.renderTargets[RenderLayers.Objects][RenderChannels.Diffuse].flush(cam);
     this.renderTargets[RenderLayers.Objects][RenderChannels.Normals].flush(cam);
   }

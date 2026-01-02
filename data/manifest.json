@@ -2,6 +2,8 @@
   "assets/base-tileset.png",
   "assets/base-tileset.tsj",
   "assets/base-world.world",
+  "assets/collision.png",
+  "assets/collision.tsj",
   "assets/dflt.png",
   "assets/marci.animset",
   "assets/marci.gfx",

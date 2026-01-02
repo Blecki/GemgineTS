@@ -17,6 +17,7 @@ export var RenderChannels;
 ;
 export const RenderChannelsMapping = {
     "Diffuse": RenderChannels.Diffuse,
-    "Normals": RenderChannels.Normals
+    "Normals": RenderChannels.Normals,
+    "Collision": RenderChannels.Collision
 };
 //# sourceMappingURL=RenderLayers.js.map

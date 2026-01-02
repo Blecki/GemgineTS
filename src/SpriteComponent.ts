@@ -16,16 +16,19 @@ import { type FluentElement, Fluent } from "./Fluent.js";
 
 type SpriteComponentPrototype = {
   gfx: string;
+  offset: object;
 }
 
 @componentType("Sprite")
 export class SpriteComponent extends RenderComponent {
   public gfx: string;
+  public offset: Point;
 
   constructor(prototype?: object) {
     super(prototype);
     let p = prototype as SpriteComponentPrototype;
     this.gfx = p?.gfx ?? "";
+    this.offset = new Point(p?.offset);
   }
 
   public gfxAsset: GfxAsset | undefined = undefined;
@@ -33,11 +36,12 @@ export class SpriteComponent extends RenderComponent {
   public frame: Point | undefined = undefined;
   private currentAnimation: AnimationAsset | null = null;
   private currentPlace: number = 0; 
-  public facing: string | undefined = undefined; 
+  public flip: boolean = false;
   
   public render(context: RenderContext) {
     if (this.sprite != null && this.parent != null)
-      context.getTarget(this.renderLayer, this.renderChannel).drawSprite(this.sprite, this.parent.globalPosition.sub(this.parent.pivot));
+      context.getTarget(this.renderLayer, this.renderChannel)
+        .drawSprite(this.sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset), this.flip);
   }
 
   public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference): void {
@@ -45,7 +49,6 @@ export class SpriteComponent extends RenderComponent {
     this.renderLayer = RenderLayers.Objects;
     this.renderChannel = RenderChannels.Diffuse;
     this.gfxAsset = resolveInlineReference(prototypeAsset, engine, this.gfx, GfxAsset);
-    this.facing ??= "south";
 
     if (this.gfxAsset != undefined) {
       if (this.frame == undefined)
@@ -66,7 +69,7 @@ export class SpriteComponent extends RenderComponent {
         this.currentAnimation.frames = [ new Point(0, 0) ];
       }
       else if (this.gfxAsset.currentAnimation != undefined)
-        this.currentAnimation = this.gfxAsset.resolvedAnimations.getAnimation(this.gfxAsset.currentAnimation, this.facing);
+        this.currentAnimation = this.gfxAsset.resolvedAnimations.getAnimation(this.gfxAsset.currentAnimation);
       else if (this.gfxAsset.resolvedAnimations.animations != undefined) {
         let t = this.gfxAsset?.resolvedAnimations?.animations[0];
         if (t == undefined)
@@ -79,18 +82,17 @@ export class SpriteComponent extends RenderComponent {
 
   public playAnimation(name: string, resetFrame: boolean) {
     if (this.gfxAsset == undefined) return;
-    this.currentAnimation = this.gfxAsset.resolvedAnimations?.getAnimation(name, this.facing) ?? null;
+    this.currentAnimation = this.gfxAsset.resolvedAnimations?.getAnimation(name) ?? null;
     if (resetFrame) this.currentPlace = 0;
   }
   
   public animate(): void {
-    if (this.sprite != null && this.currentAnimation != null && this.gfxAsset?.fps != undefined && this.currentAnimation.frames != undefined) {
+    if (this.sprite != null && this.currentAnimation != null && this.gfxAsset != undefined) {
       this.currentPlace += GameTime.getDeltaTime();
-      let currentFrame = Math.floor(this.currentPlace / (1 / this.gfxAsset.fps)) % this.currentAnimation.frames.length;
+      let currentFrame = Math.floor(this.currentPlace / (1 / this.currentAnimation.fps)) % this.currentAnimation.frames.length;
       this.sprite = this.gfxAsset.getSprite(this.currentAnimation.frames[currentFrame].x, this.currentAnimation.frames[currentFrame].y);
     }
   }
-
   
   public createDebugger(name: string): FluentElement {
     let grid = new PropertyGrid(this, name, ["sprite", "gfx", "frame", "currentAnimaton", "currentPlace", "facing"]);

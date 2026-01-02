@@ -92,8 +92,6 @@ export class TilemapComponent extends RenderComponent {
   }
 
   public render(context: RenderContext) {
-    if (this.renderChannel == RenderChannels.Collision) return;
-
     if (this.cacheState == CacheState.Empty)
       this.updateCache();
 

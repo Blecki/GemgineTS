@@ -121,6 +121,8 @@ export class Engine {
                     if (renderChannel == RenderChannels.Collision)
                         blueprint.components.push({ type: "TilemapCollider" });
                     let newEntity = this.createEntityFromBlueprint(this.sceneRoot, assetReference, new TiledTemplate());
+                    newEntity.localPosition = new Point(layer.x, layer.y);
+                    newEntity.size = new Point(tilemap.width * tilemap.tilewidth, tilemap.height * tilemap.tileheight);
                     newEntity.name = path;
                     r.push(newEntity);
                 }

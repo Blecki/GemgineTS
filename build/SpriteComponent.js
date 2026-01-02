@@ -24,27 +24,29 @@ import { PropertyGrid } from "./Debugger.js";
 import { Fluent } from "./Fluent.js";
 let SpriteComponent = class SpriteComponent extends RenderComponent {
     gfx;
+    offset;
     constructor(prototype) {
         super(prototype);
         let p = prototype;
         this.gfx = p?.gfx ?? "";
+        this.offset = new Point(p?.offset);
     }
     gfxAsset = undefined;
     sprite = null;
     frame = undefined;
     currentAnimation = null;
     currentPlace = 0;
-    facing = undefined;
+    flip = false;
     render(context) {
         if (this.sprite != null && this.parent != null)
-            context.getTarget(this.renderLayer, this.renderChannel).drawSprite(this.sprite, this.parent.globalPosition.sub(this.parent.pivot));
+            context.getTarget(this.renderLayer, this.renderChannel)
+                .drawSprite(this.sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset), this.flip);
     }
     initialize(engine, template, prototypeAsset) {
         console.log("Initializing sprite component");
         this.renderLayer = RenderLayers.Objects;
         this.renderChannel = RenderChannels.Diffuse;
         this.gfxAsset = resolveInlineReference(prototypeAsset, engine, this.gfx, GfxAsset);
-        this.facing ??= "south";
         if (this.gfxAsset != undefined) {
             if (this.frame == undefined)
                 this.sprite = this.gfxAsset.getSprite(0, 0);
@@ -62,7 +64,7 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
                 this.currentAnimation.frames = [new Point(0, 0)];
             }
             else if (this.gfxAsset.currentAnimation != undefined)
-                this.currentAnimation = this.gfxAsset.resolvedAnimations.getAnimation(this.gfxAsset.currentAnimation, this.facing);
+                this.currentAnimation = this.gfxAsset.resolvedAnimations.getAnimation(this.gfxAsset.currentAnimation);
             else if (this.gfxAsset.resolvedAnimations.animations != undefined) {
                 let t = this.gfxAsset?.resolvedAnimations?.animations[0];
                 if (t == undefined)
@@ -75,14 +77,14 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
     playAnimation(name, resetFrame) {
         if (this.gfxAsset == undefined)
             return;
-        this.currentAnimation = this.gfxAsset.resolvedAnimations?.getAnimation(name, this.facing) ?? null;
+        this.currentAnimation = this.gfxAsset.resolvedAnimations?.getAnimation(name) ?? null;
         if (resetFrame)
             this.currentPlace = 0;
     }
     animate() {
-        if (this.sprite != null && this.currentAnimation != null && this.gfxAsset?.fps != undefined && this.currentAnimation.frames != undefined) {
+        if (this.sprite != null && this.currentAnimation != null && this.gfxAsset != undefined) {
             this.currentPlace += GameTime.getDeltaTime();
-            let currentFrame = Math.floor(this.currentPlace / (1 / this.gfxAsset.fps)) % this.currentAnimation.frames.length;
+            let currentFrame = Math.floor(this.currentPlace / (1 / this.currentAnimation.fps)) % this.currentAnimation.frames.length;
             this.sprite = this.gfxAsset.getSprite(this.currentAnimation.frames[currentFrame].x, this.currentAnimation.frames[currentFrame].y);
         }
     }
