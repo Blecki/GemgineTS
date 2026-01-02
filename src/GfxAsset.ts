@@ -33,7 +33,6 @@ type GfxAssetPrototype = {
   tileWidth: number;
   tileHeight: number;
   animations: string | object;
-  fps: number;
   currentAnimation: string;
 }
 
@@ -46,7 +45,6 @@ export class GfxAsset {
   public tileWidth: number;
   public tileHeight: number;
   public animations: string | object;
-  public fps: number;
   public currentAnimation: string;
 
   private cachedImage: ImageBitmap | null = null;
@@ -62,7 +60,6 @@ export class GfxAsset {
     this.tileWidth = p?.tileWidth ?? 0;
     this.tileHeight = p?.tileHeight ?? 0;
     this.animations = p?.animations;
-    this.fps = p?.fps ?? 10;
     this.currentAnimation = p?.currentAnimation ?? "";
   }
 

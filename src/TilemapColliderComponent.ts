@@ -55,10 +55,6 @@ export class TilemapColliderComponent extends Component {
                                         rect.width,
                                         rect.height);
 
-    console.log(this.cachedTileSize);
-    console.log(worldSpaceTilemapBounds);
-    console.log(tileSpaceOtherBounds);
-
     for (let x = Math.max(0, tileSpaceOtherBounds.x); x < Math.min(worldSpaceTilemapBounds.width, tileSpaceOtherBounds.x + tileSpaceOtherBounds.width); ++x) {
       for (let y = Math.max(0, tileSpaceOtherBounds.y); y < Math.min(worldSpaceTilemapBounds.height, tileSpaceOtherBounds.y + tileSpaceOtherBounds.height); ++y) {
         if (this.cachedGrid?.getValue(Math.floor(x / (this.cachedTileSize?.x ?? 1)), Math.floor(y / (this.cachedTileSize?.y ?? 1))) == true) return true;

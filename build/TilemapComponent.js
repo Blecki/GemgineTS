@@ -86,8 +86,6 @@ let TilemapComponent = class TilemapComponent extends RenderComponent {
         });
     }
     render(context) {
-        if (this.renderChannel == RenderChannels.Collision)
-            return;
         if (this.cacheState == CacheState.Empty)
             this.updateCache();
         if (this.parent != null) {

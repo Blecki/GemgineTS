@@ -16,7 +16,7 @@ import { ControllerComponent } from "./ControllerComponent.js";
 import { Point } from "./Point.js";
 let PlayerControllerComponent = class PlayerControllerComponent extends Component {
     input = null;
-    speed = 32;
+    speed = 128;
     sprite = undefined;
     controller = undefined;
     initialize(engine, template, prototypeAsset) {
@@ -35,30 +35,19 @@ let PlayerControllerComponent = class PlayerControllerComponent extends Componen
             if (this.input?.check("west")) {
                 delta.x = -(this.speed * GameTime.getDeltaTime());
                 if (this.sprite != undefined) {
-                    this.sprite.facing = "west";
-                    this.sprite.playAnimation("walk", false);
+                    this.sprite.flip = true;
+                    this.sprite.playAnimation("run", false);
                 }
             }
-            if (this.input?.check("north")) {
-                delta.y = -(this.speed * GameTime.getDeltaTime());
-                if (this.sprite != undefined) {
-                    this.sprite.facing = "north";
-                    this.sprite.playAnimation("walk", false);
-                }
-            }
-            if (this.input?.check("south")) {
-                delta.y = (this.speed * GameTime.getDeltaTime());
-                if (this.sprite != undefined) {
-                    this.sprite.facing = "south";
-                    this.sprite.playAnimation("walk", false);
-                }
-            }
-            if (this.input?.check("east")) {
+            else if (this.input?.check("east")) {
                 delta.x = (this.speed * GameTime.getDeltaTime());
                 if (this.sprite != undefined) {
-                    this.sprite.facing = "east";
-                    this.sprite.playAnimation("walk", false);
+                    this.sprite.flip = false;
+                    this.sprite.playAnimation("run", false);
                 }
+            }
+            else {
+                this.sprite?.playAnimation("idle", false);
             }
         }
         this.controller?.move(delta);

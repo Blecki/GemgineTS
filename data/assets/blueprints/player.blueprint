@@ -1,10 +1,11 @@
 {
-   "size": { "x": 16, "y": 16 },
-   "pivot": { "x": 7, "y": 15 },
+   "size": { "x": 16, "y": 48 },
+   "pivot": { "x": 8, "y": 48 },
    "components": [
       {
          "type": "Sprite",
-         "gfx": "assets/marci.gfx"
+         "gfx": "assets/marci.gfx",
+         "offset": { "x": -16, "y": -16 }
       },
       {
          "type": "PlayerController"
@@ -17,6 +18,13 @@
       },
       {
          "type": "DebugGizmo"
+      },
+      { 
+         "type": "Light",
+         "offset": { "x": 0, "y": -64 },
+         "radius": 256,
+         "color": { "r": 255, "g": 255, "b": 255, "a": 255 },
+         "intensity": 1
       }
    ]
 }

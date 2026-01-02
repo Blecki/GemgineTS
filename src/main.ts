@@ -22,6 +22,7 @@ import { SpriteComponent } from "./SpriteComponent.js";
 import { PlayerControllerComponent } from "./PlayerControllerComponent.js";
 import { BoundsColliderComponent } from "./BoundsColliderComponent.js";
 import { TagComponent } from "./TagComponent.js";
+import { PhysicsModule } from "./PhysicsModule.js";
 
 const cellSize = new Point(8, 7);
 
@@ -54,6 +55,7 @@ export function Run(engineCallback: EngineCallback) : void {
 
         engine.addModule(new UpdateModule());
         engine.addModule(new CollisionModule());
+        engine.addModule(new PhysicsModule());
         let renderModule = new RenderModule(canvas);
         engine.addModule(renderModule);
 
@@ -81,6 +83,7 @@ export function Run(engineCallback: EngineCallback) : void {
 
         engine.run(() => {
           if (player != undefined) camera.position = new Point(player.globalPosition);
+          camera.confineToVisibleBounds(roomEntities[0].globalBounds, new Point(canvas.width, canvas.height));
           renderModule.render(engine);
         });
       });

@@ -6,23 +6,22 @@ type AnimationAssetPrototype = {
   name: string;
   direction: string;
   frames: Point[];
+  fps: number;
 }
 
 export class AnimationAsset {
   public name: string;
-  public direction: string;
   public frames: Point[];
+  public fps: number;
 
   public resolveDependencies(self: AssetReference, engine: Engine) {
-    this.frames ??= [];
-    this.frames = this.frames.map(f => new Point(f));
   }
 
   constructor(prototype?:object) {
     let p = prototype as AnimationAssetPrototype;
     this.name = p?.name ?? "unnamed";
-    this.direction = p?.direction ?? "north";
     this.frames = (p?.frames ?? []).map(f => new Point(f));
+    this.fps = p?.fps ?? 10;
   }
 }
 
@@ -44,12 +43,10 @@ export class AnimationSetAsset {
     this.animations.forEach(a => a.resolveDependencies(self, engine));
   }
 
-  public getAnimation(name: string, direction: string | undefined) : AnimationAsset | null {
+  public getAnimation(name: string) : AnimationAsset | null {
     if (this.animations == undefined) return null;
     for (let a of this.animations)
-      if (a.name == name && (direction == undefined || a.direction == direction)) return a;
-    if (direction != undefined)
-      return this.getAnimation(name, undefined);
+      if (a.name == name) return a;
     return null;
   }
 }

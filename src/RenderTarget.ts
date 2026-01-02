@@ -25,14 +25,29 @@ export class RenderTarget {
     this.pendingDrawTasks = [];
   }
 
-  public drawSprite(sprite: Sprite, position: Point) {
+  public drawSprite(sprite: Sprite, position: Point, flipped?: boolean) {
     let integerPosition = position.truncate();
     this.pendingDrawTasks.push((context, camera) => { 
-      context.drawImage(sprite.image, 
+      let destX = integerPosition.x + camera.drawOffset.x;
+      let destY = integerPosition.y + camera.drawOffset.y;
+
+      context.save();
+
+      if (flipped == true) {
+        context.translate(destX + sprite.sourceRect.width / 2, destY + sprite.sourceRect.height / 2);
+        context.scale(-1, 1);
+        destX = -(sprite.sourceRect.width / 2);
+        destY = -(sprite.sourceRect.height / 2);
+      }
+
+      context.drawImage(sprite.image,
         sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height,
-        integerPosition.x + camera.drawOffset.x, 
-        integerPosition.y + camera.drawOffset.y, 
-        sprite.sourceRect.width, sprite.sourceRect.height); 
+        destX, 
+        destY, 
+        sprite.sourceRect.width, 
+        sprite.sourceRect.height); 
+      
+      context.restore();
     });
   }
   

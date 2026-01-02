@@ -29,6 +29,9 @@ export class Point {
     sub(other) {
         return new Point(this.x - other.x, this.y - other.y);
     }
+    multiply(other) {
+        return new Point(this.x * other, this.y * other);
+    }
     truncate() {
         return new Point(Math.floor(this.x), Math.floor(this.y));
     }

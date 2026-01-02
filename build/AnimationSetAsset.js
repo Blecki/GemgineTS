@@ -3,17 +3,15 @@ import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
 export class AnimationAsset {
     name;
-    direction;
     frames;
+    fps;
     resolveDependencies(self, engine) {
-        this.frames ??= [];
-        this.frames = this.frames.map(f => new Point(f));
     }
     constructor(prototype) {
         let p = prototype;
         this.name = p?.name ?? "unnamed";
-        this.direction = p?.direction ?? "north";
         this.frames = (p?.frames ?? []).map(f => new Point(f));
+        this.fps = p?.fps ?? 10;
     }
 }
 export class AnimationSetAsset {
@@ -27,14 +25,12 @@ export class AnimationSetAsset {
         this.animations = this.animations.map(a => new AnimationAsset(a));
         this.animations.forEach(a => a.resolveDependencies(self, engine));
     }
-    getAnimation(name, direction) {
+    getAnimation(name) {
         if (this.animations == undefined)
             return null;
         for (let a of this.animations)
-            if (a.name == name && (direction == undefined || a.direction == direction))
+            if (a.name == name)
                 return a;
-        if (direction != undefined)
-            return this.getAnimation(name, undefined);
         return null;
     }
 }

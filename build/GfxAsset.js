@@ -25,7 +25,6 @@ export class GfxAsset {
     tileWidth;
     tileHeight;
     animations;
-    fps;
     currentAnimation;
     cachedImage = null;
     resolvedAnimations = undefined;
@@ -39,7 +38,6 @@ export class GfxAsset {
         this.tileWidth = p?.tileWidth ?? 0;
         this.tileHeight = p?.tileHeight ?? 0;
         this.animations = p?.animations;
-        this.fps = p?.fps ?? 10;
         this.currentAnimation = p?.currentAnimation ?? "";
     }
     resolveDependencies(reference, engine) {

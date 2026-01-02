@@ -12,7 +12,7 @@ import { Point } from "./Point.js";
 @componentType("PlayerController")
 export class PlayerControllerComponent extends Component {
   private input: Input | null = null;
-  private readonly speed: number = 32;
+  private readonly speed: number = 128;
   private sprite: SpriteComponent | undefined = undefined;
   private controller: ControllerComponent | undefined = undefined;
 
@@ -32,33 +32,23 @@ export class PlayerControllerComponent extends Component {
   public update() {
     let delta = new Point(0,0);
     if (this.parent != null) {
+
       if (this.input?.check("west")) {
         delta.x = -(this.speed * GameTime.getDeltaTime());
         if (this.sprite != undefined) {
-          this.sprite.facing = "west";
-          this.sprite.playAnimation("walk", false);
+          this.sprite.flip = true;
+          this.sprite.playAnimation("run", false);
         }
-      }
-      if (this.input?.check("north")) {
-        delta.y = -(this.speed * GameTime.getDeltaTime());
-        if (this.sprite != undefined) {
-          this.sprite.facing = "north";
-          this.sprite.playAnimation("walk", false);
-        }
-      }
-      if (this.input?.check("south")) {
-        delta.y = (this.speed * GameTime.getDeltaTime());
-        if (this.sprite != undefined) {
-          this.sprite.facing = "south";
-          this.sprite.playAnimation("walk", false);
-        }
-      }
-      if (this.input?.check("east")) {
+      }      
+      else if (this.input?.check("east")) {
         delta.x = (this.speed * GameTime.getDeltaTime());
         if (this.sprite != undefined) {
-          this.sprite.facing = "east";
-          this.sprite.playAnimation("walk", false);
+          this.sprite.flip = false;
+          this.sprite.playAnimation("run", false);
         }
+      }
+      else {
+        this.sprite?.playAnimation("idle", false);
       }
     }
     this.controller?.move(delta);

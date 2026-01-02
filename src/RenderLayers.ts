@@ -16,5 +16,6 @@ export enum RenderChannels {
 
 export const RenderChannelsMapping: { [key: string]: RenderChannels } = {
     "Diffuse": RenderChannels.Diffuse,
-    "Normals": RenderChannels.Normals
+    "Normals": RenderChannels.Normals,
+    "Collision": RenderChannels.Collision
 };
