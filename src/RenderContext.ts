@@ -12,17 +12,17 @@ type TargetDirectory = Record<RenderLayers, Record<RenderChannels, RenderTarget>
 export class RenderContext {
   private renderTargets: TargetDirectory;
 
-  constructor(width: number, height: number) {
+  constructor(width: number, height: number, gl: WebGLRenderingContext) {
     this.renderTargets = {
       [RenderLayers.Background]: {
-        [RenderChannels.Diffuse]: new RenderTarget(width, height),
-        [RenderChannels.Normals]: new RenderTarget(width, height),
-        [RenderChannels.Collision]: new RenderTarget(width, height)
+        [RenderChannels.Diffuse]: new RenderTarget(width, height, gl),
+        [RenderChannels.Normals]: new RenderTarget(width, height, gl),
+        [RenderChannels.Collision]: new RenderTarget(width, height, gl)
       },
       [RenderLayers.Objects]: {
-        [RenderChannels.Diffuse]: new RenderTarget(width, height),
-        [RenderChannels.Normals]: new RenderTarget(width, height),
-        [RenderChannels.Collision]: new RenderTarget(width, height)
+        [RenderChannels.Diffuse]: new RenderTarget(width, height, gl),
+        [RenderChannels.Normals]: new RenderTarget(width, height, gl),
+        [RenderChannels.Collision]: new RenderTarget(width, height, gl)
       }
     };
   }

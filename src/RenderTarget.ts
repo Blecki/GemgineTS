@@ -10,8 +10,9 @@ export class RenderTarget {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   private pendingDrawTasks: DrawTask[];
+  private texture: WebGLTexture;
 
-  constructor(targetWidth: number, targetHeight: number) {
+  constructor(targetWidth: number, targetHeight: number, gl: WebGLRenderingContext) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = targetWidth;
     this.canvas.height = targetHeight;
@@ -23,6 +24,8 @@ export class RenderTarget {
     this.context.imageSmoothingEnabled = false;
     
     this.pendingDrawTasks = [];
+
+    this.texture = gl.createTexture();
   }
 
   public drawSprite(sprite: Sprite, position: Point, flipped?: boolean) {
@@ -114,4 +117,19 @@ export class RenderTarget {
     this.pendingDrawTasks = [];
   }
 
+  public bind(gl: WebGLRenderingContext, slot: GLenum): void {
+    gl.activeTexture(slot);
+    gl.bindTexture(gl.TEXTURE_2D, this.texture);
+    gl.texImage2D(
+      gl.TEXTURE_2D, // Target
+      0,             // Mip level
+      gl.RGBA,       // Internal format
+      gl.RGBA,       // Format
+      gl.UNSIGNED_BYTE, // Type
+      this.canvas);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  }    
 }

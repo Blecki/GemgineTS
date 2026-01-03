@@ -7,17 +7,17 @@ import { RenderTarget } from "./RenderTarget.js";
 import { RenderLayers, RenderChannels } from "./RenderLayers.js";
 export class RenderContext {
     renderTargets;
-    constructor(width, height) {
+    constructor(width, height, gl) {
         this.renderTargets = {
             [RenderLayers.Background]: {
-                [RenderChannels.Diffuse]: new RenderTarget(width, height),
-                [RenderChannels.Normals]: new RenderTarget(width, height),
-                [RenderChannels.Collision]: new RenderTarget(width, height)
+                [RenderChannels.Diffuse]: new RenderTarget(width, height, gl),
+                [RenderChannels.Normals]: new RenderTarget(width, height, gl),
+                [RenderChannels.Collision]: new RenderTarget(width, height, gl)
             },
             [RenderLayers.Objects]: {
-                [RenderChannels.Diffuse]: new RenderTarget(width, height),
-                [RenderChannels.Normals]: new RenderTarget(width, height),
-                [RenderChannels.Collision]: new RenderTarget(width, height)
+                [RenderChannels.Diffuse]: new RenderTarget(width, height, gl),
+                [RenderChannels.Normals]: new RenderTarget(width, height, gl),
+                [RenderChannels.Collision]: new RenderTarget(width, height, gl)
             }
         };
     }
