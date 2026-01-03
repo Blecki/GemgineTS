@@ -74,22 +74,147 @@ export class RenderModule extends Module {
   public camera: Camera | null = null;
   public fpsQueue: number[] = [];
   public destinationCanvas: HTMLCanvasElement;
-  public destinationContext: CanvasRenderingContext2D;
+  public destinationContext: WebGLRenderingContext;
   public renderContext: RenderContext;
   private compositeBuffer: RawImage;
+  private program: WebGLProgram | null;
 
   private readonly LightZ: number = 64;
 
   constructor(canvas: HTMLCanvasElement) {
     super();
     this.destinationCanvas = canvas;
-    let ctx = this.destinationCanvas.getContext('2d', { willReadFrequently: true });
-    if (ctx == null) throw new Error("Failed to get 2D context");
+    let ctx = this.destinationCanvas.getContext('webgl');
+    if (ctx == null) throw new Error("Failed to get WebGL context");
     this.destinationContext = ctx;
-    this.destinationContext.imageSmoothingEnabled = false;
+    //this.destinationContext.imageSmoothingEnabled = false;
 
-    this.renderContext = new RenderContext(this.destinationCanvas.width, this.destinationCanvas.height);
+    this.renderContext = new RenderContext(this.destinationCanvas.width, this.destinationCanvas.height, this.destinationContext);
     this.compositeBuffer = new RawImage(new ImageData(this.destinationCanvas.width, this.destinationCanvas.height), this.destinationCanvas.width, this.destinationCanvas.height);
+
+    const vertexShader = this.compileShader(this.destinationContext, `
+        attribute vec4 a_position; // [-1, -1] to [1, 1]
+        varying vec2 v_texcoord;   
+        
+        void main() {
+          gl_Position = a_position;
+          v_texcoord = (a_position.xy * 0.5) + 0.5;
+          v_texcoord.y = 1.0 - v_texcoord.y;
+        }
+      `, this.destinationContext.VERTEX_SHADER);
+
+    const fragmentShader = this.compileShader(this.destinationContext, `
+      precision highp float;
+
+      uniform sampler2D u_diffuse;
+      uniform sampler2D u_objects;
+      uniform sampler2D u_normals;
+      uniform sampler2D u_collision;
+      varying vec2 v_texcoord;
+
+      const int MAX_LIGHTS = 5; 
+
+      struct Light {
+          vec2 position;
+          float radius;
+          vec3 color;
+          float intensity;
+      };
+
+      uniform Light u_lights[MAX_LIGHTS];
+      uniform int u_numActiveLights;
+
+      void main() {
+       
+        float destx = 528.0 * v_texcoord.x;
+        float desty = 224.0 * v_texcoord.y;
+
+        vec3 lighting = vec3(0.1, 0.1, 0.1);
+        vec4 object = texture2D(u_objects, v_texcoord);
+        
+        if (object.a > 0.5) 
+        {
+          for (int i = 0; i < MAX_LIGHTS; i++) 
+          {
+            if (i >= u_numActiveLights) break; 
+            float distanceToLight = sqrt(
+              ((destx - u_lights[i].position.x) * (destx - u_lights[i].position.x)) +
+              ((desty - u_lights[i].position.y) * (desty - u_lights[i].position.y)) 
+            );
+            float lightIntensity = max(0.0, 1.0 - (distanceToLight / u_lights[i].radius));
+            
+            lighting = vec3(lighting.r + (lightIntensity * u_lights[i].color.r * u_lights[i].intensity),
+                        lighting.g + (lightIntensity * u_lights[i].color.g * u_lights[i].intensity),
+                        lighting.b + (lightIntensity * u_lights[i].color.b * u_lights[i].intensity));
+          }      
+
+          gl_FragColor = vec4(object.r * lighting.r, 
+                          object.g * lighting.g,
+                          object.b * lighting.b,
+                          1.0);
+        }
+        else 
+        {
+          vec4 diffuse = texture2D(u_diffuse, v_texcoord);
+          vec4 normal = texture2D(u_normals, v_texcoord);
+          vec4 collision = texture2D(u_collision, v_texcoord);
+          vec3 surfaceNormal = vec3((2.0 * normal.r) - 1.0, (2.0 * normal.g) - 1.0, (2.0 * normal.b) - 1.0);
+
+          for (int i = 0; i < MAX_LIGHTS; i++) 
+          {
+            if (i >= u_numActiveLights) break; 
+            float distanceToLight = sqrt(
+              ((destx - u_lights[i].position.x) * (destx - u_lights[i].position.x)) +
+              ((desty - u_lights[i].position.y) * (desty - u_lights[i].position.y)) 
+            );
+            vec3 lightDirection = vec3(u_lights[i].position.x - destx, u_lights[i].position.y - desty, 64.0);
+
+            if (collision.r < 0.5) {
+              vec2 halfLight = vec2(lightDirection.x / 2.0, lightDirection.y / 2.0);
+              vec2 objectIntersection = vec2((halfLight.x + destx) / 528.0, (halfLight.y + desty) / 224.0);
+              vec4 objectShadow = texture2D(u_objects, objectIntersection);
+              if (objectShadow.a > 0.5) continue;
+            }
+            
+            float cosAngle = dot(normalize(surfaceNormal), normalize(lightDirection));
+            float lightIntensity = max(0.0, 1.0 - (distanceToLight / u_lights[i].radius)) * max(0.0, cosAngle);
+            float shininess = 64.0; 
+            float specularIntensity = min(lightIntensity, pow(max(0.0, cosAngle), shininess));
+
+            lighting = vec3(
+              lighting.r + ((lightIntensity + specularIntensity) * u_lights[i].color.r * u_lights[i].intensity),
+              lighting.g + ((lightIntensity + specularIntensity) * u_lights[i].color.g * u_lights[i].intensity),
+              lighting.b + ((lightIntensity + specularIntensity) * u_lights[i].color.b * u_lights[i].intensity));
+          }      
+
+          gl_FragColor = vec4( diffuse.r * (floor(lighting.r * 4.0) / 4.0), 
+                               diffuse.g * (floor(lighting.g * 4.0) / 4.0),
+                               diffuse.b * (floor(lighting.b * 4.0) / 4.0),
+                               1.0);
+        }
+      }
+    `, this.destinationContext.FRAGMENT_SHADER);
+
+    this.program = this.compileProgram(this.destinationContext, vertexShader, fragmentShader);
+
+    this.destinationContext.useProgram(this.program);
+
+    const positionBuffer = this.destinationContext.createBuffer();
+    this.destinationContext.bindBuffer(this.destinationContext.ARRAY_BUFFER, positionBuffer);
+
+    const positions = new Float32Array([
+      -1.0, -1.0,
+      1.0, -1.0,
+      -1.0, 1.0,
+      1.0, 1.0
+    ]);
+    this.destinationContext.bufferData(this.destinationContext.ARRAY_BUFFER, positions, this.destinationContext.STATIC_DRAW);
+
+    if (this.program != null) {
+    const positionLocation = this.destinationContext.getAttribLocation(this.program, "a_position");
+    this.destinationContext.enableVertexAttribArray(positionLocation);
+    this.destinationContext.vertexAttribPointer(positionLocation, 2, this.destinationContext.FLOAT, false, 0, 0);
+    }
   }
   
   private isRenderable(object: any): object is RenderableComponent {
@@ -121,35 +246,67 @@ export class RenderModule extends Module {
   }
 
   render(engine: Engine) {
-
     this.animatables.forEach(a => a.animate());
-
     this.renderContext.prepAll();
     
     if (this.camera == null) return;
-
         for (let renderable of this.renderables) {
           renderable.render(this.renderContext);
         }
 
+    this.fpsQueue.push(GameTime.getDeltaTime());
+    if (this.fpsQueue.length > 200) this.fpsQueue.shift();
+    var objectDiffuse = this.renderContext.getTarget(RenderLayers.Objects, RenderChannels.Diffuse);
+
+    let averageFrameTime = this.fpsQueue.reduce((sum, val) => sum + val, 0) / this.fpsQueue.length;
+    let fps = Math.round(1 / averageFrameTime).toString();
+    objectDiffuse.drawString(fps, new Point(5, 5), 'white');
+
     this.renderContext.flushAll(this.camera);
 
-    this.fpsQueue.push(GameTime.getDeltaTime());
-    if (this.fpsQueue.length > 200) this.fpsQueue.shift();    
+    if (this.program != null) {
+      var u_image0Location = this.destinationContext.getUniformLocation(this.program, "u_diffuse");
+      this.destinationContext.uniform1i(u_image0Location, 0); 
+      var u_image1Location = this.destinationContext.getUniformLocation(this.program, "u_objects");
+      this.destinationContext.uniform1i(u_image1Location, 1); 
+      var u_image2Location = this.destinationContext.getUniformLocation(this.program, "u_normals");
+      this.destinationContext.uniform1i(u_image2Location, 2); 
+      var u_image3Location = this.destinationContext.getUniformLocation(this.program, "u_collision");
+      this.destinationContext.uniform1i(u_image3Location, 3); 
+      var numActiveLightsLoc = this.destinationContext.getUniformLocation(this.program, "u_numActiveLights");
 
-    let localLights = this.lights.map(lc => {
-      return new Light(
-        (lc.parent?.globalPosition.add(lc.offset).add(this.camera?.drawOffset ?? new Point(0, 0))) ?? new Point(0, 0),
-        lc.radius,
-        lc.color,
-        lc.intensity);
-    });
 
-    var backgroundDiffuse = this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Diffuse).asRawImage();
-    var backgroundNormals = this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Normals).asRawImage();
-    var objectDiffuse = this.renderContext.getTarget(RenderLayers.Objects, RenderChannels.Diffuse).asRawImage();
-    var collisionDiffuse = this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Collision).asRawImage();
+      this.destinationContext.clear(this.destinationContext.COLOR_BUFFER_BIT | this.destinationContext.DEPTH_BUFFER_BIT);
+      var backgroundDiffuse = this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Diffuse);
+      backgroundDiffuse.bind(this.destinationContext, this.destinationContext.TEXTURE0);
+      objectDiffuse.bind(this.destinationContext, this.destinationContext.TEXTURE1);
+      var backgroundNormals = this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Normals);
+      backgroundNormals.bind(this.destinationContext, this.destinationContext.TEXTURE2);
+      var collisionDiffuse = this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Collision);
+      collisionDiffuse.bind(this.destinationContext, this.destinationContext.TEXTURE3);
 
+      let localLights = this.lights.map(lc => {
+        return new Light(
+          (lc.parent?.globalPosition.add(lc.offset).add(this.camera?.drawOffset ?? new Point(0, 0))) ?? new Point(0, 0),
+          lc.radius,
+          lc.color,
+          lc.intensity);
+        });
+      
+      if (numActiveLightsLoc != null) {
+        this.destinationContext.uniform1i(numActiveLightsLoc, localLights.length);
+        for (let i = 0; i < localLights.length; i++) {
+            this.destinationContext.uniform2fv(this.destinationContext.getUniformLocation(this.program, `u_lights[${i}].position`), new Float32Array([localLights[i].screenPosition.x, localLights[i].screenPosition.y]));
+            this.destinationContext.uniform3fv(this.destinationContext.getUniformLocation(this.program, `u_lights[${i}].color`), new Float32Array([localLights[i].color.r / 255, localLights[i].color.g / 255, localLights[i].color.b / 255]));
+            this.destinationContext.uniform1f(this.destinationContext.getUniformLocation(this.program, `u_lights[${i}].radius`), localLights[i].radius);
+            this.destinationContext.uniform1f(this.destinationContext.getUniformLocation(this.program, `u_lights[${i}].intensity`), localLights[i].intensity);
+        }
+      }
+
+      this.destinationContext.drawArrays(this.destinationContext.TRIANGLE_STRIP, 0, 4);
+
+    }
+    /*
     this.compositeBuffer.shade((destX: number, destY: number, sourceU: number, sourceY: number) => {
       let lighting = {r: 0.1, g: 0.1, b: 0.1};
       let normal = backgroundNormals.sample(sourceU, sourceY, 'nearest');
@@ -209,24 +366,35 @@ export class RenderModule extends Module {
       }
 
     }, new Rect(0, 0, this.compositeBuffer.width, this.compositeBuffer.height));
-
-    // Final composition
-    this.destinationContext.clearRect(0, 0, this.destinationCanvas.width, this.destinationCanvas.height);
-    if (this.compositeBuffer.source != null)
-      this.destinationContext.putImageData(this.compositeBuffer.source, 0, 0);
-
-    let averageFrameTime = this.fpsQueue.reduce((sum, val) => sum + val, 0) / this.fpsQueue.length;
-    this.destinationContext.fillStyle = 'white';
-    this.destinationContext.strokeStyle = 'black';
-    this.destinationContext.textAlign = 'left';
-    this.destinationContext.textBaseline = 'top';
-    let fps = Math.round(1 / averageFrameTime).toString();
-
-    this.destinationContext.strokeText(fps, 5, 5);
-    this.destinationContext.fillText(fps, 5, 5);
+    */
   }
 
   setCamera(camera: Camera) {
     this.camera = camera;
+  }
+
+  compileShader(context: WebGLRenderingContext, text: string, type: number) : WebGLShader | null{
+    const shader = context.createShader(type);
+    if (shader == null) return null;
+    context.shaderSource(shader, text);
+    context.compileShader(shader);
+
+    if (!context.getShaderParameter(shader, context.COMPILE_STATUS)) {
+      throw new Error(`Failed to compile shader: ${context.getShaderInfoLog(shader)}`);
+    }
+    return shader;
+  }
+
+  compileProgram(context: WebGLRenderingContext, vertexShader: WebGLShader | null, fragmentShader: WebGLShader | null): WebGLProgram | null{
+    const program = context.createProgram();
+    if (vertexShader != null) context.attachShader(program, vertexShader);
+    if (fragmentShader != null) context.attachShader(program, fragmentShader);
+    context.linkProgram(program);
+
+    if (!context.getProgramParameter(program, context.LINK_STATUS)) {
+      throw new Error(`Failed to compile WebGL program: ${context.getProgramInfoLog(program)}`);
+    }
+
+    return program;
   }
 }
