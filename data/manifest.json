@@ -114,5 +114,9 @@
   "assets/templates/pot.tj",
   "assets/templates/spawn.tj",
   "final-composite-fragment.glsl",
-  "final-composite-vertex.glsl"
+  "final-composite-vertex.glsl",
+  "assets/player.png",
+  "assets/player.animset",
+  "assets/tiles.png",
+  "assets/normals.png"
 ]

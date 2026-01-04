@@ -173,6 +173,8 @@ export class RenderModule extends Module {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
     if (this.program != null) {
+      this.gl.uniform2fv(this.gl.getUniformLocation(this.program, 'u_screenDimensions'), [this.destinationCanvas.width, this.destinationCanvas.height]);
+
       this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_diffuse"), 0); 
       this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_objects"), 1); 
       this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_normals"), 2); 
