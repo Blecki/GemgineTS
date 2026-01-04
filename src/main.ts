@@ -5,6 +5,7 @@ import { EntityBlueprint } from "./EntityBlueprint.js";
 import { Entity } from "./Entity.js";
 import { loadJSON } from "./JsonLoader.js";
 import { loadAndConvertJSON } from "./JsonConverter.js";
+import { loadAndConvertText } from "./TextLoader.js";
 import { TiledTileset } from "./TiledTileset.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 import { TiledWorld } from "./TiledWorld.js";
@@ -23,18 +24,17 @@ import { PlayerControllerComponent } from "./PlayerControllerComponent.js";
 import { BoundsColliderComponent } from "./BoundsColliderComponent.js";
 import { TagComponent } from "./TagComponent.js";
 import { PhysicsModule } from "./PhysicsModule.js";
+import { Shader } from "./Shader.js";
 
 const cellSize = new Point(8, 7);
 
 export type EngineCallback = (engine: Engine) => void;
 
-export function Run(engineCallback: EngineCallback) : void {
+export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) : void {
   console.log("Starting Engine");
   loadJSON("data/", "manifest.json")
     .then(asset => {
       let manifest = asset.asset as string[];
-      const canvas = document.getElementById('myCanvas') as HTMLCanvasElement;
-      if (canvas == null) throw new Error("Could not find canvas");
       canvas.style.imageRendering = 'pixelated';
 
       const loader = new AssetLoader();
@@ -46,6 +46,7 @@ export function Run(engineCallback: EngineCallback) : void {
       loader.addLoader("anim", loadAndConvertJSON((prototype:object) => new AnimationAsset(prototype)));
       loader.addLoader("gfx", loadAndConvertJSON((prototype:object) => new GfxAsset(prototype)));
       loader.addLoader("animset", loadAndConvertJSON((prototype:object) => new AnimationSetAsset(prototype)));
+      loader.addLoader('glsl', loadAndConvertText((text:string) => new Shader(text)));
 
       loader.loadAssets("data/", manifest, (assets) => { 
         const engine = new Engine(assets);
@@ -58,6 +59,8 @@ export function Run(engineCallback: EngineCallback) : void {
         engine.addModule(new PhysicsModule());
         let renderModule = new RenderModule(canvas);
         engine.addModule(renderModule);
+
+        engine.start();
 
         let camera = new Camera();
         renderModule.setCamera(camera);

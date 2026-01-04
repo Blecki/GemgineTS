@@ -112,5 +112,7 @@
   "assets/dwarf/tool-staff.png",
   "assets/templates/player.tj",
   "assets/templates/pot.tj",
-  "assets/templates/spawn.tj"
+  "assets/templates/spawn.tj",
+  "final-composite-fragment.glsl",
+  "final-composite-vertex.glsl"
 ]

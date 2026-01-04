@@ -32,7 +32,7 @@
       console.log("Trace: Engine Callback");
       let _debugger = new Debugger(document.getElementById("debug_panel"));
       _debugger.debugObject(engine.sceneRoot);
-    });
+    }, document.getElementById('myCanvas'));
   </script>
 </body>
 </html>

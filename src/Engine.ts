@@ -37,6 +37,11 @@ export class Engine {
     return this.assetMap?.get(path) ?? new AssetReference(path, null);
   }
 
+  public start() {
+    for (let module of this.modules)
+      module.engineStart(this);
+  }
+
   public update() {
     let start = performance.now();
     for (let module of this.modules) 
