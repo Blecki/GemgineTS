@@ -32,6 +32,10 @@ export class Engine {
         console.log("ASSET REQUEST: " + path);
         return this.assetMap?.get(path) ?? new AssetReference(path, null);
     }
+    start() {
+        for (let module of this.modules)
+            module.engineStart(this);
+    }
     update() {
         let start = performance.now();
         for (let module of this.modules)

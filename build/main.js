@@ -5,6 +5,7 @@ import { EntityBlueprint } from "./EntityBlueprint.js";
 import { Entity } from "./Entity.js";
 import { loadJSON } from "./JsonLoader.js";
 import { loadAndConvertJSON } from "./JsonConverter.js";
+import { loadAndConvertText } from "./TextLoader.js";
 import { TiledTileset } from "./TiledTileset.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 import { TiledWorld } from "./TiledWorld.js";
@@ -22,15 +23,13 @@ import { PlayerControllerComponent } from "./PlayerControllerComponent.js";
 import { BoundsColliderComponent } from "./BoundsColliderComponent.js";
 import { TagComponent } from "./TagComponent.js";
 import { PhysicsModule } from "./PhysicsModule.js";
+import { Shader } from "./Shader.js";
 const cellSize = new Point(8, 7);
-export function Run(engineCallback) {
+export function Run(engineCallback, canvas) {
     console.log("Starting Engine");
     loadJSON("data/", "manifest.json")
         .then(asset => {
         let manifest = asset.asset;
-        const canvas = document.getElementById('myCanvas');
-        if (canvas == null)
-            throw new Error("Could not find canvas");
         canvas.style.imageRendering = 'pixelated';
         const loader = new AssetLoader();
         loader.addLoader("tmj", loadAndConvertJSON((prototype) => new TiledTilemap(prototype)));
@@ -41,6 +40,7 @@ export function Run(engineCallback) {
         loader.addLoader("anim", loadAndConvertJSON((prototype) => new AnimationAsset(prototype)));
         loader.addLoader("gfx", loadAndConvertJSON((prototype) => new GfxAsset(prototype)));
         loader.addLoader("animset", loadAndConvertJSON((prototype) => new AnimationSetAsset(prototype)));
+        loader.addLoader('glsl', loadAndConvertText((text) => new Shader(text)));
         loader.loadAssets("data/", manifest, (assets) => {
             const engine = new Engine(assets);
             const random = new Random(6);
@@ -50,6 +50,7 @@ export function Run(engineCallback) {
             engine.addModule(new PhysicsModule());
             let renderModule = new RenderModule(canvas);
             engine.addModule(renderModule);
+            engine.start();
             let camera = new Camera();
             renderModule.setCamera(camera);
             camera.position = new Point(0, 0);
