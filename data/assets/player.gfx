@@ -1,5 +1,8 @@
 {
   "type": "image",
-  "path": "assets/dflt.png",
-  "isSheet": false
+  "isSheet": true,
+  "tileWidth": 100,
+  "tileHeight": 64,
+  "path": "assets/player.png",
+  "animations": "assets/player.animset"
 }

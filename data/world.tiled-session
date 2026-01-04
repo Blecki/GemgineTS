@@ -8,9 +8,9 @@
         "world"
     ],
     "expandedProjectPaths": [
-        "assets/templates",
+        "assets",
         ".",
-        "assets"
+        "assets/templates"
     ],
     "fileStates": {
         "assets/base-tileset.tsj": {
@@ -52,11 +52,11 @@
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 4,
-            "selectedLayer": 1,
+            "scale": 1,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 56.5,
-                "y": 236.375
+                "x": 536.5,
+                "y": 315.5
             }
         },
         "assets/room1.tmj": {
