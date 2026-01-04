@@ -169,6 +169,7 @@ export class RenderModule extends Module {
             );
             vec3 lightDirection = vec3(u_lights[i].position.x - destx, u_lights[i].position.y - desty, 64.0);
 
+            float shadow = 1.0;
             if (collision.r < 0.5) {
               vec2 halfLight = vec2(lightDirection.x / 2.0, lightDirection.y / 2.0);
               vec2 objectIntersection = vec2((halfLight.x + destx) / 528.0, (halfLight.y + desty) / 224.0);
