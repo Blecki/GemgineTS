@@ -7,7 +7,7 @@ uniform sampler2D u_collision;
 varying vec2 v_texcoord;
 uniform vec2 u_screenDimensions;
 
-const int MAX_LIGHTS = 5; 
+const int MAX_LIGHTS = 16; 
 
 struct Light {
     vec2 position;
@@ -44,18 +44,20 @@ void main() {
   }
   else 
   {
+    vec2 texelStep = 1.0 / u_screenDimensions;
     vec4 diffuse = texture2D(u_diffuse, v_texcoord);
-    vec3 normal = texture2D(u_normals, v_texcoord).xyz;
+    vec2 heightGradient = vec2(texture2D(u_normals, v_texcoord + vec2(-texelStep.x, 0)).r 
+                                  - texture2D(u_normals, v_texcoord + vec2(texelStep.x, 0)).r, 
+                               texture2D(u_normals, v_texcoord + vec2(0, -texelStep.y)).r 
+                                  - texture2D(u_normals, v_texcoord + vec2(0, texelStep.y)).r);
+    float normalZ = sqrt(1.0 - (heightGradient.x * heightGradient.x) - (heightGradient.y * heightGradient.y));
+    vec3 surfaceNormal = vec3(heightGradient.x, heightGradient.y, sqrt(1.0 - (heightGradient.x * heightGradient.x) - (heightGradient.y * heightGradient.y)));
     vec4 collision = texture2D(u_collision, v_texcoord);
-    vec3 surfaceNormal = (2.0 * normal) - 1.0;
 
     for (int i = 0; i < MAX_LIGHTS; i++) 
     {
       if (i >= u_numActiveLights) break; 
-      float distanceToLight = sqrt(
-        ((dest.x - u_lights[i].position.x) * (dest.x - u_lights[i].position.x)) +
-        ((dest.y - u_lights[i].position.y) * (dest.y - u_lights[i].position.y)) 
-      );
+      float distanceToLight = length(dest - u_lights[i].position);
       vec3 lightDirection = vec3(u_lights[i].position.x - dest.x, u_lights[i].position.y - dest.y, 64.0);
 
       if (collision.r < 0.5) {
