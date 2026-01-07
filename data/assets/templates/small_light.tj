@@ -1,0 +1,24 @@
+{ "object":
+    {
+     "gid":77,
+     "height":16,
+     "id":2,
+     "name":"",
+     "properties":[
+            {
+             "name":"blueprint",
+             "type":"string",
+             "value":"assets\/blueprints\/small_light.blueprint"
+            }],
+     "rotation":0,
+     "type":"",
+     "visible":true,
+     "width":16
+    },
+ "tileset":
+    {
+     "firstgid":1,
+     "source":"..\/base-tileset.tsj"
+    },
+ "type":"template"
+}

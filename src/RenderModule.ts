@@ -177,13 +177,11 @@ export class RenderModule extends Module {
 
       this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_diffuse"), 0); 
       this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_objects"), 1); 
-      this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_normals"), 2); 
-      this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_collision"), 3); 
+      this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_height"), 2); 
 
       this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Diffuse).bind(this.gl, this.gl.TEXTURE0);
       objectDiffuse.bind(this.gl, this.gl.TEXTURE1);
       this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Normals).bind(this.gl, this.gl.TEXTURE2);
-      this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Collision).bind(this.gl, this.gl.TEXTURE3);
 
       let localLights = this.lights.map(lc => {
         return new Light(
@@ -192,6 +190,8 @@ export class RenderModule extends Module {
           lc.color,
           lc.intensity);
         });
+
+        console.log(localLights);
       
         this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_numActiveLights"), localLights.length);
         for (let i = 0; i < localLights.length; i++) {
