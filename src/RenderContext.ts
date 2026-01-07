@@ -12,7 +12,7 @@ type TargetDirectory = Record<RenderLayers, Record<RenderChannels, RenderTarget>
 export class RenderContext {
   private renderTargets: TargetDirectory;
 
-  constructor(width: number, height: number, gl: WebGLRenderingContext) {
+  constructor(width: number, height: number, gl: WebGL2RenderingContext) {
     this.renderTargets = {
       [RenderLayers.Background]: {
         [RenderChannels.Diffuse]: new RenderTarget(width, height, gl),

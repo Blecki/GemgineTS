@@ -120,5 +120,7 @@
   "assets/tiles.png",
   "assets/normals.png",
   "assets/templates/small_light.tj",
-  "assets/blueprints/small_light.blueprint"
+  "assets/blueprints/small_light.blueprint",
+  "assets/paralax.png",
+  "assets/room1.tmj"
 ]
