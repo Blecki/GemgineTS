@@ -22,7 +22,7 @@ void main() {
   
   vec2 dest = u_screenDimensions * v_texcoord;
 
-  vec3 lighting = vec3(0.1, 0.1, 0.1);
+  vec3 lighting = vec3(0, 0, 0);
   vec4 object = texture2D(u_objects, v_texcoord);
   
   if (object.a > 0.5) 
@@ -63,13 +63,13 @@ void main() {
       }
       
       float cosAngle = dot(normalize(surfaceNormal), normalize(lightDirection));
-      float lightIntensity = max(0.0, 1.0 - (distanceToLight / u_lights[i].radius)) * max(0.0, cosAngle);
-      float shininess = 64.0; 
+      float lightIntensity = min(0.5, max(0.0, 1.0 - (distanceToLight / u_lights[i].radius)) * max(0.0, cosAngle));
+      float shininess = 16.0; 
       float specularIntensity = min(lightIntensity, pow(max(0.0, cosAngle), shininess));
 
-      lighting += (lightIntensity + specularIntensity) * u_lights[i].color * u_lights[i].intensity;
+      lighting += floor(((lightIntensity + specularIntensity) * u_lights[i].color * u_lights[i].intensity) * 16.0) / 16.0;
     }      
 
-    gl_FragColor = diffuse * vec4(floor(lighting * 16.0) / 16.0, 1.0);
+    gl_FragColor = diffuse * vec4(lighting, 1.0);
   }
 }
