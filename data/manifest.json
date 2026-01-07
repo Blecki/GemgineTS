@@ -118,5 +118,7 @@
   "assets/player.png",
   "assets/player.animset",
   "assets/tiles.png",
-  "assets/normals.png"
+  "assets/normals.png",
+  "assets/templates/small_light.tj",
+  "assets/blueprints/small_light.blueprint"
 ]

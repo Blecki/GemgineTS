@@ -2,8 +2,7 @@ precision highp float;
 
 uniform sampler2D u_diffuse;
 uniform sampler2D u_objects;
-uniform sampler2D u_normals;
-uniform sampler2D u_collision;
+uniform sampler2D u_height;
 varying vec2 v_texcoord;
 uniform vec2 u_screenDimensions;
 
@@ -31,10 +30,7 @@ void main() {
     for (int i = 0; i < MAX_LIGHTS; i++) 
     {
       if (i >= u_numActiveLights) break; 
-      float distanceToLight = sqrt(
-        ((dest.x - u_lights[i].position.x) * (dest.x - u_lights[i].position.x)) +
-        ((dest.y - u_lights[i].position.y) * (dest.y - u_lights[i].position.y)) 
-      );
+      float distanceToLight = length(vec3(dest.x, dest.y, 256.0) - vec3(u_lights[i].position.x, u_lights[i].position.y, 512.0));
       float lightIntensity = max(0.0, 1.0 - (distanceToLight / u_lights[i].radius));
       
       lighting += lightIntensity * u_lights[i].color * u_lights[i].intensity;
@@ -46,21 +42,20 @@ void main() {
   {
     vec2 texelStep = 1.0 / u_screenDimensions;
     vec4 diffuse = texture2D(u_diffuse, v_texcoord);
-    vec2 heightGradient = vec2(texture2D(u_normals, v_texcoord + vec2(-texelStep.x, 0)).r 
-                                  - texture2D(u_normals, v_texcoord + vec2(texelStep.x, 0)).r, 
-                               texture2D(u_normals, v_texcoord + vec2(0, -texelStep.y)).r 
-                                  - texture2D(u_normals, v_texcoord + vec2(0, texelStep.y)).r);
-    float normalZ = sqrt(1.0 - (heightGradient.x * heightGradient.x) - (heightGradient.y * heightGradient.y));
+    vec2 heightGradient = vec2(texture2D(u_height, v_texcoord + vec2(-texelStep.x, 0)).r 
+                                  - texture2D(u_height, v_texcoord + vec2(texelStep.x, 0)).r, 
+                               texture2D(u_height, v_texcoord + vec2(0, -texelStep.y)).r 
+                                  - texture2D(u_height, v_texcoord + vec2(0, texelStep.y)).r);
     vec3 surfaceNormal = vec3(heightGradient.x, heightGradient.y, sqrt(1.0 - (heightGradient.x * heightGradient.x) - (heightGradient.y * heightGradient.y)));
-    vec4 collision = texture2D(u_collision, v_texcoord);
+    vec4 center = texture2D(u_height, v_texcoord);
 
     for (int i = 0; i < MAX_LIGHTS; i++) 
     {
       if (i >= u_numActiveLights) break; 
-      float distanceToLight = length(dest - u_lights[i].position);
-      vec3 lightDirection = vec3(u_lights[i].position.x - dest.x, u_lights[i].position.y - dest.y, 64.0);
+      float distanceToLight = length(vec3(dest.x, dest.y, 512.0 * (center.r)) - vec3(u_lights[i].position.x, u_lights[i].position.y, 512.0));
+      vec3 lightDirection = vec3(u_lights[i].position.x - dest.x, u_lights[i].position.y - dest.y, 32.0);
 
-      if (collision.r < 0.5) {
+      if (center.r < 0.5) {
         vec2 halfLight = vec2(lightDirection.x / 2.0, lightDirection.y / 2.0);
         vec2 objectIntersection = vec2((halfLight.x + dest.x) / u_screenDimensions.x, (halfLight.y + dest.y) / u_screenDimensions.y);
         vec4 objectShadow = texture2D(u_objects, objectIntersection);
