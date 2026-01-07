@@ -56,7 +56,7 @@ export function Run(engineCallback, canvas) {
             camera.position = new Point(0, 0);
             let player = undefined;
             console.log("Spawning world");
-            let roomEntities = engine.createTilemapFromTiledTilemap("assets/room0.tmj");
+            let roomEntities = engine.createTilemapFromTiledTilemap("assets/room1.tmj");
             console.log(roomEntities);
             let spawn = roomEntities.find(e => e.getComponent(TagComponent) != undefined);
             if (spawn != undefined) {

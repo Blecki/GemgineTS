@@ -68,7 +68,7 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
         let player: Entity | undefined = undefined;
 
         console.log("Spawning world");
-        let roomEntities = engine.createTilemapFromTiledTilemap("assets/room0.tmj");
+        let roomEntities = engine.createTilemapFromTiledTilemap("assets/room1.tmj");
         console.log(roomEntities);
         let spawn = roomEntities.find(e => e.getComponent(TagComponent) != undefined);
         if (spawn != undefined) {

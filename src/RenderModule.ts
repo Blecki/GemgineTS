@@ -15,6 +15,7 @@ import { RawImage } from "./RawImage.js";
 import { Vector3, v3sub, v3magnitudeSquared, v3dotProduct, v3normalize } from "./Vector3.js";
 import { Color } from "./Color.js";
 import { Shader } from "./Shader.js";
+import { Texture } from "./Texture.js";
 
 export class RenderComponent extends Component {
   public renderLayer: number = RenderLayers.Background;
@@ -75,16 +76,17 @@ export class RenderModule extends Module {
   public camera: Camera | null = null;
   public fpsQueue: number[] = [];
   public destinationCanvas: HTMLCanvasElement;
-  public gl: WebGLRenderingContext;
+  public gl: WebGL2RenderingContext;
   public renderContext: RenderContext;
   private program: WebGLProgram | null = null;
+  private paralax: Texture | null = null;
 
   private readonly LightZ: number = 64;
 
   constructor(canvas: HTMLCanvasElement) {
     super();
     this.destinationCanvas = canvas;
-    let ctx = this.destinationCanvas.getContext('webgl');
+    let ctx = this.destinationCanvas.getContext('webgl2');
     if (ctx == null) throw new Error("Failed to get WebGL context");
     this.gl = ctx;
 
@@ -115,6 +117,11 @@ export class RenderModule extends Module {
       this.gl.enableVertexAttribArray(positionLocation);
       this.gl.vertexAttribPointer(positionLocation, 2, this.gl.FLOAT, false, 0, 0);
     }
+
+    let tex = engine.getAsset("assets/paralax.png").asset;
+    console.log(tex);
+    this.paralax = new Texture(engine.getAsset("assets/paralax.png").asset as ImageBitmap, this.gl);
+
   }
   
   private isRenderable(object: any): object is RenderableComponent {
@@ -178,10 +185,12 @@ export class RenderModule extends Module {
       this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_diffuse"), 0); 
       this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_objects"), 1); 
       this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_height"), 2); 
+      this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_paralax"), 3);
 
       this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Diffuse).bind(this.gl, this.gl.TEXTURE0);
       objectDiffuse.bind(this.gl, this.gl.TEXTURE1);
       this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Normals).bind(this.gl, this.gl.TEXTURE2);
+      this.paralax?.bind(this.gl, this.gl.TEXTURE3);
 
       let localLights = this.lights.map(lc => {
         return new Light(
