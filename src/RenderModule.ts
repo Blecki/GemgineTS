@@ -43,14 +43,14 @@ export class DebugGizmoComponent extends RenderComponent {
     this.renderChannel = RenderChannels.Diffuse;
   }  
   public render(context: RenderContext): void {
-    /*
+    //*
     if (this.parent != null) {
       var ctx = context.getTarget(RenderLayers.Objects, RenderChannels.Diffuse);
       ctx.drawRectangle(this.parent.globalBounds, 'rgba(255, 0, 0, 0.5)');
       if (this.point != null)
         ctx.drawImage(this.point, new Rect(0, 0, this.point.width, this.point.height), new Point(this.parent.globalPosition.x - 2, this.parent.globalPosition.y - 2));
     }
-    */
+    //*/
   }
 }
 
@@ -79,7 +79,6 @@ export class RenderModule extends Module {
   public gl: WebGL2RenderingContext;
   public renderContext: RenderContext;
   private program: WebGLProgram | null = null;
-  private paralax: Texture | null = null;
 
   private readonly LightZ: number = 64;
 
@@ -117,11 +116,6 @@ export class RenderModule extends Module {
       this.gl.enableVertexAttribArray(positionLocation);
       this.gl.vertexAttribPointer(positionLocation, 2, this.gl.FLOAT, false, 0, 0);
     }
-
-    let tex = engine.getAsset("assets/paralax.png").asset;
-    console.log(tex);
-    this.paralax = new Texture(engine.getAsset("assets/paralax.png").asset as ImageBitmap, this.gl);
-
   }
   
   private isRenderable(object: any): object is RenderableComponent {
@@ -180,35 +174,11 @@ export class RenderModule extends Module {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
     if (this.program != null) {
-      this.gl.uniform2fv(this.gl.getUniformLocation(this.program, 'u_screenDimensions'), [this.destinationCanvas.width, this.destinationCanvas.height]);
-
       this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_diffuse"), 0); 
       this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_objects"), 1); 
-      this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_height"), 2); 
-      this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_paralax"), 3);
 
       this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Diffuse).bind(this.gl, this.gl.TEXTURE0);
       objectDiffuse.bind(this.gl, this.gl.TEXTURE1);
-      this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Normals).bind(this.gl, this.gl.TEXTURE2);
-      this.paralax?.bind(this.gl, this.gl.TEXTURE3);
-
-      let localLights = this.lights.map(lc => {
-        return new Light(
-          (lc.parent?.globalPosition.add(lc.offset).add(this.camera?.drawOffset ?? new Point(0, 0))) ?? new Point(0, 0),
-          lc.radius,
-          lc.color,
-          lc.intensity);
-        });
-
-        console.log(localLights);
-      
-        this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_numActiveLights"), localLights.length);
-        for (let i = 0; i < localLights.length; i++) {
-            this.gl.uniform2fv(this.gl.getUniformLocation(this.program, `u_lights[${i}].position`), new Float32Array([localLights[i].screenPosition.x, localLights[i].screenPosition.y]));
-            this.gl.uniform3fv(this.gl.getUniformLocation(this.program, `u_lights[${i}].color`), new Float32Array([localLights[i].color.r / 255, localLights[i].color.g / 255, localLights[i].color.b / 255]));
-            this.gl.uniform1f(this.gl.getUniformLocation(this.program, `u_lights[${i}].radius`), localLights[i].radius);
-            this.gl.uniform1f(this.gl.getUniformLocation(this.program, `u_lights[${i}].intensity`), localLights[i].intensity);
-        }
 
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
 

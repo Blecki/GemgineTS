@@ -13,9 +13,9 @@ import { TiledTemplate } from "./TiledTemplate.js";
 import { AssetReference } from "./AssetReference.js";
 import { Array2D } from "./Array2D.js";
 import { Point } from "./Point.js";
-import { TiledTilemap, TiledLayer, TiledInlineTileset } from "./TiledTilemap.js";
 import { PropertyGrid } from "./Debugger.js";
 import { Fluent } from "./Fluent.js";
+import { TiledInlineTileset } from "./TiledInlineTileset.js";
 let TilemapColliderComponent = class TilemapColliderComponent extends Component {
     tilemapComponent = undefined;
     cachedGrid = undefined;

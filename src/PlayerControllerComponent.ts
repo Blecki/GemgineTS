@@ -31,26 +31,28 @@ export class PlayerControllerComponent extends Component {
 
   public update() {
     let delta = new Point(0,0);
-    if (this.parent != null) {
+    let aim = new Point(0,0);
 
+    if (this.controller?.isGrounded) {
       if (this.input?.check("west")) {
         delta.x = -(this.speed * GameTime.getDeltaTime());
-        if (this.sprite != undefined) {
-          this.sprite.flip = true;
-          this.sprite.playAnimation("run", false);
-        }
+        aim = new Point(-1, 0);
       }      
       else if (this.input?.check("east")) {
         delta.x = (this.speed * GameTime.getDeltaTime());
-        if (this.sprite != undefined) {
-          this.sprite.flip = false;
-          this.sprite.playAnimation("run", false);
-        }
-      }
-      else {
-        this.sprite?.playAnimation("idle", false);
+        aim = new Point(1, 0);
       }
     }
+
+    if (this.sprite != undefined) {
+      if (aim.x != 0) 
+        this.sprite.flip = (aim.x < 0);
+      if (this.controller?.isGrounded) {
+        if (delta.x != 0) this.sprite?.playAnimation('run', false);
+        else this.sprite?.playAnimation('idle', false);
+      }
+    }
+
     this.controller?.move(delta);
 
     this.input?.cleanup();

@@ -1,0 +1,18 @@
+{ "object":
+    {
+     "gid":29,
+     "height":16,
+     "id":6,
+     "name":"LIGHT",
+     "rotation":0,
+     "type":"",
+     "visible":true,
+     "width":16
+    },
+ "tileset":
+    {
+     "firstgid":1,
+     "source":"..\/base-tileset.tsj"
+    },
+ "type":"template"
+}

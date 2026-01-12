@@ -1,7 +1,7 @@
 {
   "type": "image",
   "isSheet": true,
-  "tileWidth": 48,
+  "tileWidth": 100,
   "tileHeight": 64,
   "path": "assets/player.png",
   "animations": "assets/player.animset"

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Rect } from "./Rect.js";
 import { Point } from "./Point.js";
-import { TiledTilemap, TiledLayer, TiledInlineTileset } from "./TiledTilemap.js";
+import { TiledTilemap, TiledLayer } from "./TiledTilemap.js";
 import { RenderContext } from "./RenderContext.js";
 import { CacheState } from "./CacheState.js";
 import { Engine } from "./Engine.js";
@@ -22,6 +22,7 @@ import { TiledTile } from "./TiledTileset.js";
 import { PropertyGrid } from "./Debugger.js";
 import { Fluent } from "./Fluent.js";
 import { RenderChannels } from "./RenderLayers.js";
+import { TiledInlineTileset } from "./TiledInlineTileset.js";
 let TilemapComponent = class TilemapComponent extends RenderComponent {
     layer;
     tilemap;

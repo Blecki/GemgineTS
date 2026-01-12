@@ -1,20 +1,11 @@
 {
-   "size": { "x": 16, "y": 48 },
-   "pivot": { "x": 7, "y": 48 },
+   "size": { "x": 16, "y": 16 },
+   "pivot": { "x": 8, "y": 8 },
    "components": [
       {
          "type": "Sprite",
-         "gfx": "assets/player.gfx",
-         "offset": { "x": -16, "y": -16 }
-      },
-      {
-         "type": "PlayerController"
-      },
-      {
-         "type": "Controller"
-      },
-      {
-         "type": "BoundsCollider"
+         "gfx": "assets/small-ball-2.png",
+         "offset": { "x": 0, "y": 0 }
       },
       {
          "type": "DebugGizmo"

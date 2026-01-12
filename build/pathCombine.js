@@ -1,4 +1,5 @@
 export default function pathCombine(...args) {
+    console.log(args);
     let parts = [];
     const argsAsArray = Array.from(Array.isArray(args[0]) ? args[0] : args);
     argsAsArray.forEach(a => parts = parts.concat(a.split('/')));

@@ -45,10 +45,21 @@ export class SpriteComponent extends RenderComponent {
   }
 
   public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference): void {
-    console.log("Initializing sprite component");
     this.renderLayer = RenderLayers.Objects;
     this.renderChannel = RenderChannels.Diffuse;
-    this.gfxAsset = resolveInlineReference(prototypeAsset, engine, this.gfx, GfxAsset);
+
+    if (this.gfx.endsWith(".gfx"))
+      this.gfxAsset = resolveInlineReference(prototypeAsset, engine, this.gfx, GfxAsset);
+    else if (this.gfx.endsWith(".png") || this.gfx.endsWith(".bmp"))
+    {
+      this.gfxAsset = new GfxAsset({
+        type: "image",
+        path: this.gfx,
+        isSheet: false,
+        animations: {}
+      });
+      this.gfxAsset.resolveDependencies(prototypeAsset, engine);
+    }
 
     if (this.gfxAsset != undefined) {
       if (this.frame == undefined)

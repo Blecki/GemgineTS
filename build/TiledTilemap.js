@@ -3,6 +3,7 @@ import { Engine } from "./Engine.js";
 import { TiledTileset } from "./TiledTileset.js";
 import pathCombine from "./PathCombine.js";
 import { TiledObject, TiledProperty } from "./TiledObject.js";
+import { TiledInlineTileset } from "./TiledInlineTileset.js";
 export class TiledLayer {
     class;
     data;
@@ -37,20 +38,6 @@ export class TiledLayer {
     }
     resolveDependencies(self, engine) {
         this.objects.forEach(t => t.resolveDependencies(self, engine));
-    }
-}
-export class TiledInlineTileset {
-    firstgid;
-    source;
-    tilesetAsset = undefined;
-    constructor(prototype) {
-        let p = prototype;
-        this.firstgid = p?.firstgid ?? 0;
-        this.source = p?.source ?? 0;
-    }
-    resolveDependencies(self, engine) {
-        console.log("TRACE: TiledInlineTileset.resolveDependencies");
-        this.tilesetAsset = engine.getAsset(pathCombine(self.directory(), this.source)).asset;
     }
 }
 export class TiledTilemap {
