@@ -13,7 +13,7 @@ import { ControllerComponent } from "./ControllerComponent.js";
 import { CollisionModule } from "./CollisionModule.js";
 export class PhysicsModule extends Module {
     bodies = [];
-    gravity = new Point(0, 128);
+    gravity = new Point(0, 512);
     collision;
     isPhysics(object) {
         return 'isGrounded' in object
@@ -37,7 +37,7 @@ export class PhysicsModule extends Module {
         for (let body of this.bodies) {
             if (body.useGravity) {
                 body.velocity = body.velocity.add(this.gravity.multiply(GameTime.getDeltaTime()));
-                body.move(this.gravity.multiply(GameTime.getDeltaTime()));
+                body.move(body.velocity.multiply(GameTime.getDeltaTime()));
                 if (this.collision != undefined && body.parent != undefined) {
                     let groundDetectionBounds = body.parent.globalBounds.withOffset(new Point(0, 1));
                     let overlaps = this.collision.overlaps(groundDetectionBounds).filter(e => e != body.parent);

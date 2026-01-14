@@ -43,7 +43,7 @@ export class DebugGizmoComponent extends RenderComponent {
     this.renderChannel = RenderChannels.Diffuse;
   }  
   public render(context: RenderContext): void {
-    //*
+    /*
     if (this.parent != null) {
       var ctx = context.getTarget(RenderLayers.Objects, RenderChannels.Diffuse);
       ctx.drawRectangle(this.parent.globalBounds, 'rgba(255, 0, 0, 0.5)');

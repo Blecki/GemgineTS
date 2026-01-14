@@ -20,7 +20,7 @@
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 64,
-        "path": "assets/player.png"
+        "path": "assets/player/idle.png"
       }
     },
     {
@@ -41,7 +41,21 @@
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
-        "path": "assets/player-run.png"
+        "path": "assets/player/run.png"
+      }
+    },
+    {
+      "name": "air",
+      "fps": 10,
+      "frames": [ 
+        { "x": 3, "y": 0 }
+      ],
+      "gfx": {
+        "type": "image",
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "path": "assets/player/jump.png"
       }
     }
   ]

@@ -35,12 +35,12 @@ let DebugGizmoComponent = class DebugGizmoComponent extends RenderComponent {
         this.renderChannel = RenderChannels.Diffuse;
     }
     render(context) {
-        //*
+        /*
         if (this.parent != null) {
-            var ctx = context.getTarget(RenderLayers.Objects, RenderChannels.Diffuse);
-            ctx.drawRectangle(this.parent.globalBounds, 'rgba(255, 0, 0, 0.5)');
-            if (this.point != null)
-                ctx.drawImage(this.point, new Rect(0, 0, this.point.width, this.point.height), new Point(this.parent.globalPosition.x - 2, this.parent.globalPosition.y - 2));
+          var ctx = context.getTarget(RenderLayers.Objects, RenderChannels.Diffuse);
+          ctx.drawRectangle(this.parent.globalBounds, 'rgba(255, 0, 0, 0.5)');
+          if (this.point != null)
+            ctx.drawImage(this.point, new Rect(0, 0, this.point.width, this.point.height), new Point(this.parent.globalPosition.x - 2, this.parent.globalPosition.y - 2));
         }
         //*/
     }

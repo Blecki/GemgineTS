@@ -34,12 +34,16 @@ let PlayerControllerComponent = class PlayerControllerComponent extends Componen
         let aim = new Point(0, 0);
         if (this.controller?.isGrounded) {
             if (this.input?.check("west")) {
-                delta.x = -(this.speed * GameTime.getDeltaTime());
+                delta.x = -this.speed;
                 aim = new Point(-1, 0);
             }
             else if (this.input?.check("east")) {
-                delta.x = (this.speed * GameTime.getDeltaTime());
+                delta.x = this.speed;
                 aim = new Point(1, 0);
+            }
+            this.controller.velocity.x = delta.x;
+            if (this.input?.check("north")) {
+                this.controller.velocity = new Point(this.controller.velocity.x, -256);
             }
         }
         if (this.sprite != undefined) {
@@ -51,8 +55,11 @@ let PlayerControllerComponent = class PlayerControllerComponent extends Componen
                 else
                     this.sprite?.playAnimation('idle', false);
             }
+            else {
+                this.sprite.playAnimation('air', false);
+            }
         }
-        this.controller?.move(delta);
+        //this.controller?.move(delta.multiply(GameTime.getDeltaTime()));
         this.input?.cleanup();
     }
 };

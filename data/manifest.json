@@ -16,13 +16,14 @@
   "assets/templates/spawn.tj",
   "final-composite-fragment.glsl",
   "final-composite-vertex.glsl",
-  "assets/player.png",
-  "assets/player.animset",
+  "assets/player/idle.png",
+  "assets/player/player.animset",
   "assets/templates/small_light.tj",
   "assets/blueprints/small_light.blueprint",
   "assets/blueprints/spike_ball.blueprint",
   "assets/small-ball-2.png",
   "assets/templates/spike_ball.tj",
   "assets/small-ball-2.tsj",
-  "assets/player-run.png"
+  "assets/player/run.png",
+  "assets/player/jump.png"
 ]

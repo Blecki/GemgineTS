@@ -14,7 +14,7 @@ import { CollisionModule } from "./CollisionModule.js";
 
 export class PhysicsModule extends Module {
   private readonly bodies: ControllerComponent[] = [];
-  private readonly gravity: Point = new Point(0, 128);
+  private readonly gravity: Point = new Point(0, 512);
   private collision: CollisionModule | undefined;
   
   private isPhysics(object: any): object is ControllerComponent {
@@ -43,7 +43,8 @@ export class PhysicsModule extends Module {
     for (let body of this.bodies) {
       if (body.useGravity) {
         body.velocity = body.velocity.add(this.gravity.multiply(GameTime.getDeltaTime()));
-        body.move(this.gravity.multiply(GameTime.getDeltaTime()));
+        body.move(body.velocity.multiply(GameTime.getDeltaTime()));
+
         if (this.collision != undefined && body.parent != undefined)
         {
           let groundDetectionBounds = body.parent.globalBounds.withOffset(new Point(0, 1));
