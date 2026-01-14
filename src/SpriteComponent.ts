@@ -14,6 +14,7 @@ import { resolveAsGFX, GfxAsset } from "./GfxAsset.js";
 import { type DebuggableObject, PropertyGrid } from "./Debugger.js";
 import { type FluentElement, Fluent } from "./Fluent.js";
 import { AnimationSetAsset } from "./AnimationSetAsset.js";
+import { AnimationPlayer } from "./AnimationPlayer.js";
 
 type SpriteComponentPrototype = {
   gfx: string | object;
@@ -46,7 +47,7 @@ export class SpriteComponent extends RenderComponent {
   public resolvedAnimations: AnimationSetAsset | undefined = undefined;
   public gfxAsset: GfxAsset | undefined = undefined;
   private currentAnimation: AnimationAsset | null = null;
-  private currentPlace: number = 0; 
+  private animationPlayer: AnimationPlayer = new AnimationPlayer(1, 1, false, 1);
   public flip: boolean = false;
   private currentGfx: GfxAsset | null = null;
 
@@ -57,7 +58,7 @@ export class SpriteComponent extends RenderComponent {
     let target = context.getTarget(this.renderLayer, this.renderChannel);
     let sprite: Sprite | null = null;
     if (this.currentAnimation != null) {
-      let currentFrame = Math.floor(this.currentPlace / (1 / this.currentAnimation.fps)) % this.currentAnimation.frames.length;
+      let currentFrame = this.animationPlayer.getCurrentFrame();
       if (this.currentAnimation.gfxAsset != null)
         sprite = this.currentAnimation.gfxAsset.getSprite(this.currentAnimation.frames[currentFrame].x, this.currentAnimation.frames[currentFrame].y);
       else if (this.gfxAsset != null)
@@ -89,14 +90,23 @@ export class SpriteComponent extends RenderComponent {
     }
   }
 
-  public playAnimation(name: string, resetFrame: boolean) {
+  public playAnimation(name: string, resetFrame: boolean) : void {
     this.currentAnimation = this.resolvedAnimations?.getAnimation(name) ?? null;
-    if (resetFrame) this.currentPlace = 0;
+    this.animationPlayer.reset(
+      this.currentAnimation?.frames.length ?? 1, 
+      this.currentAnimation?.fps ?? 1, 
+      this.currentAnimation?.loop ?? false, 
+      resetFrame ? 0 : this.animationPlayer.currentPlace);
+  }
+
+  public isAnimationDone() : boolean {
+    if (this.currentAnimation == null) return true;
+    return this.animationPlayer.isAtEnd();
   }
   
   public animate(): void {
     if (this.currentAnimation != null) {
-      this.currentPlace += GameTime.getDeltaTime();
+      this.animationPlayer.advance(GameTime.getDeltaTime());
     }
   }
   

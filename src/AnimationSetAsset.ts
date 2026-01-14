@@ -9,6 +9,7 @@ type AnimationAssetPrototype = {
   frames: Point[];
   fps: number;
   gfx: string | object;
+  loop: boolean;
 }
 
 export class AnimationAsset {
@@ -16,6 +17,7 @@ export class AnimationAsset {
   public frames: Point[];
   public fps: number;
   public gfx: string | object;
+  public loop: boolean;
 
   constructor(prototype?:object) {
     let p = prototype as AnimationAssetPrototype;
@@ -23,6 +25,7 @@ export class AnimationAsset {
     this.frames = (p?.frames ?? []).map(f => new Point(f));
     this.fps = p?.fps ?? 10;
     this.gfx = p?.gfx ?? "";
+    this.loop = p?.loop ?? true;
   }
 
   public gfxAsset: GfxAsset | undefined = undefined;

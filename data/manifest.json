@@ -25,5 +25,7 @@
   "assets/templates/spike_ball.tj",
   "assets/small-ball-2.tsj",
   "assets/player/run.png",
-  "assets/player/jump.png"
+  "assets/player/jump.png",
+  "assets/player/roll.png",
+  "assets/player/flip.png"
 ]

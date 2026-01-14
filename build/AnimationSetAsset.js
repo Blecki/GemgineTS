@@ -7,12 +7,14 @@ export class AnimationAsset {
     frames;
     fps;
     gfx;
+    loop;
     constructor(prototype) {
         let p = prototype;
         this.name = p?.name ?? "unnamed";
         this.frames = (p?.frames ?? []).map(f => new Point(f));
         this.fps = p?.fps ?? 10;
         this.gfx = p?.gfx ?? "";
+        this.loop = p?.loop ?? true;
     }
     gfxAsset = undefined;
     resolveDependencies(reference, engine) {

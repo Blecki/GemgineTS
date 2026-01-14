@@ -23,6 +23,7 @@ import { resolveAsGFX, GfxAsset } from "./GfxAsset.js";
 import { PropertyGrid } from "./Debugger.js";
 import { Fluent } from "./Fluent.js";
 import { AnimationSetAsset } from "./AnimationSetAsset.js";
+import { AnimationPlayer } from "./AnimationPlayer.js";
 let SpriteComponent = class SpriteComponent extends RenderComponent {
     gfx;
     offset;
@@ -42,7 +43,7 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
     resolvedAnimations = undefined;
     gfxAsset = undefined;
     currentAnimation = null;
-    currentPlace = 0;
+    animationPlayer = new AnimationPlayer(1, 1, false, 1);
     flip = false;
     currentGfx = null;
     resolveDependencies(reference, engine) {
@@ -51,7 +52,7 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
         let target = context.getTarget(this.renderLayer, this.renderChannel);
         let sprite = null;
         if (this.currentAnimation != null) {
-            let currentFrame = Math.floor(this.currentPlace / (1 / this.currentAnimation.fps)) % this.currentAnimation.frames.length;
+            let currentFrame = this.animationPlayer.getCurrentFrame();
             if (this.currentAnimation.gfxAsset != null)
                 sprite = this.currentAnimation.gfxAsset.getSprite(this.currentAnimation.frames[currentFrame].x, this.currentAnimation.frames[currentFrame].y);
             else if (this.gfxAsset != null)
@@ -82,12 +83,16 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
     }
     playAnimation(name, resetFrame) {
         this.currentAnimation = this.resolvedAnimations?.getAnimation(name) ?? null;
-        if (resetFrame)
-            this.currentPlace = 0;
+        this.animationPlayer.reset(this.currentAnimation?.frames.length ?? 1, this.currentAnimation?.fps ?? 1, this.currentAnimation?.loop ?? false, resetFrame ? 0 : this.animationPlayer.currentPlace);
+    }
+    isAnimationDone() {
+        if (this.currentAnimation == null)
+            return true;
+        return this.animationPlayer.isAtEnd();
     }
     animate() {
         if (this.currentAnimation != null) {
-            this.currentPlace += GameTime.getDeltaTime();
+            this.animationPlayer.advance(GameTime.getDeltaTime());
         }
     }
     createDebugger(name) {

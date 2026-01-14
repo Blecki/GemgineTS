@@ -19,6 +19,7 @@ let PlayerControllerComponent = class PlayerControllerComponent extends Componen
     speed = 128;
     sprite = undefined;
     controller = undefined;
+    playingStaticAnimation = false;
     initialize(engine, template, prototypeAsset) {
         this.input = new Input();
         this.input.bind("KeyA", "west");
@@ -45,22 +46,55 @@ let PlayerControllerComponent = class PlayerControllerComponent extends Componen
             if (this.input?.check("north")) {
                 this.controller.velocity = new Point(this.controller.velocity.x, -256);
             }
+            if (this.input?.check("south"))
+                this.playStatic('roll');
+        }
+        else {
+            if (this.controller != undefined && this.input?.check("north")) {
+                this.playStatic('flip');
+                this.controller.velocity = new Point(this.controller.velocity.x, -256);
+            }
         }
         if (this.sprite != undefined) {
-            if (aim.x != 0)
-                this.sprite.flip = (aim.x < 0);
-            if (this.controller?.isGrounded) {
-                if (delta.x != 0)
-                    this.sprite?.playAnimation('run', false);
-                else
-                    this.sprite?.playAnimation('idle', false);
+            if (this.playingStaticAnimation) {
+                if (this.sprite.isAnimationDone()) {
+                    this.playingStaticAnimation = false;
+                }
             }
             else {
-                this.sprite.playAnimation('air', false);
+                if (aim.x != 0)
+                    this.sprite.flip = (aim.x < 0);
+                if (this.controller?.isGrounded) {
+                    if (delta.x != 0)
+                        this.sprite?.playAnimation('run', false);
+                    else
+                        this.sprite?.playAnimation('idle', false);
+                }
+                else {
+                    if (this.controller != undefined) {
+                        console.log(this.controller.velocity.y);
+                        let normalizedSpeed = 128 / (this.controller?.velocity.y);
+                        if (normalizedSpeed < -1.0)
+                            this.sprite.playAnimation('rise-slow', false);
+                        else if (normalizedSpeed > 1.0)
+                            this.sprite.playAnimation('fall-slow', false);
+                        else if (normalizedSpeed < -0.5)
+                            this.sprite.playAnimation('rise-fast', false);
+                        else if (normalizedSpeed > 0.5)
+                            this.sprite.playAnimation('fall-fast', false);
+                        else if (normalizedSpeed < 0.0)
+                            this.sprite.playAnimation('rise-float', false);
+                        else if (normalizedSpeed >= 0.0)
+                            this.sprite.playAnimation('fall-float', false);
+                    }
+                }
             }
         }
-        //this.controller?.move(delta.multiply(GameTime.getDeltaTime()));
         this.input?.cleanup();
+    }
+    playStatic(anim) {
+        this.sprite?.playAnimation(anim, true);
+        this.playingStaticAnimation = true;
     }
 };
 PlayerControllerComponent = __decorate([
