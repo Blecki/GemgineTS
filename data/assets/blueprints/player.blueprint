@@ -1,11 +1,11 @@
 {
-   "size": { "x": 16, "y": 48 },
-   "pivot": { "x": 7, "y": 48 },
+   "size": { "x": 16, "y": 32 },
+   "pivot": { "x": 7, "y": 32 },
    "components": [
       {
          "type": "Sprite",
-         "gfx": "assets/player.gfx",
-         "offset": { "x": -16, "y": -16 }
+         "offset": { "x": -16, "y": -8 },
+         "animations": "assets/player.animset"
       },
       {
          "type": "PlayerController"

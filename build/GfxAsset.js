@@ -7,6 +7,24 @@ import { CompositeImage, CompositeImageLayer } from "./CompositeImage.js";
 import { Rect } from "./Rect.js";
 import { Sprite } from "./Sprite.js";
 import { AnimationSetAsset } from "./AnimationSetAsset.js";
+export function resolveAsGFX(input, asset, engine) {
+    if (typeof input === "object")
+        return resolveInlineReference(asset, engine, input, GfxAsset);
+    else if (typeof input === "string") {
+        if (input.endsWith(".gfx"))
+            return resolveInlineReference(asset, engine, input, GfxAsset);
+        else if (input.endsWith(".png") || input.endsWith(".bmp")) {
+            let r = new GfxAsset({
+                type: "image",
+                path: input,
+                isSheet: false,
+                animations: {}
+            });
+            r.resolveDependencies(asset, engine);
+            return r;
+        }
+    }
+}
 export class CompositeImageLayerAsset {
     sheet;
     palette;
@@ -24,10 +42,7 @@ export class GfxAsset {
     isSheet;
     tileWidth;
     tileHeight;
-    animations;
-    currentAnimation;
     cachedImage = null;
-    resolvedAnimations = undefined;
     constructor(prototype) {
         let p = prototype;
         this.type = p?.type ?? "none";
@@ -37,11 +52,8 @@ export class GfxAsset {
         this.isSheet = p?.isSheet ?? false;
         this.tileWidth = p?.tileWidth ?? 0;
         this.tileHeight = p?.tileHeight ?? 0;
-        this.animations = p?.animations;
-        this.currentAnimation = p?.currentAnimation ?? "";
     }
     resolveDependencies(reference, engine) {
-        this.resolvedAnimations = resolveInlineReference(reference, engine, this.animations, AnimationSetAsset);
         this.loadImageCache(engine);
     }
     loadImageCache(engine) {

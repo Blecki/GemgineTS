@@ -3,6 +3,5 @@
   "isSheet": true,
   "tileWidth": 48,
   "tileHeight": 64,
-  "path": "assets/player.png",
-  "animations": "assets/player.animset"
+  "path": "assets/player.png"
 }

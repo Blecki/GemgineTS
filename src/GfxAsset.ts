@@ -8,6 +8,25 @@ import { Rect } from "./Rect.js";
 import { Sprite } from "./Sprite.js";
 import { AnimationSetAsset } from "./AnimationSetAsset.js";
 
+export function resolveAsGFX(input: string | object, asset: AssetReference, engine: Engine) {
+  if (typeof input === "object")
+    return resolveInlineReference(asset, engine, input, GfxAsset);
+  else if (typeof input === "string") {
+    if (input.endsWith(".gfx"))
+      return resolveInlineReference(asset, engine, input, GfxAsset);
+    else if (input.endsWith(".png") || input.endsWith(".bmp")) {
+      let r = new GfxAsset({
+          type: "image",
+          path: input,
+          isSheet: false,
+          animations: {}
+        });
+      r.resolveDependencies(asset, engine);
+      return r;
+    }
+  }
+}
+
 type CompositeImageLayerAssetPrototype = {
     sheet: string;
     palette: number;
@@ -32,8 +51,6 @@ type GfxAssetPrototype = {
   isSheet: boolean;
   tileWidth: number;
   tileHeight: number;
-  animations: string | object;
-  currentAnimation: string;
 }
 
 export class GfxAsset {
@@ -44,11 +61,8 @@ export class GfxAsset {
   public isSheet: boolean;
   public tileWidth: number;
   public tileHeight: number;
-  public animations: string | object;
-  public currentAnimation: string;
 
   private cachedImage: ImageBitmap | null = null;
-  public resolvedAnimations: AnimationSetAsset | undefined = undefined;
 
   constructor(prototype?:object) {
     let p = prototype as GfxAssetPrototype;
@@ -59,12 +73,9 @@ export class GfxAsset {
     this.isSheet = p?.isSheet ?? false;
     this.tileWidth = p?.tileWidth ?? 0;
     this.tileHeight = p?.tileHeight ?? 0;
-    this.animations = p?.animations;
-    this.currentAnimation = p?.currentAnimation ?? "";
   }
 
   public resolveDependencies(reference: AssetReference, engine: Engine): void {  
-    this.resolvedAnimations = resolveInlineReference(reference, engine, this.animations, AnimationSetAsset);
     this.loadImageCache(engine);
   }
 

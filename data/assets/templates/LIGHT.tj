@@ -12,7 +12,7 @@
  "tileset":
     {
      "firstgid":1,
-     "source":"..\/base-tileset.tsj"
+     "source":"..\/small-ball-2.tsj"
     },
  "type":"template"
 }

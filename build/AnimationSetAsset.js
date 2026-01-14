@@ -1,17 +1,22 @@
 import { Point } from "./Point.js";
 import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
+import { resolveAsGFX, GfxAsset } from "./GfxAsset.js";
 export class AnimationAsset {
     name;
     frames;
     fps;
-    resolveDependencies(self, engine) {
-    }
+    gfx;
     constructor(prototype) {
         let p = prototype;
         this.name = p?.name ?? "unnamed";
         this.frames = (p?.frames ?? []).map(f => new Point(f));
         this.fps = p?.fps ?? 10;
+        this.gfx = p?.gfx ?? "";
+    }
+    gfxAsset = undefined;
+    resolveDependencies(reference, engine) {
+        this.gfxAsset = resolveAsGFX(this.gfx, reference, engine);
     }
 }
 export class AnimationSetAsset {

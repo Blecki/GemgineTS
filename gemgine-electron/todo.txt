@@ -1,0 +1,116 @@
+To get started with an Electron project in VS Code, you'll need Node.js and npm installed. The process involves setting up a project directory, installing Electron, and configuring VS Code for debugging. 
+Prerequisites
+Node.js and npm: Ensure you have Node.js (which includes npm) installed. You can check this in your terminal by running node -v and npm -v.
+Visual Studio Code: Download and install Visual Studio Code if you don't have it already. 
+Step 1: Set Up Your Project
+Create a folder: Open your terminal and create a new directory for your project, then navigate into it:
+bash
+mkdir my-electron-app
+cd my-electron-app
+Initialize npm: Initialize a new npm project. This command will prompt you to fill in project details and create a package.json file.
+bash
+npm init -y
+Install Electron: Install Electron as a development dependency in your project:
+bash
+npm install electron --save-dev
+Open in VS Code: Open the project folder in VS Code:
+bash
+code .
+ 
+Step 2: Create the Necessary Files
+An Electron app typically requires at least a package.json, a main process file (e.g., main.js), and a renderer process file (e.g., index.html). 
+main.js (Main Process): Create a main.js file at the root of your project to handle the app's lifecycle and create browser windows.
+javascript
+const { app, BrowserWindow } = require('electron');
+
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  win.loadFile('index.html');
+}
+
+app.whenReady().then(createWindow);
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+index.html (Renderer Process): Create an index.html file to define the user interface of your window.
+html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello Electron!</title>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+    <p>This is your first Electron app.</p>
+  </body>
+</html>
+ 
+Step 3: Configure package.json 
+Open your package.json file and update the main field to point to main.js, and add a start script to run your application. 
+json
+{
+  "name": "my-electron-app",
+  "version": "1.0.0",
+  "description": "A quick start electron app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "Electron",
+    "quick",
+    "start"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^latest_version"
+  }
+}
+Step 4: Run and Debug in VS Code
+Run the app: You can now run your application from the integrated terminal in VS Code using the start script you defined:
+bash
+
+npm start
+Configure Debugging: To debug directly within VS Code, you need a launch.json file.
+Open the Run and Debug tab (Ctrl+Shift+D or Cmd+Shift+D).
+Click on "create a launch.json file" or the gear icon, and select Node.js (or Electron, if available through an extension) as the environment.
+Replace the generated configuration with the following:
+json
+
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Main Process",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+      },
+      "args": ["."],
+      "outputCapture": "std"
+    }
+  ]
+}
+Start Debugging: Select the "Debug Main Process" configuration in the Run view dropdown and click the green arrow (or press F5) to start debugging. You can now set breakpoints in your main.js file. 
