@@ -3,14 +3,14 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "assets/room0.tmj",
     "console.history": [
         "world"
     ],
     "expandedProjectPaths": [
-        ".",
         "assets/templates",
-        "assets"
+        "assets",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -59,21 +59,24 @@
                 3
             ],
             "scale": 1.5,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 190.66666666666663,
-                "y": 76
+                "x": 388.66666666666663,
+                "y": 232.66666666666669
             }
         },
         "assets/room0.tmj#test": {
             "scaleInDock": 1
         },
         "assets/room1.tmj": {
-            "scale": 0.5,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 1.5,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 1154,
-                "y": 346
+                "x": -238.66666666666663,
+                "y": 168
             }
         },
         "assets/shadows.tsj": {
@@ -157,12 +160,14 @@
     "map.tileWidth": 16,
     "map.width": 33,
     "openFiles": [
+        "assets/room0.tmj",
+        "assets/room1.tmj"
     ],
     "project": "world.tiled-project",
     "recentFiles": [
+        "assets/room1.tmj",
         "assets/room0.tmj",
         "assets/base-tileset.tsj",
-        "assets/room1.tmj",
         "assets/collision.tsj",
         "assets/normal-tiles.tsj",
         "assets/test-room.tmj",

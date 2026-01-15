@@ -1,6 +1,7 @@
 import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
 import { TiledTilemap } from "./TiledTilemap.js";
+import { Point } from "./Point.js";
 export class TiledWorldMap {
     fileName;
     height;
@@ -32,6 +33,23 @@ export class TiledWorld {
     }
     resolveDependencies(self, engine) {
         this.maps.forEach(t => t.resolveDependencies(self, engine));
+    }
+    findMapAt(point) {
+        for (let map of this.maps) {
+            if (point.x >= map.x
+                && point.y >= map.y
+                && point.x < (map.x + map.width)
+                && point.y < (map.y + map.height))
+                return map;
+        }
+        return null;
+    }
+    findMapWithName(name) {
+        for (let map of this.maps) {
+            if (map.fileName == name)
+                return map;
+        }
+        return null;
     }
 }
 //# sourceMappingURL=TiledWorld.js.map

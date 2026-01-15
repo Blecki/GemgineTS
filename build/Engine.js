@@ -109,7 +109,7 @@ export class Engine {
                 }
         return r;
     }
-    createTilemapFromTiledTilemap(path) {
+    createTilemapFromTiledTilemap(path, pixelOffset) {
         let tilemap = this.getAsset(path).asset;
         let r = [];
         if (tilemap.layers)
@@ -131,6 +131,10 @@ export class Engine {
                     r.push(newEntity);
                 }
             }
+        r.forEach(e => {
+            e.localPosition.x += pixelOffset.x;
+            e.localPosition.y += pixelOffset.y;
+        });
         return r;
     }
     getModule(t) {

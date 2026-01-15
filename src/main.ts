@@ -8,7 +8,7 @@ import { loadAndConvertJSON } from "./JsonConverter.js";
 import { loadAndConvertText } from "./TextLoader.js";
 import { TiledTileset } from "./TiledTileset.js";
 import { TiledTilemap } from "./TiledTilemap.js";
-import { TiledWorld } from "./TiledWorld.js";
+import { TiledWorld, TiledWorldMap } from "./TiledWorld.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { Camera } from "./Camera.js";
 import { UpdateModule } from "./UpdateModule.js";
@@ -25,10 +25,33 @@ import { BoundsColliderComponent } from "./BoundsColliderComponent.js";
 import { TagComponent } from "./TagComponent.js";
 import { PhysicsModule } from "./PhysicsModule.js";
 import { Shader } from "./Shader.js";
+import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
+import { TilemapComponent } from "./TilemapComponent.js";
+import { Rect } from "./Rect.js";
 
 const cellSize = new Point(8, 7);
 
 export type EngineCallback = (engine: Engine) => void;
+
+function spawnMap(engine: Engine, map: TiledWorldMap) : Entity[] {
+  return engine.createTilemapFromTiledTilemap("assets/" + map.fileName, new Point(map?.x ?? 0, map?.y ?? 0));
+}
+
+function spawnPlayer(engine: Engine, spawnPoint: Entity) : Entity {
+  let playerBlueprint = engine.getAsset("assets/blueprints/player.blueprint");
+  let player = engine.createEntityFromBlueprint(engine.sceneRoot, playerBlueprint, new TiledTemplate());
+  player.localPosition = new Point(spawnPoint.localPosition);
+  return player;
+}
+
+function findEntityWithTag(entities: Entity[], tag: string) : Entity | null {
+  for (let e of entities) {
+    let component = e.getComponent(TagComponent);
+    if (component != undefined && component.tag == tag)
+      return e;
+  }
+  return null;
+}
 
 export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) : void {
   console.log("Starting Engine");
@@ -36,6 +59,7 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
     .then(asset => {
       let manifest = asset.asset as string[];
       canvas.style.imageRendering = 'pixelated';
+      let screenSize = new Point(canvas.width, canvas.height);
 
       const loader = new AssetLoader();
       loader.addLoader("tmj", loadAndConvertJSON((prototype:object) => new TiledTilemap(prototype)));
@@ -50,8 +74,6 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
 
       loader.loadAssets("data/", manifest, (assets) => { 
         const engine = new Engine(assets);
-        const random = new Random(6);
-
         engine.debugMode = true;
 
         engine.addModule(new UpdateModule());
@@ -65,31 +87,32 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
         let camera = new Camera();
         renderModule.setCamera(camera);
         camera.position = new Point(0, 0);
-        let player: Entity | undefined = undefined;
 
-        console.log("Spawning world");
-        let roomEntities = engine.createTilemapFromTiledTilemap("assets/room0.tmj");
-        console.log(roomEntities);
-        let spawn = roomEntities.find(e => e.getComponent(TagComponent) != undefined);
-        if (spawn != undefined) {
-          let tag = spawn.getComponent(TagComponent)?.tag ?? "";
-          if (tag == "spawn") {
-            console.log("Spawning player");
-            let playerBlueprint = engine.getAsset("assets/blueprints/player.blueprint");
-            player = engine.createEntityFromBlueprint(engine.sceneRoot, playerBlueprint, new TiledTemplate());
-            player.localPosition = new Point(spawn.localPosition);
-            console.log(player);
-          }
-        }
+        let world: TiledWorld = engine.getAsset("assets/base-world.world").asset as TiledWorld;
+        let startMap = world.findMapWithName("room0.tmj");
+        if (startMap == null) throw "Could not find start map";
+        let roomEntities = spawnMap(engine, startMap);
 
+        let spawn = findEntityWithTag(roomEntities, "spawn");
+        if (spawn == null) throw "Could not find spawn point";
+        let player = spawnPlayer(engine, spawn);
+        
+
+        let cameraBounds: Rect = new Rect(0,0,1,1);
+        let collisionSpaces = roomEntities.filter(r => r.getComponent(TilemapComponent) != null);
+        if (collisionSpaces.length > 0)
+          cameraBounds = collisionSpaces[0].globalBounds;
         engineCallback(engine);
 
         engine.run(() => {
           if (player != undefined) camera.position = new Point(player.globalPosition);
-          camera.confineToVisibleBounds(roomEntities[0].globalBounds, new Point(canvas.width, canvas.height));
+          camera.confineToVisibleBounds(cameraBounds, screenSize);
+
+
+
           renderModule.render(engine);
         });
       });
     })
     .catch(error => console.error("Failed to load asset manifest."));
-44}
+}

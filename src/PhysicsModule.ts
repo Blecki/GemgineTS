@@ -50,6 +50,7 @@ export class PhysicsModule extends Module {
           let groundDetectionBounds = body.parent.globalBounds.withOffset(new Point(0, 1));
           let overlaps = this.collision.overlaps(groundDetectionBounds).filter(e => e != body.parent);
           body.isGrounded = overlaps.length > 0;
+          if (body.isGrounded) body.velocity.y = 0;
         }
       }
     }
