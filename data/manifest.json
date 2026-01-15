@@ -27,5 +27,8 @@
   "assets/player/run.png",
   "assets/player/jump.png",
   "assets/player/roll.png",
-  "assets/player/flip.png"
+  "assets/player/flip.png",
+  "assets/player/sword-attack.png",
+  "assets/player/sword-idle.png",
+  "assets/player/sword-run.png"
 ]

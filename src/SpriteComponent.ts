@@ -57,16 +57,19 @@ export class SpriteComponent extends RenderComponent {
   public render(context: RenderContext) {
     let target = context.getTarget(this.renderLayer, this.renderChannel);
     let sprite: Sprite | null = null;
+    let offset: Point = new Point(0, 0);
     if (this.currentAnimation != null) {
       let currentFrame = this.animationPlayer.getCurrentFrame();
-      if (this.currentAnimation.gfxAsset != null)
+      if (this.currentAnimation.gfxAsset != null) {
+        offset = this.currentAnimation.offset;
         sprite = this.currentAnimation.gfxAsset.getSprite(this.currentAnimation.frames[currentFrame].x, this.currentAnimation.frames[currentFrame].y);
+      }
       else if (this.gfxAsset != null)
         sprite = this.gfxAsset.getSprite(this.currentAnimation.frames[currentFrame].x, this.currentAnimation.frames[currentFrame].y);
     }
     if (sprite != undefined && this.parent != null)
       context.getTarget(this.renderLayer, this.renderChannel)
-        .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset), this.flip);
+        .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset).add(offset), this.flip);
   }
 
   public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference): void {

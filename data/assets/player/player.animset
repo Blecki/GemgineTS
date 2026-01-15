@@ -20,7 +20,7 @@
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 64,
-        "path": "assets/player/idle.png"
+        "path": "assets/player/sword-idle.png"
       }
     },
     {
@@ -41,7 +41,7 @@
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
-        "path": "assets/player/run.png"
+        "path": "assets/player/sword-run.png"
       }
     },
     {
@@ -166,6 +166,26 @@
         "tileHeight": 48,
         "path": "assets/player/flip.png"
       }
+    },
+    {
+      "name": "attack",
+      "fps": 20,
+      "frames": [ 
+        { "x": 0, "y": 0 }, 
+        { "x": 1, "y": 0 },
+        { "x": 2, "y": 0 }, 
+        { "x": 3, "y": 0 },
+        { "x": 4, "y": 0 },
+        { "x": 5, "y": 0 }
+      ],
+      "gfx": {
+        "type": "image",
+        "isSheet": true,
+        "tileWidth": 64,
+        "tileHeight": 64,
+        "path": "assets/player/sword-attack.png"
+      },
+      "offset": { "x": -8, "y": -8 }
     }
   ]
 }

@@ -8,6 +8,7 @@ export class AnimationAsset {
     fps;
     gfx;
     loop;
+    offset;
     constructor(prototype) {
         let p = prototype;
         this.name = p?.name ?? "unnamed";
@@ -15,6 +16,7 @@ export class AnimationAsset {
         this.fps = p?.fps ?? 10;
         this.gfx = p?.gfx ?? "";
         this.loop = p?.loop ?? true;
+        this.offset = new Point(p?.offset);
     }
     gfxAsset = undefined;
     resolveDependencies(reference, engine) {

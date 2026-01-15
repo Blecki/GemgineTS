@@ -26,6 +26,7 @@ let PlayerControllerComponent = class PlayerControllerComponent extends Componen
         this.input.bind("KeyW", "north");
         this.input.bind("KeyS", "south");
         this.input.bind("KeyD", "east");
+        this.input.bind("Space", "attack");
         this.input.initialize();
         this.sprite = this.parent?.getComponent(SpriteComponent);
         this.controller = this.parent?.getComponent(ControllerComponent);
@@ -43,17 +44,25 @@ let PlayerControllerComponent = class PlayerControllerComponent extends Componen
                 aim = new Point(1, 0);
             }
             this.controller.velocity.x = delta.x;
-            if (this.input?.check("north")) {
+            if (!this.playingStaticAnimation && this.input?.check("north")) {
+                this.input.markHandled("north");
                 this.controller.velocity = new Point(this.controller.velocity.x, -256);
             }
-            if (this.input?.check("south"))
+            if (!this.playingStaticAnimation && this.input?.check("south")) {
+                this.input.markHandled("south");
                 this.playStatic('roll');
+            }
         }
         else {
-            if (this.controller != undefined && this.input?.check("north")) {
+            if (!this.playingStaticAnimation && this.controller != undefined && this.input?.check("north")) {
+                this.input.markHandled("north");
                 this.playStatic('flip');
                 this.controller.velocity = new Point(this.controller.velocity.x, -256);
             }
+        }
+        if (!this.playingStaticAnimation && this.input?.check("attack")) {
+            this.input.markHandled("attack");
+            this.playStatic('attack');
         }
         if (this.sprite != undefined) {
             if (this.playingStaticAnimation) {
