@@ -4,14 +4,14 @@
             "fileName": "room0.tmj",
             "height": 224,
             "width": 528,
-            "x": 8,
+            "x": 0,
             "y": 0
         },
         {
             "fileName": "room1.tmj",
             "height": 224,
             "width": 528,
-            "x": 536,
+            "x": 528,
             "y": 0
         }
     ],

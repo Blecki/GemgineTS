@@ -2,6 +2,7 @@ import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 import { Point } from "./Point.js";
+import { Rect } from "./Rect.js";
 export class TiledWorldMap {
     fileName;
     height;
@@ -50,6 +51,15 @@ export class TiledWorld {
                 return map;
         }
         return null;
+    }
+    findMapsThatTouch(rect) {
+        let r = [];
+        for (let map of this.maps) {
+            let mapRect = new Rect(map.x, map.y, map.width, map.height);
+            if (mapRect.touches(rect))
+                r.push(map);
+        }
+        return r;
     }
 }
 //# sourceMappingURL=TiledWorld.js.map

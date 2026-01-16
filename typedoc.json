@@ -1,0 +1,10 @@
+{
+  "entryPoints": ["src"],
+  "entryPointStrategy": "expand",
+  "out": "docs",
+  "categorizeByGroup": true,
+  "excludePrivate": true,
+  "plugin": ["typedoc-plugin-merge-modules"],
+  "mergeModulesMergeMode": "project",
+  "mergeModulesRenameDefaults": true
+}

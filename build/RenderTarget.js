@@ -70,7 +70,6 @@ export class RenderTarget {
         this.context.globalAlpha = 1;
         this.context.globalCompositeOperation = 'source-over';
         let halfOffset = new Point(this.canvas.width / 2, this.canvas.height / 2);
-        camera.drawOffset = camera.position.negate().add(halfOffset).truncate();
         for (let t of this.pendingDrawTasks)
             t(this.context, camera);
         this.pendingDrawTasks = [];

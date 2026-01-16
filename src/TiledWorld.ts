@@ -2,6 +2,7 @@ import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 import { Point } from "./Point.js";
+import { Rect } from "./Rect.js";
 
 type TiledWorldMapPrototype = {
   fileName: string;
@@ -73,5 +74,15 @@ export class TiledWorld {
         return map;
     }
     return null;
+  }
+
+  public findMapsThatTouch(rect: Rect): TiledWorldMap[] {
+    let r:TiledWorldMap[] = [];
+    for (let map of this.maps) {
+      let mapRect = new Rect(map.x, map.y, map.width, map.height);
+      if (mapRect.touches(rect))
+        r.push(map);
+    }
+    return r;
   }
 }

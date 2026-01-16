@@ -11,12 +11,14 @@ type EntityPrototype = {
   name: string;
 }
 
+
+
 export class Entity implements DebuggableObject {
   public ID: number;
   public parent: Entity | null;
   public name: string = "unnamed";
   public storageNode: QuadTree | null = null;
-
+  
   public localPosition: Point = new Point(0, 0);
   public get globalPosition(): Point {
     if (!this.parent) return this.localPosition;

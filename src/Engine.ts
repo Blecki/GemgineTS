@@ -107,7 +107,7 @@ export class Engine {
     if (object.templateAsset == undefined) return null;
     let r = this.createEntitytFromTiledTemplate(parent, object.templateAsset.asset);
     if (r != null) {
-      r.localPosition = new Point(object.x ?? 0, object.y ?? 0); // Pass the TiledObject down?
+      r.localPosition = new Point(object);
       r.localPosition = new Point(r.localPosition.x + r.pivot.x, r.localPosition.y - r.size.y + r.pivot.y);
       if (object.name !== undefined && object.name != "")
         r.name = object.name;

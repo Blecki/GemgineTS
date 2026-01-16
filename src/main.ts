@@ -53,6 +53,15 @@ function findEntityWithTag(entities: Entity[], tag: string) : Entity | null {
   return null;
 }
 
+class LoadedMap {
+  public map: TiledWorldMap;
+  public entities: Entity[];
+  constructor(map: TiledWorldMap, entities: Entity[]) {
+    this.map = map;
+    this.entities = entities;
+  }
+}
+
 export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) : void {
   console.log("Starting Engine");
   loadJSON("data/", "manifest.json")
@@ -60,6 +69,8 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
       let manifest = asset.asset as string[];
       canvas.style.imageRendering = 'pixelated';
       let screenSize = new Point(canvas.width, canvas.height);
+      console.log("Screensize:");
+      console.log(screenSize);
 
       const loader = new AssetLoader();
       loader.addLoader("tmj", loadAndConvertJSON((prototype:object) => new TiledTilemap(prototype)));
@@ -84,31 +95,41 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
 
         engine.start();
 
-        let camera = new Camera();
+        let camera = new Camera(screenSize);
         renderModule.setCamera(camera);
         camera.position = new Point(0, 0);
 
         let world: TiledWorld = engine.getAsset("assets/base-world.world").asset as TiledWorld;
+        let loadedMaps: LoadedMap[] = [];
         let startMap = world.findMapWithName("room0.tmj");
         if (startMap == null) throw "Could not find start map";
         let roomEntities = spawnMap(engine, startMap);
+        loadedMaps.push(new LoadedMap(startMap, roomEntities));
 
         let spawn = findEntityWithTag(roomEntities, "spawn");
         if (spawn == null) throw "Could not find spawn point";
         let player = spawnPlayer(engine, spawn);
         
-
-        let cameraBounds: Rect = new Rect(0,0,1,1);
-        let collisionSpaces = roomEntities.filter(r => r.getComponent(TilemapComponent) != null);
-        if (collisionSpaces.length > 0)
-          cameraBounds = collisionSpaces[0].globalBounds;
         engineCallback(engine);
 
         engine.run(() => {
-          if (player != undefined) camera.position = new Point(player.globalPosition);
-          camera.confineToVisibleBounds(cameraBounds, screenSize);
+          //if (player != undefined) //camera.position = new Point(player.globalPosition);
 
+          camera.update();
+          let currentMap = world.findMapAt(player.globalPosition);
+          camera.confineToVisibleBounds(new Rect(currentMap?.x ?? 0, currentMap?.y ?? 0, currentMap?.width ?? 1, currentMap?.height ?? 1), screenSize);
 
+          let neighbors = world.findMapsThatTouch(new Rect(currentMap?.x ?? 0, currentMap?.y ?? 0, currentMap?.height ?? 1, currentMap?.height ?? 1));
+          neighbors.forEach(n => {
+            var matching = loadedMaps.filter(l => l.map.fileName == n.fileName);
+            if (matching.length == 0) {
+              let newMap = world.findMapWithName(n.fileName);
+              if (newMap != null) {
+                let roomEntities = spawnMap(engine, n)
+                loadedMaps.push(new LoadedMap(newMap, roomEntities));
+              }
+            }
+          }); 
 
           renderModule.render(engine);
         });

@@ -40,5 +40,15 @@ export class Point {
         let grid = new PropertyGrid(this, name, ["x", "y"]);
         return grid.getElement();
     }
+    lengthSqrd() {
+        return (this.x * this.x) + (this.y * this.y);
+    }
+    length() {
+        return Math.sqrt((this.x * this.x) + (this.y * this.y));
+    }
+    normalized() {
+        let magnitude = Math.sqrt(this.lengthSqrd());
+        return new Point(this.x / magnitude, this.y / magnitude);
+    }
 }
 //# sourceMappingURL=Point.js.map
