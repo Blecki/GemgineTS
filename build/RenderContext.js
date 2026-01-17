@@ -1,42 +1,30 @@
-import { Sprite } from "./Sprite.js";
-import { Point } from "./Point.js";
-import { Rect } from "./Rect.js";
 import { Camera } from "./Camera.js";
-import { RawImage } from "./RawImage.js";
 import { RenderTarget } from "./RenderTarget.js";
-import { RenderLayers, RenderChannels } from "./RenderLayers.js";
+import { RenderLayers } from "./RenderLayers.js";
 export class RenderContext {
     renderTargets;
     constructor(width, height, gl) {
         this.renderTargets = {
-            [RenderLayers.Background]: {
-                [RenderChannels.Diffuse]: new RenderTarget(width, height, gl),
-                [RenderChannels.Normals]: new RenderTarget(width, height, gl),
-                [RenderChannels.Collision]: new RenderTarget(width, height, gl)
-            },
-            [RenderLayers.Objects]: {
-                [RenderChannels.Diffuse]: new RenderTarget(width, height, gl),
-                [RenderChannels.Normals]: new RenderTarget(width, height, gl),
-                [RenderChannels.Collision]: new RenderTarget(width, height, gl)
-            }
+            [RenderLayers.BackgroundDiffuse]: new RenderTarget(width, height, gl),
+            [RenderLayers.ObjectsDiffuse]: new RenderTarget(width, height, gl),
+            [RenderLayers.Collision]: new RenderTarget(width, height, gl),
+            [RenderLayers.GUI]: new RenderTarget(width, height, gl)
         };
     }
-    getTarget(layer, channel) {
-        return this.renderTargets[layer][channel];
+    getTarget(layer) {
+        return this.renderTargets[layer];
     }
     prepAll() {
-        this.renderTargets[RenderLayers.Background][RenderChannels.Diffuse].reset();
-        this.renderTargets[RenderLayers.Background][RenderChannels.Normals].reset();
-        this.renderTargets[RenderLayers.Background][RenderChannels.Collision].reset();
-        this.renderTargets[RenderLayers.Objects][RenderChannels.Diffuse].reset();
-        this.renderTargets[RenderLayers.Objects][RenderChannels.Normals].reset();
+        this.renderTargets[RenderLayers.BackgroundDiffuse].reset();
+        this.renderTargets[RenderLayers.ObjectsDiffuse].reset();
+        this.renderTargets[RenderLayers.Collision].reset();
+        this.renderTargets[RenderLayers.GUI].reset();
     }
-    flushAll(cam) {
-        this.renderTargets[RenderLayers.Background][RenderChannels.Diffuse].flush(cam);
-        this.renderTargets[RenderLayers.Background][RenderChannels.Normals].flush(cam);
-        this.renderTargets[RenderLayers.Background][RenderChannels.Collision].flush(cam);
-        this.renderTargets[RenderLayers.Objects][RenderChannels.Diffuse].flush(cam);
-        this.renderTargets[RenderLayers.Objects][RenderChannels.Normals].flush(cam);
+    flushAll(worldCamera, guiCamera) {
+        this.renderTargets[RenderLayers.BackgroundDiffuse].flush(worldCamera);
+        this.renderTargets[RenderLayers.ObjectsDiffuse].flush(worldCamera);
+        this.renderTargets[RenderLayers.Collision].flush(worldCamera);
+        this.renderTargets[RenderLayers.GUI].flush(guiCamera);
     }
 }
 //# sourceMappingURL=RenderContext.js.map

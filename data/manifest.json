@@ -31,5 +31,6 @@
   "assets/player/flip.png",
   "assets/player/sword-attack.png",
   "assets/player/sword-idle.png",
-  "assets/player/sword-run.png"
+  "assets/player/sword-run.png",
+  "gui-composite-fragment.glsl"
 ]

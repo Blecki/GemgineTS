@@ -13,7 +13,7 @@ import { Sprite } from "./Sprite.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { RenderComponent } from "./RenderModule.js";
 import { componentType } from "./Component.js";
-import { RenderLayers, RenderChannels } from "./RenderLayers.js";
+import { RenderLayers } from "./RenderLayers.js";
 import { AssetReference } from "./AssetReference.js";
 import { resolveInlineReference } from "./JsonConverter.js";
 import { Point } from "./Point.js";
@@ -49,7 +49,7 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
     resolveDependencies(reference, engine) {
     }
     render(context) {
-        let target = context.getTarget(this.renderLayer, this.renderChannel);
+        let target = context.getTarget(this.renderLayer);
         let sprite = null;
         let offset = new Point(0, 0);
         if (this.currentAnimation != null) {
@@ -62,12 +62,11 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
                 sprite = this.gfxAsset.getSprite(this.currentAnimation.frames[currentFrame].x, this.currentAnimation.frames[currentFrame].y);
         }
         if (sprite != undefined && this.parent != null)
-            context.getTarget(this.renderLayer, this.renderChannel)
+            context.getTarget(this.renderLayer)
                 .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset).add(offset), this.flip);
     }
     initialize(engine, template, prototypeAsset) {
-        this.renderLayer = RenderLayers.Objects;
-        this.renderChannel = RenderChannels.Diffuse;
+        this.renderLayer = RenderLayers.ObjectsDiffuse;
         this.gfxAsset = resolveAsGFX(this.gfx, prototypeAsset, engine);
         this.resolvedAnimations = resolveInlineReference(prototypeAsset, engine, this.animations, AnimationSetAsset);
         if (this.resolvedAnimations == undefined) {

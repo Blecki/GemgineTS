@@ -1,7 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
-import { TiledTileset } from "./TiledTileset.js";
-import pathCombine from "./PathCombine.js";
 import { TiledObject, TiledProperty } from "./TiledObject.js";
 import { TiledInlineTileset } from "./TiledInlineTileset.js";
 export class TiledLayer {

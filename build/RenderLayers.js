@@ -1,23 +1,15 @@
 export var RenderLayers;
 (function (RenderLayers) {
-    RenderLayers[RenderLayers["Background"] = 0] = "Background";
-    RenderLayers[RenderLayers["Objects"] = 1] = "Objects";
+    RenderLayers[RenderLayers["BackgroundDiffuse"] = 0] = "BackgroundDiffuse";
+    RenderLayers[RenderLayers["ObjectsDiffuse"] = 1] = "ObjectsDiffuse";
+    RenderLayers[RenderLayers["Collision"] = 3] = "Collision";
+    RenderLayers[RenderLayers["GUI"] = 4] = "GUI";
 })(RenderLayers || (RenderLayers = {}));
 ;
 export const RenderLayersMapping = {
-    "Background": RenderLayers.Background,
-    "Objects": RenderLayers.Objects
-};
-export var RenderChannels;
-(function (RenderChannels) {
-    RenderChannels[RenderChannels["Diffuse"] = 0] = "Diffuse";
-    RenderChannels[RenderChannels["Normals"] = 1] = "Normals";
-    RenderChannels[RenderChannels["Collision"] = 2] = "Collision";
-})(RenderChannels || (RenderChannels = {}));
-;
-export const RenderChannelsMapping = {
-    "Diffuse": RenderChannels.Diffuse,
-    "Normals": RenderChannels.Normals,
-    "Collision": RenderChannels.Collision
+    "BackgroundDiffuse": RenderLayers.BackgroundDiffuse,
+    "ObjectsDiffuse": RenderLayers.ObjectsDiffuse,
+    "Collision": RenderLayers.Collision,
+    "GUI": RenderLayers.GUI
 };
 //# sourceMappingURL=RenderLayers.js.map

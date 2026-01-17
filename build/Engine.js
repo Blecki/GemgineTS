@@ -12,7 +12,7 @@ import { GameTime } from "./GameTime.js";
 import { TiledLayer, TiledTilemap } from "./TiledTilemap.js";
 import { TilemapComponent } from "./TilemapComponent.js";
 import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
-import { RenderLayersMapping, RenderChannelsMapping, RenderChannels } from "./RenderLayers.js";
+import { RenderLayers, RenderLayersMapping } from "./RenderLayers.js";
 export class Engine {
     modules = [];
     assetMap;
@@ -121,8 +121,8 @@ export class Engine {
                     let blueprint = new EntityBlueprint();
                     let assetReference = new AssetReference("", blueprint);
                     blueprint.components.push({ type: "Tilemap", tilemap: tilemap, layer: layer });
-                    var renderChannel = RenderChannelsMapping[layer.properties.filter(p => p.name == "Channel")[0].value];
-                    if (renderChannel == RenderChannels.Collision)
+                    var renderLayer = RenderLayersMapping[layer.properties.filter(p => p.name == "Layer")[0].value];
+                    if (renderLayer == RenderLayers.Collision)
                         blueprint.components.push({ type: "TilemapCollider" });
                     let newEntity = this.createEntityFromBlueprint(this.sceneRoot, assetReference, new TiledTemplate());
                     newEntity.localPosition = new Point(layer.x, layer.y);

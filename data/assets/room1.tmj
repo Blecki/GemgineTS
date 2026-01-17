@@ -23,14 +23,9 @@
          "opacity":1,
          "properties":[
                 {
-                 "name":"Channel",
-                 "type":"string",
-                 "value":"Diffuse"
-                }, 
-                {
                  "name":"Layer",
                  "type":"string",
-                 "value":"Background"
+                 "value":"BackgroundDiffuse"
                 }],
          "type":"tilelayer",
          "visible":true,
@@ -59,14 +54,9 @@
          "opacity":0.6,
          "properties":[
                 {
-                 "name":"Channel",
-                 "type":"string",
-                 "value":"Collision"
-                }, 
-                {
                  "name":"Layer",
                  "type":"string",
-                 "value":"Background"
+                 "value":"Collision"
                 }],
          "type":"tilelayer",
          "visible":true,

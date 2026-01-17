@@ -8,11 +8,9 @@ import { TiledTemplate } from "./TiledTemplate.js";
 import { RenderComponent } from "./RenderModule.js";
 import { componentType } from "./Component.js";
 import { Array2D } from "./Array2D.js";
-import { RenderChannelsMapping, RenderLayers, RenderLayersMapping } from "./RenderLayers.js";
-import { TiledTile } from "./TiledTileset.js";
-import { type DebuggableObject, PropertyGrid } from "./Debugger.js";
-import { type FluentElement, Fluent } from "./Fluent.js";
-import { RenderChannels } from "./RenderLayers.js";
+import { RenderLayersMapping } from "./RenderLayers.js";
+import { PropertyGrid } from "./Debugger.js";
+import { type FluentElement } from "./Fluent.js";
 import { TiledInlineTileset } from "./TiledInlineTileset.js";
 
 type TilemapComponentPrototype = {
@@ -45,7 +43,6 @@ export class TilemapComponent extends RenderComponent {
     this.worldspaceOriginOffset = new Point(this.layer?.x ?? 0, this.layer?.y ?? 0);
 
     this.renderLayer = RenderLayersMapping[p?.layer.properties.filter(p => p.name == "Layer")[0].value];
-    this.renderChannel = RenderChannelsMapping[p?.layer.properties.filter(p => p.name == "Channel")[0].value];    
   }
 
   public initialize(engine: Engine, template: TiledTemplate) {
@@ -102,9 +99,9 @@ export class TilemapComponent extends RenderComponent {
       basePoint.y += this.layer?.y ?? 0;
 
       if (this.cacheState == CacheState.Priming && this.cachedCanvas != null)
-        context.getTarget(this.renderLayer, this.renderChannel).drawImage(this.cachedCanvas, new Rect(0, 0, this.cachedCanvas.width, this.cachedCanvas.height), basePoint);
+        context.getTarget(this.renderLayer).drawImage(this.cachedCanvas, new Rect(0, 0, this.cachedCanvas.width, this.cachedCanvas.height), basePoint);
       else if (this.cacheState == CacheState.Ready && this.cachedRender != null)
-        context.getTarget(this.renderLayer, this.renderChannel).drawImage(this.cachedRender, new Rect(0, 0, this.cachedRender.width, this.cachedRender.height), basePoint);
+        context.getTarget(this.renderLayer).drawImage(this.cachedRender, new Rect(0, 0, this.cachedRender.width, this.cachedRender.height), basePoint);
     }
   }
 

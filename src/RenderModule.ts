@@ -5,27 +5,21 @@ import { Entity } from "./Entity.js";
 import { Camera } from "./Camera.js";
 import { Engine } from "./Engine.js";
 import { GameTime } from "./GameTime.js";
-import { RenderLayers, RenderChannels } from "./RenderLayers.js";
+import { RenderLayers } from "./RenderLayers.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { AssetReference } from "./AssetReference.js";
 import { Point } from "./Point.js";
-import { Rect } from "./Rect.js";
 import { LightComponent } from "./LightComponent.js";
-import { RawImage } from "./RawImage.js";
-import { Vector3, v3sub, v3magnitudeSquared, v3dotProduct, v3normalize } from "./Vector3.js";
 import { Color } from "./Color.js";
 import { Shader } from "./Shader.js";
-import { Texture } from "./Texture.js";
 
 export class RenderComponent extends Component {
-  public renderLayer: number = RenderLayers.Background;
-  public renderChannel: number = RenderChannels.Diffuse;
+  public renderLayer: number = RenderLayers.BackgroundDiffuse;
   public render(context: RenderContext):void { /* Default implementation */ }
 }
 
 interface RenderableComponent {
   renderLayer: number;
-  renderChannel: number;
   render(context: RenderContext):void;
 }
 
@@ -39,8 +33,7 @@ export class DebugGizmoComponent extends RenderComponent {
   public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference) 
   {
     this.point = engine.getAsset("assets/point.png").asset;
-    this.renderLayer = RenderLayers.Objects;
-    this.renderChannel = RenderChannels.Diffuse;
+    this.renderLayer = RenderLayers.ObjectsDiffuse;
   }  
   public render(context: RenderContext): void {
     /*
@@ -74,13 +67,16 @@ export class RenderModule extends Module {
   private readonly lights: LightComponent[] = [];
 
   public camera: Camera | null = null;
+  
   public fpsQueue: number[] = [];
   public destinationCanvas: HTMLCanvasElement;
   public gl: WebGL2RenderingContext;
   public renderContext: RenderContext;
-  private program: WebGLProgram | null = null;
-
+  private worldCompositeProgram: WebGLProgram | null = null;
+  private guiCompositeProgram: WebGLProgram | null = null;
+  private guiCamera: Camera;
   private readonly LightZ: number = 64;
+  private fullScreenQuadBuffer: WebGLBuffer | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     super();
@@ -90,18 +86,21 @@ export class RenderModule extends Module {
     this.gl = ctx;
 
     this.renderContext = new RenderContext(this.destinationCanvas.width, this.destinationCanvas.height, this.gl);
+    this.guiCamera = new Camera(new Point(this.destinationCanvas.width, this.destinationCanvas.height));
+    //this.guiCamera.drawOffset = new Point(-this.destinationCanvas.width / 2, -this.destinationCanvas.height / 2); // Position 0,0 at the top left.
   }
 
   public engineStart(engine: Engine): void {
+
     const vertexShader = (engine.getAsset("final-composite-vertex.glsl").asset as Shader).compile(this.gl, this.gl.VERTEX_SHADER);
     const fragmentShader = (engine.getAsset("final-composite-fragment.glsl").asset as Shader).compile(this.gl, this.gl.FRAGMENT_SHADER);
+    this.worldCompositeProgram = this.compileProgram(this.gl, vertexShader, fragmentShader);
 
-    this.program = this.compileProgram(this.gl, vertexShader, fragmentShader);
+    const guiFragmentShader = (engine.getAsset("gui-composite-fragment.glsl").asset as Shader).compile(this.gl, this.gl.FRAGMENT_SHADER);
+    this.guiCompositeProgram = this.compileProgram(this.gl, vertexShader, guiFragmentShader);
 
-    this.gl.useProgram(this.program);
-
-    const positionBuffer = this.gl.createBuffer();
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
+    this.fullScreenQuadBuffer = this.gl.createBuffer();
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.fullScreenQuadBuffer);
 
     const positions = new Float32Array([
       -1.0, -1.0,
@@ -109,13 +108,8 @@ export class RenderModule extends Module {
       -1.0, 1.0,
       1.0, 1.0
     ]);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, positions, this.gl.STATIC_DRAW);
 
-    if (this.program != null) {
-      const positionLocation = this.gl.getAttribLocation(this.program, "a_position");
-      this.gl.enableVertexAttribArray(positionLocation);
-      this.gl.vertexAttribPointer(positionLocation, 2, this.gl.FLOAT, false, 0, 0);
-    }
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, positions, this.gl.STATIC_DRAW);
   }
   
   private isRenderable(object: any): object is RenderableComponent {
@@ -148,40 +142,61 @@ export class RenderModule extends Module {
 
   render(engine: Engine) {
 
-    // Render scene to buffers
+    if (this.camera == null) return;
 
     this.animatables.forEach(a => a.animate());
-
     this.renderContext.prepAll();
     
-    if (this.camera == null) return;
-        for (let renderable of this.renderables) {
-          renderable.render(this.renderContext);
-        }
+    for (let renderable of this.renderables) {
+      renderable.render(this.renderContext);
+    }
 
     this.fpsQueue.push(GameTime.getDeltaTime());
     if (this.fpsQueue.length > 200) this.fpsQueue.shift();
-    var objectDiffuse = this.renderContext.getTarget(RenderLayers.Objects, RenderChannels.Diffuse);
+    var gui = this.renderContext.getTarget(RenderLayers.GUI);
     let averageFrameTime = this.fpsQueue.reduce((sum, val) => sum + val, 0) / this.fpsQueue.length;
     let fps = Math.round(1 / averageFrameTime).toString();
-    objectDiffuse.drawString(fps, new Point(5, 5), 'white');
+    gui.drawString(fps, new Point(5, 5), 'black');
 
-    this.renderContext.flushAll(this.camera);
-
+    this.renderContext.flushAll(this.camera, this.guiCamera);
 
     // Composite buffers onto screen.
 
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+    this.gl.disable(this.gl.DEPTH_TEST);
 
-    if (this.program != null) {
-      this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_diffuse"), 0); 
-      this.gl.uniform1i(this.gl.getUniformLocation(this.program, "u_objects"), 1); 
+    if (this.worldCompositeProgram != null) {
 
-      this.renderContext.getTarget(RenderLayers.Background, RenderChannels.Diffuse).bind(this.gl, this.gl.TEXTURE0);
-      objectDiffuse.bind(this.gl, this.gl.TEXTURE1);
+      this.gl.useProgram(this.worldCompositeProgram);
+      this.gl.disable(this.gl.BLEND);
+
+      const positionLocation = this.gl.getAttribLocation(this.worldCompositeProgram, "a_position");
+      this.gl.enableVertexAttribArray(positionLocation);
+      this.gl.vertexAttribPointer(positionLocation, 2, this.gl.FLOAT, false, 0, 0);
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.fullScreenQuadBuffer);
+
+      this.gl.uniform1i(this.gl.getUniformLocation(this.worldCompositeProgram, "u_background_diffuse"), 0); 
+      this.renderContext.getTarget(RenderLayers.BackgroundDiffuse).bind(this.gl, this.gl.TEXTURE0);
+      this.gl.uniform1i(this.gl.getUniformLocation(this.worldCompositeProgram, "u_objects_diffuse"), 1); 
+      this.renderContext.getTarget(RenderLayers.ObjectsDiffuse).bind(this.gl, this.gl.TEXTURE1);
 
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+    }    
 
+    if (this.guiCompositeProgram != null) {
+
+      this.gl.useProgram(this.guiCompositeProgram);
+      this.gl.enable(this.gl.BLEND);
+      this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+      const positionLocation = this.gl.getAttribLocation(this.guiCompositeProgram, "a_position");
+      this.gl.enableVertexAttribArray(positionLocation);
+      this.gl.vertexAttribPointer(positionLocation, 2, this.gl.FLOAT, false, 0, 0);
+      this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.fullScreenQuadBuffer);
+
+      this.gl.uniform1i(this.gl.getUniformLocation(this.guiCompositeProgram, "u_gui"), 0); 
+      this.renderContext.getTarget(RenderLayers.GUI).bind(this.gl, this.gl.TEXTURE0);
+
+      this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
     }    
   }
 
