@@ -77,6 +77,7 @@ export class RenderTarget {
       context.fillStyle = color;
       context.textAlign = 'left';
       context.textBaseline = 'top';
+      context.font = "30px Arial";
       context.fillText(text, position.x + camera.drawOffset.x, position.y + camera.drawOffset.y);
     });
   }

@@ -1,0 +1,24 @@
+{ "object":
+    {
+     "gid":1,
+     "height":48,
+     "id":2,
+     "name":"",
+     "properties":[
+            {
+             "name":"blueprint",
+             "type":"string",
+             "value":"assets\/blueprints\/green-slime.blueprint"
+            }],
+     "rotation":0,
+     "type":"",
+     "visible":true,
+     "width":48
+    },
+ "tileset":
+    {
+     "firstgid":1,
+     "source":"..\/green-slime.tsj"
+    },
+ "type":"template"
+}

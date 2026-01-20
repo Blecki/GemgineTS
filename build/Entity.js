@@ -40,7 +40,10 @@ export class Entity {
         this.children.push(other);
     }
     getComponent(t) {
-        return this.components.find((component) => component instanceof t);
+        var r = this.components.find((component) => component instanceof t);
+        if (r == undefined)
+            return undefined;
+        return r;
     }
     createDebugger(name) {
         console.log("Trace: Entity.createDebugger");

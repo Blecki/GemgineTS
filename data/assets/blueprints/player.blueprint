@@ -1,6 +1,6 @@
 {
    "size": { "x": 16, "y": 32 },
-   "pivot": { "x": 7, "y": 32 },
+   "pivot": { "x": 7, "y": 31 },
    "components": [
       {
          "type": "Sprite",
@@ -25,6 +25,11 @@
          "radius": 512,
          "color": { "r": 255, "g": 128, "b": 0, "a": 255 },
          "intensity": 1
-      }
+      },
+      { 
+         "type": "Health",
+         "maxHealth" : 100
+      },
+      { "type": "GUIHealthBar" }
    ]
 }

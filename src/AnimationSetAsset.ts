@@ -2,11 +2,12 @@ import { Point } from "./Point.js";
 import { AssetReference } from "./AssetReference.js";
 import { Engine } from "./Engine.js";
 import { resolveAsGFX, GfxAsset } from "./GfxAsset.js";
+import { AnimationFrame } from "./AnimationFrame.js";
 
 type AnimationAssetPrototype = {
   name: string;
   direction: string;
-  frames: Point[];
+  frames: AnimationFrame[];
   fps: number;
   gfx: string | object;
   loop: boolean;
@@ -15,7 +16,7 @@ type AnimationAssetPrototype = {
 
 export class AnimationAsset {
   public name: string;
-  public frames: Point[];
+  public frames: AnimationFrame[];
   public fps: number;
   public gfx: string | object;
   public loop: boolean;
@@ -24,7 +25,7 @@ export class AnimationAsset {
   constructor(prototype?:object) {
     let p = prototype as AnimationAssetPrototype;
     this.name = p?.name ?? "unnamed";
-    this.frames = (p?.frames ?? []).map(f => new Point(f));
+    this.frames = (p?.frames ?? []).map(f => new AnimationFrame(f));
     this.fps = p?.fps ?? 10;
     this.gfx = p?.gfx ?? "";
     this.loop = p?.loop ?? true;

@@ -5,10 +5,25 @@ export class Rect {
     width;
     height;
     constructor(x, y, width, height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        if (x === undefined) {
+            this.x = 0;
+            this.y = 0;
+            this.width = 0;
+            this.height = 0;
+        }
+        else if (typeof x === 'number') {
+            this.x = x;
+            this.y = y ?? 0;
+            this.width = width ?? 0;
+            this.height = height ?? 0;
+        }
+        else {
+            let prototype = x;
+            this.x = prototype.x;
+            this.y = prototype.y;
+            this.width = prototype.width;
+            this.height = prototype.height;
+        }
     }
     set(center, size) {
         this.x = center.x - (size.x / 2);

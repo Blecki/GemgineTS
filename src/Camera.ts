@@ -16,7 +16,6 @@ export class Camera {
   public update() : void {
     let delta = this.position.sub(this.realPosition);
     let step = this.panSpeed * GameTime.getDeltaTime();
-    console.log(delta);
     if (delta.length() <= step)
       this.realPosition = this.position;
     else 

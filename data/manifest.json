@@ -32,5 +32,9 @@
   "assets/player/sword-attack.png",
   "assets/player/sword-idle.png",
   "assets/player/sword-run.png",
-  "gui-composite-fragment.glsl"
+  "gui-composite-fragment.glsl",
+  "assets/green-slime.png",
+  "assets/blueprints/green-slime.blueprint",
+  "assets/templates/green-slime.tj",
+  "assets/green-slime.tsj"
 ]

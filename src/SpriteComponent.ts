@@ -15,6 +15,7 @@ import { type DebuggableObject, PropertyGrid } from "./Debugger.js";
 import { type FluentElement, Fluent } from "./Fluent.js";
 import { AnimationSetAsset } from "./AnimationSetAsset.js";
 import { AnimationPlayer } from "./AnimationPlayer.js";
+import { AnimationFrame } from "./AnimationFrame.js";
 
 type SpriteComponentPrototype = {
   gfx: string | object;
@@ -79,7 +80,7 @@ export class SpriteComponent extends RenderComponent {
 
     if (this.resolvedAnimations == undefined) {
       this.currentAnimation = new AnimationAsset();
-      this.currentAnimation.frames = [ new Point(0, 0) ];
+      this.currentAnimation.frames = [ new AnimationFrame({x: 0, y: 0}) ];
     }
     else if (this.startingAnimation != undefined)
       this.currentAnimation = this.resolvedAnimations.getAnimation(this.startingAnimation);

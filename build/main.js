@@ -22,6 +22,8 @@ import { SpriteComponent } from "./SpriteComponent.js";
 import { PlayerControllerComponent } from "./PlayerControllerComponent.js";
 import { BoundsColliderComponent } from "./BoundsColliderComponent.js";
 import { TagComponent } from "./TagComponent.js";
+import { HealthComponent } from "./HealthComponent.js";
+import { GUIHealthBarComponent } from "./GUIHealthBarComponent.js";
 import { PhysicsModule } from "./PhysicsModule.js";
 import { Shader } from "./Shader.js";
 import { TilemapColliderComponent } from "./TilemapColliderComponent.js";

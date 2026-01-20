@@ -1,17 +1,41 @@
 import { Point } from "./Point.js";
 
+type RectPrototype = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export class Rect {
   public x: number;
   public y: number;
   public width: number;
   public height: number;
 
-  public constructor(x: number, y: number, width: number, height: number)
+  constructor(prototype: object)
+  constructor(x: number, y: number, width: number, height: number)
+  constructor(x: object | number, y?: number, width?: number, height?: number)
   {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
+    if (x === undefined) {
+      this.x = 0;
+      this.y = 0;
+      this.width = 0;
+      this.height = 0;
+    }
+    else if (typeof x === 'number') {
+      this.x = x;
+      this.y = y ?? 0;
+      this.width = width ?? 0;
+      this.height = height ?? 0;
+    }
+    else {
+      let prototype = x as RectPrototype;
+      this.x = prototype.x;
+      this.y = prototype.y;
+      this.width = prototype.width;
+      this.height = prototype.height;
+    }
   }
 
   public set(center: Point, size: Point) {

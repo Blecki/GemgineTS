@@ -1,0 +1,15 @@
+{ 
+ "columns":4,
+ "image":"green-slime.png",
+ "imageheight":48,
+ "imagewidth":48,
+ "margin":0,
+ "name":"green-slime",
+ "spacing":0,
+ "tilecount":8,
+ "tiledversion":"1.11.2",
+ "tileheight":48,
+ "tilewidth":48,
+ "type":"tileset",
+ "version":"1.11"
+}

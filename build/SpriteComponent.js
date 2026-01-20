@@ -24,6 +24,7 @@ import { PropertyGrid } from "./Debugger.js";
 import { Fluent } from "./Fluent.js";
 import { AnimationSetAsset } from "./AnimationSetAsset.js";
 import { AnimationPlayer } from "./AnimationPlayer.js";
+import { AnimationFrame } from "./AnimationFrame.js";
 let SpriteComponent = class SpriteComponent extends RenderComponent {
     gfx;
     offset;
@@ -71,7 +72,7 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
         this.resolvedAnimations = resolveInlineReference(prototypeAsset, engine, this.animations, AnimationSetAsset);
         if (this.resolvedAnimations == undefined) {
             this.currentAnimation = new AnimationAsset();
-            this.currentAnimation.frames = [new Point(0, 0)];
+            this.currentAnimation.frames = [new AnimationFrame({ x: 0, y: 0 })];
         }
         else if (this.startingAnimation != undefined)
             this.currentAnimation = this.resolvedAnimations.getAnimation(this.startingAnimation);

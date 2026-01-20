@@ -57,7 +57,9 @@ export class Entity implements DebuggableObject {
   }
 
   public getComponent<T>(t: new (parent: Entity) => T): T | undefined {
-    return this.components.find((component) => component instanceof t) as T;
+    var r = this.components.find((component) => component instanceof t);
+    if (r == undefined) return undefined;
+    return r as T;
   }
 
   public createDebugger(name: string): FluentElement {
