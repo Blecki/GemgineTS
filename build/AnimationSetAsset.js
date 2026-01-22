@@ -1,6 +1,6 @@
 import { Point } from "./Point.js";
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { resolveAsGFX, GfxAsset } from "./GfxAsset.js";
 import { AnimationFrame } from "./AnimationFrame.js";
 export class AnimationAsset {

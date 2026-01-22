@@ -2,7 +2,7 @@ import { componentType } from "./Component.js";
 import { Rect } from "./Rect.js";
 import { Component } from "./Component.js";
 import { TilemapComponent } from "./TilemapComponent.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { AssetReference } from "./AssetReference.js";
 import { Array2D } from "./Array2D.js";
@@ -18,7 +18,7 @@ export class TilemapColliderComponent extends Component {
   private cachedOffset: Point | undefined = undefined;
   private cachedTileSize: Point | undefined = undefined;
 
-  public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference) {
+  public initialize(engine: AssetStore, template: TiledTemplate, prototypeAsset: AssetReference) {
     console.log("Trace: TilemapColliderComponent.initialize");
     super.initialize(engine, template, prototypeAsset);
     this.tilemapComponent = this.parent?.getComponent(TilemapComponent);
@@ -29,7 +29,7 @@ export class TilemapColliderComponent extends Component {
     return grid.getElement();
   }
   
-  public awake(engine: Engine) {
+  public awake(engine: AssetStore) {
     console.log("Trace: TilemapColliderComponent.awake");
     if (this.tilemapComponent != undefined) {
       this.cachedGrid = this.tilemapComponent.fillArray(function(tileset: TiledInlineTileset | null, tile: number | null): boolean { if (tileset == undefined || tile == undefined) return false; else return true; });

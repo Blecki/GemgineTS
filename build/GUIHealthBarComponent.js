@@ -4,10 +4,10 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { Component, componentType } from "./Component.js";
+import { componentType } from "./Component.js";
 import { RenderComponent } from "./RenderModule.js";
 import { HealthComponent } from "./HealthComponent.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { RenderLayers } from "./RenderLayers.js";
 import { RenderContext } from "./RenderContext.js";
 import { Point } from "./Point.js";

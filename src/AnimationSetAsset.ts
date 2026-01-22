@@ -1,6 +1,6 @@
 import { Point } from "./Point.js";
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { resolveAsGFX, GfxAsset } from "./GfxAsset.js";
 import { AnimationFrame } from "./AnimationFrame.js";
 
@@ -34,7 +34,7 @@ export class AnimationAsset {
 
   public gfxAsset: GfxAsset | undefined = undefined;
 
-  public resolveDependencies(reference: AssetReference, engine: Engine) {
+  public resolveDependencies(reference: AssetReference, engine: AssetStore) {
     this.gfxAsset = resolveAsGFX(this.gfx, reference, engine);
   }
 }
@@ -51,7 +51,7 @@ export class AnimationSetAsset {
     this.animations = (p?.animations ?? []).map(a => new AnimationAsset(a));
   }
 
-  public resolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: AssetStore) {
     this.animations ??= [];
     this.animations = this.animations.map(a => new AnimationAsset(a));
     this.animations.forEach(a => a.resolveDependencies(self, engine));

@@ -1,4 +1,4 @@
-import { Component, componentType } from "./Component.js";
+import { Component } from "./Component.js";
 import { Module } from "./Module.js";
 import { RenderContext } from "./RenderContext.js";
 import { Entity } from "./Entity.js";
@@ -6,13 +6,10 @@ import { Camera } from "./Camera.js";
 import { Engine } from "./Engine.js";
 import { GameTime } from "./GameTime.js";
 import { RenderLayers } from "./RenderLayers.js";
-import { TiledTemplate } from "./TiledTemplate.js";
-import { AssetReference } from "./AssetReference.js";
 import { Point } from "./Point.js";
 import { LightComponent } from "./LightComponent.js";
 import { Color } from "./Color.js";
 import { Shader } from "./Shader.js";
-import { Rect } from "./Rect.js";
 
 export class RenderComponent extends Component {
   public renderLayer: number = RenderLayers.BackgroundDiffuse;
@@ -26,26 +23,6 @@ interface RenderableComponent {
 
 interface AnimateableComponent {
   animate(): void;
-}
-
-@componentType("DebugGizmo")
-export class DebugGizmoComponent extends RenderComponent {  
-  private point: ImageBitmap | null = null;
-  public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference) 
-  {
-    this.point = engine.getAsset("assets/point.png").asset;
-    this.renderLayer = RenderLayers.ObjectsDiffuse;
-  }  
-  public render(context: RenderContext): void {
-   //*
-    if (this.parent != null) {
-      var ctx = context.getTarget(RenderLayers.ObjectsDiffuse);
-      ctx.drawRectangle(this.parent.globalBounds, 'rgba(255, 0, 0, 0.5)');
-      if (this.point != null)
-        ctx.drawImage(this.point, new Rect(0, 0, this.point.width, this.point.height), new Point(this.parent.globalPosition.x - 2, this.parent.globalPosition.y - 2));
-    }
-    //*/
-  }
 }
 
 class Light {
@@ -93,11 +70,11 @@ export class RenderModule extends Module {
 
   public engineStart(engine: Engine): void {
 
-    const vertexShader = (engine.getAsset("final-composite-vertex.glsl").asset as Shader).compile(this.gl, this.gl.VERTEX_SHADER);
-    const fragmentShader = (engine.getAsset("final-composite-fragment.glsl").asset as Shader).compile(this.gl, this.gl.FRAGMENT_SHADER);
+    const vertexShader = (engine.assets.getPreloadedAsset("final-composite-vertex.glsl").asset as Shader).compile(this.gl, this.gl.VERTEX_SHADER);
+    const fragmentShader = (engine.assets.getPreloadedAsset("final-composite-fragment.glsl").asset as Shader).compile(this.gl, this.gl.FRAGMENT_SHADER);
     this.worldCompositeProgram = this.compileProgram(this.gl, vertexShader, fragmentShader);
 
-    const guiFragmentShader = (engine.getAsset("gui-composite-fragment.glsl").asset as Shader).compile(this.gl, this.gl.FRAGMENT_SHADER);
+    const guiFragmentShader = (engine.assets.getPreloadedAsset("gui-composite-fragment.glsl").asset as Shader).compile(this.gl, this.gl.FRAGMENT_SHADER);
     this.guiCompositeProgram = this.compileProgram(this.gl, vertexShader, guiFragmentShader);
 
     this.fullScreenQuadBuffer = this.gl.createBuffer();

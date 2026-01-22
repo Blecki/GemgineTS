@@ -1,7 +1,7 @@
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 
 export interface Asset {
-  resolveDependencies(reference: AssetReference, engine: Engine): void;
+  resolveDependencies(reference: AssetReference, engine: AssetStore): void;
 }
 
 type AssetReferencePrototype = {
@@ -39,7 +39,7 @@ export class AssetReference {
     return this.path.substring(0, separator + 1);
   }
 
-  public resolveDependencies(engine: Engine): void {
+  public resolveDependencies(engine: AssetStore): void {
     if (this.asset !== null && this.asset !== undefined && typeof(this.asset.resolveDependencies) === 'function')
       this.asset.resolveDependencies(this, engine);
   }

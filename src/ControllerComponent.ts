@@ -1,13 +1,10 @@
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { Component, componentType } from "./Component.js";
-import { Input } from "./Input.js";
 import { TiledTemplate } from "./TiledTemplate.js";
-import { GameTime } from "./GameTime.js";
-import { SpriteComponent } from "./SpriteComponent.js";
-import { Entity } from "./Entity.js";
 import { AssetReference } from "./AssetReference.js";
 import { CollisionModule } from "./CollisionModule.js";
 import { Point } from "./Point.js";
+import type { Modules } from "./Modules.js";
 
 
 type ControllerComponentPrototype = {
@@ -28,8 +25,11 @@ export class ControllerComponent extends Component {
   public isGrounded: boolean = false;
   private collisionModule: CollisionModule | undefined = undefined;
 
-  public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference) {
-    this.collisionModule = engine.getModule(CollisionModule);
+  public initialize(engine: AssetStore, template: TiledTemplate, prototypeAsset: AssetReference) {
+  }
+
+  public awake(engine: AssetStore, modules: Modules): void {
+    this.collisionModule = modules.getModule(CollisionModule);
   }
 
   public move(delta: Point): void {

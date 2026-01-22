@@ -1,4 +1,4 @@
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { RenderContext } from "./RenderContext.js";
 import { Sprite } from "./Sprite.js";
 import { TiledTemplate } from "./TiledTemplate.js";
@@ -52,7 +52,7 @@ export class SpriteComponent extends RenderComponent {
   public flip: boolean = false;
   private currentGfx: GfxAsset | null = null;
 
-  public resolveDependencies(reference: AssetReference, engine: Engine): void {  
+  public resolveDependencies(reference: AssetReference, engine: AssetStore): void {  
   }
 
   public render(context: RenderContext) {
@@ -73,7 +73,7 @@ export class SpriteComponent extends RenderComponent {
         .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset).add(offset), this.flip);
   }
 
-  public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference): void {
+  public initialize(engine: AssetStore, template: TiledTemplate, prototypeAsset: AssetReference): void {
     this.renderLayer = RenderLayers.ObjectsDiffuse;
     this.gfxAsset = resolveAsGFX(this.gfx, prototypeAsset, engine);
     this.resolvedAnimations = resolveInlineReference(prototypeAsset, engine, this.animations, AnimationSetAsset);

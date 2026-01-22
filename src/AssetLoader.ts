@@ -2,6 +2,17 @@ import { AssetReference } from "./AssetReference.js";
 import { loadPNG } from "./PngLoader.js";
 import { loadBMP } from "./BmpLoader.js";
 import { loadJSON } from "./JsonLoader.js";
+import { loadAndConvertJSON } from "./JsonConverter.js";
+import { loadAndConvertText } from "./TextLoader.js";
+import { TiledTileset } from "./TiledTileset.js";
+import { TiledTilemap } from "./TiledTilemap.js";
+import { GfxAsset } from "./GfxAsset.js";
+import { AnimationSetAsset, AnimationAsset } from "./AnimationSetAsset.js";
+import { Shader } from "./Shader.js";
+import { TiledWorld, TiledWorldMap } from "./TiledWorld.js";
+import { TiledTemplate } from "./TiledTemplate.js";
+import { EntityBlueprint } from "./EntityBlueprint.js";
+
 
 type LoadFunction = (basePath: string, path: string) => Promise<AssetReference>;
 
@@ -10,7 +21,8 @@ export class AssetLoader {
   loaders: Map<string, LoadFunction> = new Map([
     ["png", loadPNG],
     ["json", loadJSON],
-    ["bmp", loadBMP]
+    ["bmp", loadBMP],
+    ["blueprint", loadAndConvertJSON((prototype:object) => new EntityBlueprint(prototype))]
   ]);
 
   public addLoader(extension: string, loader: LoadFunction) {
@@ -33,7 +45,11 @@ export class AssetLoader {
       return Promise.resolve(new AssetReference(path, null));
     }
   }
-  
+
+  public loadAsset(basePath: string, path: string) : Promise<AssetReference> {
+    return this.getLoaderPromise(basePath, path);
+  }
+ 
   async loadAssets_ex(baseUrl: string, assetUrls: string[]) {
     const promises = assetUrls.map(url => this.getLoaderPromise(baseUrl, url));
 
@@ -58,4 +74,14 @@ export class AssetLoader {
       });
   }
 
+  public setupStandardLoaders() {
+      this.addLoader("tmj", loadAndConvertJSON((prototype:object) => new TiledTilemap(prototype)));
+      this.addLoader("tsj", loadAndConvertJSON((prototype:object) => new TiledTileset(prototype)));
+      this.addLoader("world", loadAndConvertJSON((prototype:object) => new TiledWorld(prototype)));
+      this.addLoader("tj", loadAndConvertJSON((prototype:object) => new TiledTemplate(prototype)));
+      this.addLoader("anim", loadAndConvertJSON((prototype:object) => new AnimationAsset(prototype)));
+      this.addLoader("gfx", loadAndConvertJSON((prototype:object) => new GfxAsset(prototype)));
+      this.addLoader("animset", loadAndConvertJSON((prototype:object) => new AnimationSetAsset(prototype)));
+      this.addLoader('glsl', loadAndConvertText((text:string) => new Shader(text)));
+  }
 }

@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { TiledTileset } from "./TiledTileset.js";
 import pathCombine from "./PathCombine.js";
 import { TiledObject, TiledProperty } from "./TiledObject.js";
@@ -44,7 +44,7 @@ export class TiledInlineTileset {
     resolveDependencies(self, engine) {
         console.log("TRACE: TiledInlineTileset.resolveDependencies");
         if (this.source != "")
-            this.tilesetAsset = engine.getAsset(pathCombine(self.directory(), this.source)).asset;
+            this.tilesetAsset = engine.getPreloadedAsset(pathCombine(self.directory(), this.source)).asset;
         else
             this.tilesetAsset = new TiledTileset(this);
     }

@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { Rect } from "./Rect.js";
 import pathCombine from "./PathCombine.js";
 import { TiledObject } from "./TiledObject.js";
@@ -40,7 +40,7 @@ export class TiledObjectGroup {
     this.y = p?.y ?? 0;
   }
 
-  public resolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: AssetStore) {
     this.objects.forEach(t => t.resolveDependencies(self, engine));
   }
 }
@@ -60,7 +60,7 @@ export class TiledTile {
     this.objectgroup = new TiledObjectGroup(p.objectgroup);
   }
 
-  public resolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: AssetStore) {
     this.objectgroup.resolveDependencies(self, engine);
   }
 }
@@ -118,8 +118,8 @@ export class TiledTileset {
     this.version = p?.version ?? "";
   }
 
-  public resolveDependencies(self: AssetReference, engine: Engine) {
-    this.imageAsset = engine.getAsset(pathCombine(self.directory(), this.image)).asset as ImageBitmap;
+  public resolveDependencies(self: AssetReference, engine: AssetStore) {
+    this.imageAsset = engine.getPreloadedAsset(pathCombine(self.directory(), this.image)).asset as ImageBitmap;
     this.tiles.forEach(t => t.resolveDependencies(self, engine));
   }
 

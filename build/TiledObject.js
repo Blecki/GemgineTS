@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import pathCombine from "./PathCombine.js";
 import { Point } from "./Point.js";
 export class TiledProperty {

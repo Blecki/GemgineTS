@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { TiledObject } from "./TiledObject.js";
 import { TiledInlineTileset } from "./TiledInlineTileset.js";
 
@@ -25,7 +25,7 @@ export class TiledTemplate {
     this.basePath = p?.basePath ?? "";
   }
 
-  public resolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: AssetStore) {
     this.basePath = self.directory();
 
     if (this.tileset != undefined) {

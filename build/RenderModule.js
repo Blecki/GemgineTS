@@ -1,10 +1,4 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-import { Component, componentType } from "./Component.js";
+import { Component } from "./Component.js";
 import { Module } from "./Module.js";
 import { RenderContext } from "./RenderContext.js";
 import { Entity } from "./Entity.js";
@@ -12,38 +6,14 @@ import { Camera } from "./Camera.js";
 import { Engine } from "./Engine.js";
 import { GameTime } from "./GameTime.js";
 import { RenderLayers } from "./RenderLayers.js";
-import { TiledTemplate } from "./TiledTemplate.js";
-import { AssetReference } from "./AssetReference.js";
 import { Point } from "./Point.js";
 import { LightComponent } from "./LightComponent.js";
 import { Color } from "./Color.js";
 import { Shader } from "./Shader.js";
-import { Rect } from "./Rect.js";
 export class RenderComponent extends Component {
     renderLayer = RenderLayers.BackgroundDiffuse;
     render(context) { }
 }
-let DebugGizmoComponent = class DebugGizmoComponent extends RenderComponent {
-    point = null;
-    initialize(engine, template, prototypeAsset) {
-        this.point = engine.getAsset("assets/point.png").asset;
-        this.renderLayer = RenderLayers.ObjectsDiffuse;
-    }
-    render(context) {
-        //*
-        if (this.parent != null) {
-            var ctx = context.getTarget(RenderLayers.ObjectsDiffuse);
-            ctx.drawRectangle(this.parent.globalBounds, 'rgba(255, 0, 0, 0.5)');
-            if (this.point != null)
-                ctx.drawImage(this.point, new Rect(0, 0, this.point.width, this.point.height), new Point(this.parent.globalPosition.x - 2, this.parent.globalPosition.y - 2));
-        }
-        //*/
-    }
-};
-DebugGizmoComponent = __decorate([
-    componentType("DebugGizmo")
-], DebugGizmoComponent);
-export { DebugGizmoComponent };
 class Light {
     screenPosition;
     radius;
@@ -82,10 +52,10 @@ export class RenderModule extends Module {
         //this.guiCamera.drawOffset = new Point(-this.destinationCanvas.width / 2, -this.destinationCanvas.height / 2); // Position 0,0 at the top left.
     }
     engineStart(engine) {
-        const vertexShader = engine.getAsset("final-composite-vertex.glsl").asset.compile(this.gl, this.gl.VERTEX_SHADER);
-        const fragmentShader = engine.getAsset("final-composite-fragment.glsl").asset.compile(this.gl, this.gl.FRAGMENT_SHADER);
+        const vertexShader = engine.assets.getPreloadedAsset("final-composite-vertex.glsl").asset.compile(this.gl, this.gl.VERTEX_SHADER);
+        const fragmentShader = engine.assets.getPreloadedAsset("final-composite-fragment.glsl").asset.compile(this.gl, this.gl.FRAGMENT_SHADER);
         this.worldCompositeProgram = this.compileProgram(this.gl, vertexShader, fragmentShader);
-        const guiFragmentShader = engine.getAsset("gui-composite-fragment.glsl").asset.compile(this.gl, this.gl.FRAGMENT_SHADER);
+        const guiFragmentShader = engine.assets.getPreloadedAsset("gui-composite-fragment.glsl").asset.compile(this.gl, this.gl.FRAGMENT_SHADER);
         this.guiCompositeProgram = this.compileProgram(this.gl, vertexShader, guiFragmentShader);
         this.fullScreenQuadBuffer = this.gl.createBuffer();
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.fullScreenQuadBuffer);

@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 import { Point } from "./Point.js";
 import { Rect } from "./Rect.js";
@@ -30,8 +30,8 @@ export class TiledWorldMap {
     this.y = p?.y ?? 0;
   }
 
-  public resolveDependencies(self: AssetReference, engine: Engine) {
-    this.tilemapAsset = engine.getAsset(self.directory() + this.fileName).asset as TiledTilemap;
+  public resolveDependencies(self: AssetReference, engine: AssetStore) {
+    this.tilemapAsset = engine.getPreloadedAsset(self.directory() + this.fileName).asset as TiledTilemap;
   }
 }
 
@@ -53,7 +53,7 @@ export class TiledWorld {
     this.type = p?.type ?? "";
   }
 
-  public resolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: AssetStore) {
     this.maps.forEach(t => t.resolveDependencies(self, engine));
   }
 

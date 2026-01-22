@@ -1,10 +1,10 @@
 import { AssetReference, type Asset } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 
-export function resolveInlineReference<T extends Asset>(baseReference: AssetReference, engine: Engine, source: any, type: new (prototype:object) => T): T | undefined {
+export function resolveInlineReference<T extends Asset>(baseReference: AssetReference, engine: AssetStore, source: any, type: new (prototype:object) => T): T | undefined {
   if (source == undefined) return undefined;
   if (typeof source === "string")
-    return engine.getAsset(source).asset as T;
+    return engine.getPreloadedAsset(source).asset as T;
   if (typeof source === "object") {
     let r = new type(source);
     r.resolveDependencies(baseReference, engine);

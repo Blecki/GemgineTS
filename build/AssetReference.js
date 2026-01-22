@@ -1,4 +1,4 @@
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 export class AssetReference {
     path;
     asset;

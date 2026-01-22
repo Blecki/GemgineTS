@@ -1,4 +1,4 @@
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { Component, componentType } from "./Component.js";
 import { Input } from "./Input.js";
 import { TiledTemplate } from "./TiledTemplate.js";
@@ -18,7 +18,7 @@ export class PlayerControllerComponent extends Component {
 
   private playingStaticAnimation: boolean = false;
 
-  public initialize(engine: Engine, template: TiledTemplate, prototypeAsset: AssetReference) {
+  public initialize(engine: AssetStore, template: TiledTemplate, prototypeAsset: AssetReference) {
 
     this.input = new Input();
     this.input.bind("KeyA", "west");

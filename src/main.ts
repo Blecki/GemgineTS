@@ -4,10 +4,6 @@ import { Engine } from "./Engine.js";
 import { EntityBlueprint } from "./EntityBlueprint.js";
 import { Entity } from "./Entity.js";
 import { loadJSON } from "./JsonLoader.js";
-import { loadAndConvertJSON } from "./JsonConverter.js";
-import { loadAndConvertText } from "./TextLoader.js";
-import { TiledTileset } from "./TiledTileset.js";
-import { TiledTilemap } from "./TiledTilemap.js";
 import { TiledWorld, TiledWorldMap } from "./TiledWorld.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { Camera } from "./Camera.js";
@@ -20,6 +16,7 @@ import { CollisionModule } from "./CollisionModule.js";
 import { RawImage } from "./RawImage.js";
 
 import { SpriteComponent } from "./SpriteComponent.js";
+import { Component } from "./Component.js";
 import { PlayerControllerComponent } from "./PlayerControllerComponent.js";
 import { BoundsColliderComponent } from "./BoundsColliderComponent.js";
 import { TagComponent } from "./TagComponent.js";
@@ -30,6 +27,7 @@ import { Shader } from "./Shader.js";
 import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
 import { TilemapComponent } from "./TilemapComponent.js";
 import { Rect } from "./Rect.js";
+import { AssetStore } from "./AssetStore.js";
 
 const cellSize = new Point(8, 7);
 
@@ -40,7 +38,7 @@ function spawnMap(engine: Engine, map: TiledWorldMap) : Entity[] {
 }
 
 function spawnPlayer(engine: Engine, spawnPoint: Entity) : Entity {
-  let playerBlueprint = engine.getAsset("assets/blueprints/player.blueprint");
+  let playerBlueprint = engine.assets.getPreloadedAsset("assets/blueprints/player.blueprint");
   let player = engine.createEntityFromBlueprint(engine.sceneRoot, playerBlueprint, new TiledTemplate());
   player.localPosition = new Point(spawnPoint.localPosition);
   return player;
@@ -75,25 +73,17 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
       console.log(screenSize);
 
       const loader = new AssetLoader();
-      loader.addLoader("tmj", loadAndConvertJSON((prototype:object) => new TiledTilemap(prototype)));
-      loader.addLoader("tsj", loadAndConvertJSON((prototype:object) => new TiledTileset(prototype)));
-      loader.addLoader("world", loadAndConvertJSON((prototype:object) => new TiledWorld(prototype)));
-      loader.addLoader("tj", loadAndConvertJSON((prototype:object) => new TiledTemplate(prototype)));
-      loader.addLoader("blueprint", loadAndConvertJSON((prototype:object) => new EntityBlueprint(prototype)));
-      loader.addLoader("anim", loadAndConvertJSON((prototype:object) => new AnimationAsset(prototype)));
-      loader.addLoader("gfx", loadAndConvertJSON((prototype:object) => new GfxAsset(prototype)));
-      loader.addLoader("animset", loadAndConvertJSON((prototype:object) => new AnimationSetAsset(prototype)));
-      loader.addLoader('glsl', loadAndConvertText((text:string) => new Shader(text)));
+      loader.setupStandardLoaders();
 
       loader.loadAssets("data/", manifest, (assets) => { 
-        const engine = new Engine(assets);
+        const engine = new Engine(new AssetStore("data/", assets, loader));
         engine.debugMode = true;
 
-        engine.addModule(new UpdateModule());
-        engine.addModule(new CollisionModule());
-        engine.addModule(new PhysicsModule());
+        engine.modules.addModule(new UpdateModule());
+        engine.modules.addModule(new CollisionModule());
+        engine.modules.addModule(new PhysicsModule());
         let renderModule = new RenderModule(canvas);
-        engine.addModule(renderModule);
+        engine.modules.addModule(renderModule);
 
         engine.start();
 
@@ -101,7 +91,7 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
         renderModule.setCamera(camera);
         camera.position = new Point(0, 0);
 
-        let world: TiledWorld = engine.getAsset("assets/base-world.world").asset as TiledWorld;
+        let world: TiledWorld = engine.assets.getPreloadedAsset("assets/base-world.world").asset as TiledWorld;
         let loadedMaps: LoadedMap[] = [];
         let startMap = world.findMapWithName("room0.tmj");
         if (startMap == null) throw "Could not find start map";

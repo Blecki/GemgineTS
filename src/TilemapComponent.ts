@@ -3,7 +3,7 @@ import { Point } from "./Point.js";
 import { TiledTilemap, TiledLayer } from "./TiledTilemap.js";
 import { RenderContext} from "./RenderContext.js";
 import { CacheState } from "./CacheState.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { RenderComponent } from "./RenderModule.js";
 import { componentType } from "./Component.js";
@@ -45,7 +45,7 @@ export class TilemapComponent extends RenderComponent {
     this.renderLayer = RenderLayersMapping[p?.layer.properties.filter(p => p.name == "Layer")[0].value];
   }
 
-  public initialize(engine: Engine, template: TiledTemplate) {
+  public initialize(engine: AssetStore, template: TiledTemplate) {
     this.tileSize = new Point(this.tilemap.tilewidth, this.tilemap.tileheight);
   }  
 

@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 import { Point } from "./Point.js";
 import { Rect } from "./Rect.js";
@@ -19,7 +19,7 @@ export class TiledWorldMap {
         this.y = p?.y ?? 0;
     }
     resolveDependencies(self, engine) {
-        this.tilemapAsset = engine.getAsset(self.directory() + this.fileName).asset;
+        this.tilemapAsset = engine.getPreloadedAsset(self.directory() + this.fileName).asset;
     }
 }
 export class TiledWorld {

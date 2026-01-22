@@ -1,7 +1,7 @@
-import { Component, componentType} from "./Component.js";
+import { componentType} from "./Component.js";
 import { RenderComponent } from "./RenderModule.js";
 import { HealthComponent } from "./HealthComponent.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { RenderLayers } from "./RenderLayers.js";
 import { RenderContext } from "./RenderContext.js";
 import { Point } from "./Point.js";
@@ -14,7 +14,7 @@ type GUIHealthBarPrototype = {
 export class GUIHealthBarComponent extends RenderComponent {
   private health: HealthComponent | undefined = undefined;
 
-  public awake(engine: Engine) {
+  public awake(engine: AssetStore) {
     this.health = this.parent?.getComponent(HealthComponent);
     this.renderLayer = RenderLayers.GUI;
   }

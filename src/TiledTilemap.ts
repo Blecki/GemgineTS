@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { TiledObject, TiledProperty  } from "./TiledObject.js";
 import { TiledInlineTileset } from "./TiledInlineTileset.js";
 
@@ -55,7 +55,7 @@ export class TiledLayer {
     this.properties = (p?.properties ?? []).map(p => new TiledProperty(p));
   }
 
-  public resolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: AssetStore) {
     this.objects.forEach(t => t.resolveDependencies(self, engine));
   }
 }
@@ -114,7 +114,7 @@ export class TiledTilemap {
     this.width = p?.width ?? 0;
   }
 
-  public resolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: AssetStore) {
     console.log("TRACE: TiledTilemap.resolveDependencies");
     this.tilesets.forEach(t => t.resolveDependencies(self, engine));
     this.layers.forEach(t => t.resolveDependencies(self, engine));

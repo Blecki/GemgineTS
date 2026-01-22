@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { RenderContext } from "./RenderContext.js";
 import { Sprite } from "./Sprite.js";
 import { TiledTemplate } from "./TiledTemplate.js";

@@ -8,7 +8,7 @@ import { componentType } from "./Component.js";
 import { Rect } from "./Rect.js";
 import { Component } from "./Component.js";
 import { TilemapComponent } from "./TilemapComponent.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { AssetReference } from "./AssetReference.js";
 import { Array2D } from "./Array2D.js";

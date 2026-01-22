@@ -1,6 +1,6 @@
 import { Color } from "./Color.js";
-import { Component, componentType} from "./Component.js";
 import { Point } from "./Point.js";
+import { Component, componentType} from "./Component.js";
 
 type LightComponentPrototype = {
   offset: object;

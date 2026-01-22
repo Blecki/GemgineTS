@@ -28,7 +28,7 @@ export class PhysicsModule extends Module {
   }
 
   public engineStart(engine: Engine): void {
-    this.collision = engine.getModule(CollisionModule);
+    this.collision = engine.modules.getModule(CollisionModule);
   }
 
   entityCreated(entity: Entity) {

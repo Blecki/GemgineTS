@@ -7,13 +7,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { Component, componentType } from "./Component.js";
-import { Input } from "./Input.js";
 import { TiledTemplate } from "./TiledTemplate.js";
-import { GameTime } from "./GameTime.js";
-import { SpriteComponent } from "./SpriteComponent.js";
-import { Entity } from "./Entity.js";
 import { AssetReference } from "./AssetReference.js";
 import { CollisionModule } from "./CollisionModule.js";
 import { Point } from "./Point.js";
@@ -28,7 +24,9 @@ let ControllerComponent = class ControllerComponent extends Component {
     isGrounded = false;
     collisionModule = undefined;
     initialize(engine, template, prototypeAsset) {
-        this.collisionModule = engine.getModule(CollisionModule);
+    }
+    awake(engine, modules) {
+        this.collisionModule = modules.getModule(CollisionModule);
     }
     move(delta) {
         if (this.parent == undefined)

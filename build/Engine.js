@@ -1,45 +1,35 @@
 import { EntityBlueprint } from "./EntityBlueprint.js";
-import { Module } from "./Module.js";
+import { Modules } from "./Modules.js";
 import { Entity } from "./Entity.js";
 import { AssetReference } from "./AssetReference.js";
 import { allocateEntityID } from "./AllocateEntityID.js";
-import { Component } from "./Component.js";
 import { ComponentFactory } from "./ComponentFactory.js";
 import { TiledTemplate } from "./TiledTemplate.js";
-import { TiledObject, TiledProperty } from "./TiledObject.js";
+import { TiledObject } from "./TiledObject.js";
 import { Point } from "./Point.js";
 import { GameTime } from "./GameTime.js";
 import { TiledLayer, TiledTilemap } from "./TiledTilemap.js";
-import { TilemapComponent } from "./TilemapComponent.js";
-import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
 import { RenderLayers, RenderLayersMapping } from "./RenderLayers.js";
+import { AssetStore } from "./AssetStore.js";
 export class Engine {
-    modules = [];
-    assetMap;
+    modules;
+    assets;
     sceneRoot;
     debugMode = false;
     fpsQueue;
-    constructor(assetMap) {
-        this.assetMap = assetMap;
-        for (const [, value] of assetMap) {
-            value.resolveDependencies(this);
-        }
+    constructor(assets) {
+        this.assets = assets;
+        this.modules = new Modules();
         this.sceneRoot = new Entity(0, {});
         this.sceneRoot.name = "Scene Root";
         this.fpsQueue = [];
     }
-    getAsset(path) {
-        console.log("ASSET REQUEST: " + path);
-        return this.assetMap?.get(path) ?? new AssetReference(path, null);
-    }
     start() {
-        for (let module of this.modules)
-            module.engineStart(this);
+        this.modules.start(this);
     }
     update() {
         let start = performance.now();
-        for (let module of this.modules)
-            module.update();
+        this.modules.update();
         let end = performance.now();
         this.fpsQueue.push(end - start);
         if (this.fpsQueue.length > 200)
@@ -51,9 +41,6 @@ export class Engine {
         frameCallback();
         requestAnimationFrame(() => this.run(frameCallback));
     }
-    addModule(newModule) {
-        this.modules.push(newModule);
-    }
     createEntityFromBlueprint(parent, blueprintAsset, template) {
         let resultID = allocateEntityID();
         let entity = new Entity(resultID, blueprintAsset.asset);
@@ -61,9 +48,9 @@ export class Engine {
         let blueprint = blueprintAsset.asset;
         entity.components = blueprint.components.map(c => ComponentFactory.createFromBlueprint(c));
         entity.components.forEach(c => c.parent = entity);
-        entity.components.forEach(c => c.initialize(this, template, blueprintAsset));
-        this.modules.forEach(module => module.entityCreated(entity));
-        entity.components.forEach(c => c.awake(this));
+        entity.components.forEach(c => c.initialize(this.assets, template, blueprintAsset));
+        this.modules.registerEntity(entity);
+        entity.components.forEach(c => c.awake(this.assets, this.modules));
         return entity;
     }
     createEntitytFromTiledTemplate(parent, template) {
@@ -76,7 +63,7 @@ export class Engine {
             console.error("Can't create entity from template without a blueprint.");
             return null;
         }
-        let blueprint = this.getAsset(blueprintProperty.value);
+        let blueprint = this.assets.getPreloadedAsset(blueprintProperty.value);
         if (blueprint == undefined) {
             console.error(`Could not find prototype ${blueprintProperty.value}.`);
             return null;
@@ -110,7 +97,7 @@ export class Engine {
         return r;
     }
     createTilemapFromTiledTilemap(path, pixelOffset) {
-        let tilemap = this.getAsset(path).asset;
+        let tilemap = this.assets.getPreloadedAsset(path).asset;
         let r = [];
         if (tilemap.layers)
             for (let layer of tilemap.layers) {
@@ -136,9 +123,6 @@ export class Engine {
             e.localPosition.y += pixelOffset.y;
         });
         return r;
-    }
-    getModule(t) {
-        return this.modules.find((module) => module instanceof t);
     }
 }
 //# sourceMappingURL=Engine.js.map

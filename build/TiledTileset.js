@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { Rect } from "./Rect.js";
 import pathCombine from "./PathCombine.js";
 import { TiledObject } from "./TiledObject.js";
@@ -75,7 +75,7 @@ export class TiledTileset {
         this.version = p?.version ?? "";
     }
     resolveDependencies(self, engine) {
-        this.imageAsset = engine.getAsset(pathCombine(self.directory(), this.image)).asset;
+        this.imageAsset = engine.getPreloadedAsset(pathCombine(self.directory(), this.image)).asset;
         this.tiles.forEach(t => t.resolveDependencies(self, engine));
     }
     getTileRect(index) {

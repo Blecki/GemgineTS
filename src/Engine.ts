@@ -1,51 +1,40 @@
 import { EntityBlueprint } from "./EntityBlueprint.js";
-import { Module } from "./Module.js";
+import { Modules } from "./Modules.js";
 import { Entity } from "./Entity.js";
 import { AssetReference } from "./AssetReference.js";
 import { allocateEntityID } from "./AllocateEntityID.js";
-import { Component } from "./Component.js";
 import { type ComponentBlueprint, ComponentFactory } from "./ComponentFactory.js";
 import { TiledTemplate } from "./TiledTemplate.js";
-import { TiledObject, TiledProperty } from "./TiledObject.js";
+import { TiledObject } from "./TiledObject.js";
 import { Point } from "./Point.js";
 import { GameTime } from "./GameTime.js";
 import { TiledLayer, TiledTilemap } from "./TiledTilemap.js";
-import { TilemapComponent } from "./TilemapComponent.js";
-import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
 import { RenderLayers, RenderLayersMapping } from "./RenderLayers.js";
+import { AssetStore } from "./AssetStore.js";
 
 export class Engine {
-  private readonly modules: Module[] = [];
-  public assetMap: Map<string, AssetReference>;
+  public modules: Modules;
+  public assets: AssetStore;
   public sceneRoot: Entity;
   public debugMode: boolean = false;
   public fpsQueue: number[];
 
 
-  constructor(assetMap: Map<string, AssetReference>) {
-    this.assetMap = assetMap;
-    for (const [, value] of assetMap) {
-      value.resolveDependencies(this);
-    }      
+  constructor(assets: AssetStore) {
+    this.assets = assets;
+    this.modules = new Modules();
     this.sceneRoot = new Entity(0, {});
     this.sceneRoot.name = "Scene Root";
     this.fpsQueue = [];
   }
 
-  getAsset(path: string): AssetReference {
-    console.log("ASSET REQUEST: " + path);
-    return this.assetMap?.get(path) ?? new AssetReference(path, null);
-  }
-
   public start() {
-    for (let module of this.modules)
-      module.engineStart(this);
+    this.modules.start(this);
   }
 
   public update() {
     let start = performance.now();
-    for (let module of this.modules) 
-      module.update();
+    this.modules.update();
     let end = performance.now();
     this.fpsQueue.push(end - start);
     if (this.fpsQueue.length > 200) this.fpsQueue.shift();
@@ -58,10 +47,6 @@ export class Engine {
     requestAnimationFrame(() => this.run(frameCallback));
   }
 
-  public addModule(newModule: Module) {
-    this.modules.push(newModule);
-  }  
-
   public createEntityFromBlueprint(parent: Entity, blueprintAsset: AssetReference, template: TiledTemplate): Entity {
     let resultID = allocateEntityID();
     let entity = new Entity(resultID, blueprintAsset.asset);
@@ -71,9 +56,9 @@ export class Engine {
 
     entity.components = blueprint.components.map(c => ComponentFactory.createFromBlueprint(c));
     entity.components.forEach(c => c.parent = entity);
-    entity.components.forEach(c => c.initialize(this, template, blueprintAsset));
-    this.modules.forEach(module => module.entityCreated(entity));
-    entity.components.forEach(c => c.awake(this));
+    entity.components.forEach(c => c.initialize(this.assets, template, blueprintAsset));
+    this.modules.registerEntity(entity);
+    entity.components.forEach(c => c.awake(this.assets, this.modules));
 
     return entity;
   }
@@ -91,7 +76,7 @@ export class Engine {
       return null;
     }
 
-    let blueprint = this.getAsset(blueprintProperty.value);
+    let blueprint = this.assets.getPreloadedAsset(blueprintProperty.value);
     if (blueprint == undefined) {
       console.error(`Could not find prototype ${blueprintProperty.value}.`);
       return null;
@@ -128,7 +113,7 @@ export class Engine {
   }
   
   public createTilemapFromTiledTilemap(path: string, pixelOffset: Point) {
-    let tilemap = this.getAsset(path).asset as TiledTilemap;
+    let tilemap = this.assets.getPreloadedAsset(path).asset as TiledTilemap;
     let r:Entity[] = [];
     if (tilemap.layers)
       for (let layer of tilemap.layers) {
@@ -155,9 +140,4 @@ export class Engine {
     });
     return r;
   }
-
-  public getModule<T>(t: new () => T): T | undefined {
-    return this.modules.find((module) => module instanceof t) as T;
-  }
-
 }

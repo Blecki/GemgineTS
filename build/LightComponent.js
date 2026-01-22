@@ -8,8 +8,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Color } from "./Color.js";
-import { Component, componentType } from "./Component.js";
 import { Point } from "./Point.js";
+import { Component, componentType } from "./Component.js";
 let LightComponent = class LightComponent extends Component {
     offset;
     radius;

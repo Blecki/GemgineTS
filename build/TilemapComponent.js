@@ -12,7 +12,7 @@ import { Point } from "./Point.js";
 import { TiledTilemap, TiledLayer } from "./TiledTilemap.js";
 import { RenderContext } from "./RenderContext.js";
 import { CacheState } from "./CacheState.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { RenderComponent } from "./RenderModule.js";
 import { componentType } from "./Component.js";

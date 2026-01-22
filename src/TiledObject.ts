@@ -1,5 +1,5 @@
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import pathCombine from "./PathCombine.js";
 import { Point } from "./Point.js";
 
@@ -72,7 +72,7 @@ export class TiledObject {
     this.y = p?.y ?? 0;
   }
 
-  public resolveDependencies(self: AssetReference, engine: Engine) {
+  public resolveDependencies(self: AssetReference, engine: AssetStore) {
     if (this.template != null && this.template != "")
       this.templateAsset = engine.assetMap.get(pathCombine(self.directory(), this.template));
   }

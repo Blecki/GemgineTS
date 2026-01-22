@@ -1,7 +1,7 @@
 import { IndexedImage } from "./IndexedImage.js";
 import { Palette } from "./Palette.js";
 import { AssetReference } from "./AssetReference.js";
-import { Engine } from "./Engine.js";
+import { AssetStore } from "./AssetStore.js";
 import { resolveInlineReference } from "./JsonConverter.js";
 import { CompositeImage, CompositeImageLayer } from "./CompositeImage.js";
 import { Rect } from "./Rect.js";
@@ -58,16 +58,16 @@ export class GfxAsset {
     }
     loadImageCache(engine) {
         if (this.type == "composite") {
-            let basePalette = new Palette(engine.getAsset(this.basePalette ?? "").asset, 0);
+            let basePalette = new Palette(engine.getPreloadedAsset(this.basePalette ?? "").asset, 0);
             let r = new CompositeImage();
             if (this.layers != undefined)
                 for (let layer of this.layers) {
-                    r.layers.push(new CompositeImageLayer(new IndexedImage(engine.getAsset(layer.sheet ?? "").asset, basePalette), new Palette(basePalette.rawImage, layer.palette ?? 0)));
+                    r.layers.push(new CompositeImageLayer(new IndexedImage(engine.getPreloadedAsset(layer.sheet ?? "").asset, basePalette), new Palette(basePalette.rawImage, layer.palette ?? 0)));
                 }
             this.cachedImage = r.compose();
         }
         if (this.type == "image") {
-            this.cachedImage = engine.getAsset(this.path ?? "").asset;
+            this.cachedImage = engine.getPreloadedAsset(this.path ?? "").asset;
         }
     }
     getSprite(x, y) {
