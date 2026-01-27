@@ -3,7 +3,7 @@ export class ProcessedElement {
 }
 
 export type FluentModificationCallback = (element: FluentElement) => void;
-export type FluentHandler = () => void;
+export type FluentHandler = (e?: any) => void;
 
 export interface ElementExtensions {
     _append(...args: any[]): FluentElement;
@@ -23,7 +23,7 @@ export class Fluent {
     span(): FluentElement { return this.createElement('span'); }
     button(): FluentElement { return this.createElement('button')._modify(e => e.type = 'button'); }
     text(contents: string): FluentElement { return this.createElement('span')._append(`${contents}`); }
-    input(type: string): FluentElement { return this.createElement('input') }
+    input(type: string): FluentElement { return this.createElement('input')._modify(f => f.type = type); }
     table(): FluentElement { return this.createElement('table'); }
     thead(): FluentElement { return this.createElement('thead'); }
     th(): FluentElement { return this.createElement('th'); }

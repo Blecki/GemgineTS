@@ -37,6 +37,12 @@ export class Rect {
             this.y < other.y + other.height &&
             this.y + this.height > other.y);
     }
+    contains(p) {
+        return (this.x <= p.x
+            && this.x + this.width > p.x
+            && this.y <= p.y
+            && this.y + this.height > p.y);
+    }
     touches(other) {
         return (this.x <= other.x + other.width &&
             this.x + this.width >= other.x &&

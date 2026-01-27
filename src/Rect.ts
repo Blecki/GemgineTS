@@ -54,6 +54,14 @@ export class Rect {
     );
   }
 
+  public contains(p: Point): boolean {
+    return (
+      this.x <= p.x 
+      && this.x + this.width > p.x
+      && this.y <= p.y
+      && this.y + this.height > p.y
+    );
+  }
   
   public touches(other: Rect): boolean {
     return (
@@ -63,7 +71,6 @@ export class Rect {
         this.y + this.height >= other.y
     );
   }
-
 
   public get area(): number {
     return this.width * this.height;

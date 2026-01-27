@@ -10,9 +10,9 @@ export class RenderTarget {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   private pendingDrawTasks: DrawTask[];
-  private texture: WebGLTexture;
+  private texture: WebGLTexture | null = null;
 
-  constructor(targetWidth: number, targetHeight: number, gl: WebGLRenderingContext) {
+  constructor(targetWidth: number, targetHeight: number, gl: WebGLRenderingContext | null) {
     this.canvas = document.createElement('canvas');
     this.canvas.width = targetWidth;
     this.canvas.height = targetHeight;
@@ -25,10 +25,11 @@ export class RenderTarget {
     
     this.pendingDrawTasks = [];
 
-    this.texture = gl.createTexture();
+    if (gl != null) 
+      this.texture = gl.createTexture();
   }
 
-  public drawSprite(sprite: Sprite, position: Point, flipped?: boolean) {
+  public drawSprite(sprite: Sprite, position: Point, scale: Point, flipped?: boolean) {
     let integerPosition = position.truncate();
     this.pendingDrawTasks.push((context, camera) => { 
       let destX = integerPosition.x + camera.drawOffset.x;
@@ -47,8 +48,8 @@ export class RenderTarget {
         sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height,
         destX, 
         destY, 
-        sprite.sourceRect.width, 
-        sprite.sourceRect.height); 
+        sprite.sourceRect.width * scale.x, 
+        sprite.sourceRect.height * scale.y); 
       
       context.restore();
     });
@@ -69,6 +70,13 @@ export class RenderTarget {
     this.pendingDrawTasks.push((context, camera) => {
       context.fillStyle = color;
       context.fillRect(Math.floor(rect.x) + camera.drawOffset.x, Math.floor(rect.y) + camera.drawOffset.y, rect.width, rect.height);
+    });
+  }
+
+  public drawWireRectangle(rect: Rect, color: string) {
+    this.pendingDrawTasks.push((context, camera) => {
+      context.strokeStyle = color;
+      context.strokeRect(Math.floor(rect.x) + camera.drawOffset.x, Math.floor(rect.y) + camera.drawOffset.y, rect.width, rect.height);
     });
   }
 

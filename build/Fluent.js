@@ -7,7 +7,7 @@ export class Fluent {
     span() { return this.createElement('span'); }
     button() { return this.createElement('button')._modify(e => e.type = 'button'); }
     text(contents) { return this.createElement('span')._append(`${contents}`); }
-    input(type) { return this.createElement('input'); }
+    input(type) { return this.createElement('input')._modify(f => f.type = type); }
     table() { return this.createElement('table'); }
     thead() { return this.createElement('thead'); }
     th() { return this.createElement('th'); }

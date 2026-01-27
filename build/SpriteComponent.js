@@ -31,6 +31,7 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
     animations;
     startingAnimation;
     startingFrame;
+    scale;
     constructor(prototype) {
         super(prototype);
         let p = prototype;
@@ -39,6 +40,7 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
         this.animations = p?.animations;
         this.startingAnimation = p?.startingAnimation ?? "";
         this.startingFrame = new Point(p?.startingFrame);
+        this.scale = new Point(p?.scale ?? new Point(1, 1));
     }
     cachedImage = null;
     resolvedAnimations = undefined;
@@ -64,7 +66,7 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
         }
         if (sprite != undefined && this.parent != null)
             context.getTarget(this.renderLayer)
-                .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset).add(offset), this.flip);
+                .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset).add(offset), this.scale, this.flip);
     }
     initialize(engine, template, prototypeAsset) {
         this.renderLayer = RenderLayers.ObjectsDiffuse;

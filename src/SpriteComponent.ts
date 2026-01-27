@@ -23,6 +23,7 @@ type SpriteComponentPrototype = {
   animations: string | object;
   startingAnimation: string;
   startingFrame: Point | object;
+  scale: Point | object;
 }
 
 @componentType("Sprite")
@@ -32,6 +33,7 @@ export class SpriteComponent extends RenderComponent {
   public animations: string | object;
   public startingAnimation: string;
   public startingFrame: Point;
+  public scale: Point;
   
 
   constructor(prototype?: object) {
@@ -42,6 +44,7 @@ export class SpriteComponent extends RenderComponent {
     this.animations = p?.animations;
     this.startingAnimation = p?.startingAnimation ?? "";
     this.startingFrame = new Point(p?.startingFrame);
+    this.scale = new Point(p?.scale ?? new Point(1,1));
   }
 
   private cachedImage: ImageBitmap | null = null;
@@ -70,7 +73,7 @@ export class SpriteComponent extends RenderComponent {
     }
     if (sprite != undefined && this.parent != null)
       context.getTarget(this.renderLayer)
-        .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset).add(offset), this.flip);
+        .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset).add(offset), this.scale, this.flip);
   }
 
   public initialize(engine: AssetStore, template: TiledTemplate, prototypeAsset: AssetReference): void {

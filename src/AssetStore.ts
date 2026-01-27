@@ -26,11 +26,11 @@ export class AssetStore {
     return this.assetMap?.get(path) ?? new AssetReference(path, null);
   }
   
-  public loadAsset(basePath: string, path: string) : Promise<AssetReference> {
+  public loadAsset(path: string) : Promise<AssetReference> {
     let r = this.assetMap?.get(path);
     if (r != undefined) return Promise.resolve(r);
     return new Promise<AssetReference>(async (resolve, reject) => {
-      const asset = await this.loader.loadAsset(basePath, path);
+      const asset = await this.loader.loadAsset(this.basePath, path);
       this.assetMap.set(path, asset);
       asset.resolveDependencies(this);
       resolve(asset);

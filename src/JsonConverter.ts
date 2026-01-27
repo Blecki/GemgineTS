@@ -6,6 +6,8 @@ export function resolveInlineReference<T extends Asset>(baseReference: AssetRefe
   if (typeof source === "string")
     return engine.getPreloadedAsset(source).asset as T;
   if (typeof source === "object") {
+    console.log("Resolving from object");
+    console.log(source);
     let r = new type(source);
     r.resolveDependencies(baseReference, engine);
     return r;

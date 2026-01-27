@@ -7,7 +7,7 @@ export class RenderTarget {
     canvas;
     context;
     pendingDrawTasks;
-    texture;
+    texture = null;
     constructor(targetWidth, targetHeight, gl) {
         this.canvas = document.createElement('canvas');
         this.canvas.width = targetWidth;
@@ -19,9 +19,10 @@ export class RenderTarget {
         this.context = ctx;
         this.context.imageSmoothingEnabled = false;
         this.pendingDrawTasks = [];
-        this.texture = gl.createTexture();
+        if (gl != null)
+            this.texture = gl.createTexture();
     }
-    drawSprite(sprite, position, flipped) {
+    drawSprite(sprite, position, scale, flipped) {
         let integerPosition = position.truncate();
         this.pendingDrawTasks.push((context, camera) => {
             let destX = integerPosition.x + camera.drawOffset.x;
@@ -33,7 +34,7 @@ export class RenderTarget {
                 destX = -(sprite.sourceRect.width / 2);
                 destY = -(sprite.sourceRect.height / 2);
             }
-            context.drawImage(sprite.image, sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height, destX, destY, sprite.sourceRect.width, sprite.sourceRect.height);
+            context.drawImage(sprite.image, sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height, destX, destY, sprite.sourceRect.width * scale.x, sprite.sourceRect.height * scale.y);
             context.restore();
         });
     }
@@ -47,6 +48,12 @@ export class RenderTarget {
         this.pendingDrawTasks.push((context, camera) => {
             context.fillStyle = color;
             context.fillRect(Math.floor(rect.x) + camera.drawOffset.x, Math.floor(rect.y) + camera.drawOffset.y, rect.width, rect.height);
+        });
+    }
+    drawWireRectangle(rect, color) {
+        this.pendingDrawTasks.push((context, camera) => {
+            context.strokeStyle = color;
+            context.strokeRect(Math.floor(rect.x) + camera.drawOffset.x, Math.floor(rect.y) + camera.drawOffset.y, rect.width, rect.height);
         });
     }
     drawString(text, position, color) {

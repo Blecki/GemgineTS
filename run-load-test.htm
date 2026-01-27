@@ -3,8 +3,6 @@
   canvas {
     border: 1px solid red;
     background-color: #ffffff;
-    width: 1056;
-    height: 448;
   }
 </style>
 </head>
@@ -12,18 +10,12 @@
 <script type="module">
     import { Run } from "./build/LoadTest.js";
     window._load = function () {
-      Run(document.getElementById('myCanvas'));
+      Run(document.getElementById('frame'));
     }
 </script>
 
 <body>
-  <div style="display: grid; grid-template-rows: 500px auto;">
-    <div>
-      <canvas id="myCanvas" width="528" height="224"></canvas>
-    </div>
-    <div><input id="select-file" type="file"></input><button onclick="window._load()">Load</button></div>
-
-  </div>
-  
+  <div style="border: 1px solid black;" id="frame"></div>
+  <div><input id="select-file" type="file"></input><button onclick="window._load()">Load</button></div>
 </body>
 </html>

@@ -18,8 +18,7 @@ export function resolveAsGFX(input: string | object, asset: AssetReference, engi
       let r = new GfxAsset({
           type: "image",
           path: input,
-          isSheet: false,
-          animations: {}
+          isSheet: false
         });
       r.resolveDependencies(asset, engine);
       return r;
@@ -75,7 +74,7 @@ export class GfxAsset {
     this.tileHeight = p?.tileHeight ?? 0;
   }
 
-  public resolveDependencies(reference: AssetReference, engine: AssetStore): void {  
+  public resolveDependencies(reference: AssetReference, engine: AssetStore): void { 
     this.loadImageCache(engine);
   }
 
@@ -91,12 +90,12 @@ export class GfxAsset {
     }
 
     if (this.type == "image") {
-      this.cachedImage = engine.getPreloadedAsset(this.path ?? "").asset;
+      engine.loadAsset(this.path).then(assetRef => this.cachedImage = assetRef.asset);
     }
   }
 
-  public getSprite(x: number, y: number): Sprite {
-    if (this.cachedImage == null) throw new Error("No cached image");
+  public getSprite(x: number, y: number): Sprite | null {
+    if (this.cachedImage == null) return null;
     if (this.isSheet == false)
       return new Sprite(this.cachedImage, new Rect(0, 0, this.cachedImage?.width ?? 1, this.cachedImage?.height ?? 1));
     else 
