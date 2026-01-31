@@ -2,12 +2,15 @@ import { Point } from "./Point.js";
 import { Rect } from "./Rect.js";
 import { GameTime } from "./GameTime.js";
 
+
+
 export class Camera {
   public position: Point = new Point(0, 0);
   public drawOffset: Point = new Point(0,0);
   public panSpeed: number = 512.0;
   public canvasSize: Point;
   public realPosition: Point = new Point(0, 0);
+  public scale: Point = new Point(1, 1);
 
   constructor(canvasSize: Point) {
     this.canvasSize = canvasSize;
@@ -21,7 +24,8 @@ export class Camera {
     else 
       this.realPosition = this.realPosition.add(delta.normalized().multiply(step));
     let halfOffset = new Point(this.canvasSize.x / 2, this.canvasSize.y / 2);
-    this.drawOffset = this.realPosition.negate().add(halfOffset).truncate();
+    this.drawOffset = new Point(-this.realPosition.x * this.scale.x, -this.realPosition.y * this.scale.y);
+    this.drawOffset = this.drawOffset.add(halfOffset).truncate();
   }
 
   public moveCameraSmooth(to: Point) {
@@ -48,5 +52,22 @@ export class Camera {
     if (pos.y < bounds.y) pos.y = bounds.y;
     if (pos.y >= bounds.y + bounds.height) pos.y = bounds.y + bounds.height;
     this.moveCameraSmooth(pos);
+  }
+
+  public screenToWorld(screenPoint: Point): Point {
+    return new Point( (screenPoint.x - this.drawOffset.x) / this.scale.x, (screenPoint.y - this.drawOffset.y) / this.scale.y);
+  }
+
+  public worldPointToScreen(worldPoint: Point): Point {
+    return new Point( (worldPoint.x * this.scale.x) + this.drawOffset.x, (worldPoint.y * this.scale.y) + this.drawOffset.y );
+  }
+
+  public worldRectToScreen(worldRect: Rect): Rect {
+    return new Rect(
+      (worldRect.x * this.scale.x) + this.drawOffset.x,
+      (worldRect.y * this.scale.y) + this.drawOffset.y,
+      worldRect.width * this.scale.x,
+      worldRect.height * this.scale.y
+    );
   }
 }

@@ -14,21 +14,23 @@ export class MouseHandler {
     previousMouse = new MouseState();
     currentMouse = new MouseState();
     mouseDelta = new Point(0, 0);
-    constructor(element) {
-        element._handler('mousedown', (e) => {
+    camera;
+    constructor(element, camera) {
+        this.camera = camera;
+        element.addEventListener('mousedown', (e) => {
             const rect = element.getBoundingClientRect();
             this.currentMouse.pressed = e.buttons == 1;
-            this.currentMouse.position = new Point(e.clientX - rect.left, e.clientY - rect.top);
+            this.currentMouse.position = this.camera.screenToWorld(new Point(e.offsetX, e.offsetY));
         });
-        element._handler('mousemove', (e) => {
+        element.addEventListener('mousemove', (e) => {
             const rect = element.getBoundingClientRect();
             this.currentMouse.pressed = e.buttons == 1;
-            this.currentMouse.position = new Point(e.clientX - rect.left, e.clientY - rect.top);
+            this.currentMouse.position = this.camera.screenToWorld(new Point(e.offsetX, e.offsetY));
         });
-        element._handler('mouseup', (e) => {
+        element.addEventListener('mouseup', (e) => {
             const rect = element.getBoundingClientRect();
             this.currentMouse.pressed = false;
-            this.currentMouse.position = new Point(e.clientX - rect.left, e.clientY - rect.top);
+            this.currentMouse.position = this.camera.screenToWorld(new Point(e.offsetX, e.offsetY));
         });
     }
     update() {

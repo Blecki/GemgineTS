@@ -1,15 +1,9 @@
-export class AnimationHitBox {
-    x;
-    y;
-    width;
-    height;
+import { Rect } from "./Rect.js";
+export class AnimationHitBox extends Rect {
     type;
     constructor(prototype) {
+        super(prototype);
         let p = prototype;
-        this.x = p?.x ?? 0;
-        this.y = p?.y ?? 0;
-        this.width = p?.width ?? 1;
-        this.height = p?.height ?? 1;
         this.type = p?.type ?? "hit";
     }
 }

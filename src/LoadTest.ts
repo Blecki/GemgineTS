@@ -33,7 +33,6 @@ import { AnimationPlayer } from "./AnimationPlayer.js";
 import { AssetStore } from "./AssetStore.js";
 import { AnimationHitBox } from "./AnimationHitBox.js";
 import { EditorContext } from "./EditorContext.js";
-import { EditorGizmo } from "./EditorGizmo.js";
 import { MouseHandler } from "./MouseHandler.js";
 
 var outerFrame: HTMLElement; 
@@ -42,12 +41,10 @@ var renderTarget: RenderTarget;
 var animationPlayer: AnimationPlayer;
 var animation: AnimationAsset;
 var cam: Camera;
-var mainContext: CanvasRenderingContext2D | null;
 var dataLoaded: boolean = false;
 var frameSlider: HTMLInputElement;
 var animSelector: HTMLSelectElement;
-var editorContext: EditorContext = new EditorContext();
-var mouseHandler: MouseHandler;
+var editorContext: EditorContext;
 
 export function Run(frame: HTMLElement) : void {
   outerFrame = frame;
@@ -58,10 +55,8 @@ export function Run(frame: HTMLElement) : void {
   let test = store.loadAsset("assets/player/player.animset");
   test.then(asset => render(asset.asset as AnimationSetAsset));
  
-  cam = new Camera(new Point(48, 64));
-
-
-  
+  cam = new Camera(new Point(256, 256));
+  cam.scale = new Point(4,4);
   gameLoop(() => {
     
     
@@ -98,78 +93,40 @@ function render(animSet: AnimationSetAsset) {
       ._modify(c => { let e = c as unknown as HTMLCanvasElement; e.width = 256; e.height = 256; }) as unknown as HTMLCanvasElement)
   );
   outerFrame.appendChild(widget);
-
-  mainContext = previewCanvas.getContext('2d');
-
   
-  renderTarget = new RenderTarget(256, 256, null);
+  renderTarget = new RenderTarget(previewCanvas);
   animationPlayer = new AnimationPlayer(animation.frames.length, animation.fps, true, 0);
-  previewCanvas.style.imageRendering = 'pixelated';
-  if (mainContext != null) mainContext.imageSmoothingEnabled = false;
-
-  mouseHandler = new MouseHandler(previewCanvas as unknown as FluentElement);
+  editorContext = new EditorContext(cam, renderTarget);
 
   dataLoaded = true;
 }
 
-var lastDragHandle = 0;
-
-function dragHandle(id: number, position: Point, renderTarget: RenderTarget, cam: Camera) : boolean {
-  let handleBounds = new Rect(position.x - 2, position.y - 2, 30, 30);
-  let dragging = false;
-  let overlaps = handleBounds.contains(mouseHandler.previousMouse.position.sub(cam.drawOffset));
-  if (mouseHandler.currentMouse.pressed && overlaps)
-    dragging = true;
-  if (id == lastDragHandle && mouseHandler.currentMouse.pressed) {
-    dragging = true;
-    overlaps = true;
-  }
-  if (dragging)
-    lastDragHandle = id;
-  if (overlaps)
-    renderTarget.drawRectangle(handleBounds, "yellow");
-  renderTarget.drawWireRectangle(handleBounds, "orange");
-  return dragging;
-}
-
-var handlePos = new Point(8,8);
+var selectedRectangle = -1;
 
 function gameLoop(frameCallback: () => void) {
   GameTime.update();
   if (dataLoaded) {
-    animationPlayer.advance(GameTime.getDeltaTime());
     renderTarget.clearScreen();
-    //let frame = animation.frames[animationPlayer.getCurrentFrame()];
     let frame = animation.frames[Number(frameSlider.value)];
     let sprite = animation.gfxAsset?.getSprite(frame.x, frame.y);
-    let camX = 0;
-    let camY = 0;
     if (sprite != null) {
-      camX = (256 - ((animation.gfxAsset?.tileWidth ?? 64) * 4)) / 2;
-      camY = (256 - ((animation.gfxAsset?.tileHeight ?? 64) * 4)) / 2;
-      renderTarget.drawSprite(sprite, new Point(0, 0), new Point(4,4), false);
-      renderTarget.drawWireRectangle(new Rect(0, 0, (animation.gfxAsset?.tileWidth ?? 64) * 4, (animation.gfxAsset?.tileHeight ?? 64) * 4), "red");
+      cam.moveCameraTeleport(new Point((animation.gfxAsset?.tileWidth ?? 64) / 2, (animation.gfxAsset?.tileHeight ?? 64) / 2));
+      renderTarget.drawSprite(sprite, new Point(0, 0), false);
+      renderTarget.drawWireRectangle(new Rect(0, 0, (animation.gfxAsset?.tileWidth ?? 64), (animation.gfxAsset?.tileHeight ?? 64)), "red");
     }
-    for (let rect of frame.hitBoxes)
-      renderTarget.drawWireRectangle(new Rect(rect.x * 4, rect.y * 4, rect.width * 4, rect.height * 4), "green");
-
-    if (dragHandle(1, handlePos, renderTarget, cam)) {
-      handlePos = handlePos.add(mouseHandler.mouseDelta);
+    cam.update();
+    editorContext.open();
+    for (let x = 0; x < frame.hitBoxes.length; ++x) {
+      let lcopy_x = x;
+      editorContext.adjustRect(frame.hitBoxes[x], x == selectedRectangle).ifClicked(() => {
+        console.log( `Selecting rect ${lcopy_x}`);
+        selectedRectangle = lcopy_x; 
+      });
     }
-    else
-      lastDragHandle = 0;
+    editorContext.close();
 
-    cam.drawOffset = new Point(camX, camY);
+
     renderTarget.flush(cam);
-
-    if (mainContext != null)
-    {
-      mainContext.clearRect(0, 0, 256, 256);
-      mainContext.drawImage(renderTarget.canvas, 0, 0, 256, 256);
-    }
-
-      mouseHandler.update();
-
   }
 
   frameCallback();

@@ -7,6 +7,7 @@ export class Camera {
     panSpeed = 512.0;
     canvasSize;
     realPosition = new Point(0, 0);
+    scale = new Point(1, 1);
     constructor(canvasSize) {
         this.canvasSize = canvasSize;
     }
@@ -18,7 +19,8 @@ export class Camera {
         else
             this.realPosition = this.realPosition.add(delta.normalized().multiply(step));
         let halfOffset = new Point(this.canvasSize.x / 2, this.canvasSize.y / 2);
-        this.drawOffset = this.realPosition.negate().add(halfOffset).truncate();
+        this.drawOffset = new Point(-this.realPosition.x * this.scale.x, -this.realPosition.y * this.scale.y);
+        this.drawOffset = this.drawOffset.add(halfOffset).truncate();
     }
     moveCameraSmooth(to) {
         this.position = to;
@@ -44,6 +46,15 @@ export class Camera {
         if (pos.y >= bounds.y + bounds.height)
             pos.y = bounds.y + bounds.height;
         this.moveCameraSmooth(pos);
+    }
+    screenToWorld(screenPoint) {
+        return new Point((screenPoint.x - this.drawOffset.x) / this.scale.x, (screenPoint.y - this.drawOffset.y) / this.scale.y);
+    }
+    worldPointToScreen(worldPoint) {
+        return new Point((worldPoint.x * this.scale.x) + this.drawOffset.x, (worldPoint.y * this.scale.y) + this.drawOffset.y);
+    }
+    worldRectToScreen(worldRect) {
+        return new Rect((worldRect.x * this.scale.x) + this.drawOffset.x, (worldRect.y * this.scale.y) + this.drawOffset.y, worldRect.width * this.scale.x, worldRect.height * this.scale.y);
     }
 }
 //# sourceMappingURL=Camera.js.map

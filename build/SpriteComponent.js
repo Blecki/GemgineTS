@@ -66,7 +66,7 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
         }
         if (sprite != undefined && this.parent != null)
             context.getTarget(this.renderLayer)
-                .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset).add(offset), this.scale, this.flip);
+                .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset).add(offset), this.flip);
     }
     initialize(engine, template, prototypeAsset) {
         this.renderLayer = RenderLayers.ObjectsDiffuse;

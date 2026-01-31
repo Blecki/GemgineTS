@@ -13,9 +13,9 @@ export class Rect {
   public width: number;
   public height: number;
 
-  constructor(prototype: object)
+  constructor(prototype?: object)
   constructor(x: number, y: number, width: number, height: number)
-  constructor(x: object | number, y?: number, width?: number, height?: number)
+  constructor(x: object | number | undefined, y?: number, width?: number, height?: number)
   {
     if (x === undefined) {
       this.x = 0;

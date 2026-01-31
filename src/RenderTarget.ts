@@ -12,10 +12,17 @@ export class RenderTarget {
   private pendingDrawTasks: DrawTask[];
   private texture: WebGLTexture | null = null;
 
-  constructor(targetWidth: number, targetHeight: number, gl: WebGLRenderingContext | null) {
-    this.canvas = document.createElement('canvas');
-    this.canvas.width = targetWidth;
-    this.canvas.height = targetHeight;
+
+  constructor(canvas: HTMLCanvasElement);
+  constructor(targetWidth: number, targetHeight: number, gl: WebGLRenderingContext | null);
+  constructor(first: HTMLCanvasElement | number, second?: number, third?: WebGLRenderingContext | null) {
+    if (typeof(first) === "object")
+      this.canvas = first as HTMLCanvasElement;
+    else {
+      this.canvas = document.createElement('canvas');
+      this.canvas.width = first as number;
+      this.canvas.height = second ?? (first as number);
+    }
     this.canvas.style.imageRendering = 'pixelated';
 
     let ctx = this.canvas.getContext('2d');
@@ -25,58 +32,53 @@ export class RenderTarget {
     
     this.pendingDrawTasks = [];
 
-    if (gl != null) 
-      this.texture = gl.createTexture();
+    if (third != null && third != undefined) 
+      this.texture = third.createTexture();
   }
 
-  public drawSprite(sprite: Sprite, position: Point, scale: Point, flipped?: boolean) {
-    let integerPosition = position.truncate();
+  public drawSprite(sprite: Sprite, position: Point, flipped?: boolean) {
     this.pendingDrawTasks.push((context, camera) => { 
-      let destX = integerPosition.x + camera.drawOffset.x;
-      let destY = integerPosition.y + camera.drawOffset.y;
+      let dest = camera.worldRectToScreen(new Rect(position.x, position.y,  sprite.sourceRect.width, sprite.sourceRect.height));
 
       context.save();
 
       if (flipped == true) {
-        context.translate(destX + sprite.sourceRect.width / 2, destY + sprite.sourceRect.height / 2);
+        context.translate(dest.x + sprite.sourceRect.width / 2, dest.y + sprite.sourceRect.height / 2);
         context.scale(-1, 1);
-        destX = -(sprite.sourceRect.width / 2);
-        destY = -(sprite.sourceRect.height / 2);
+        dest.x = -(dest.width / 2);
+        dest.y = -(dest.height / 2);
       }
 
       context.drawImage(sprite.image,
         sprite.sourceRect.x, sprite.sourceRect.y, sprite.sourceRect.width, sprite.sourceRect.height,
-        destX, 
-        destY, 
-        sprite.sourceRect.width * scale.x, 
-        sprite.sourceRect.height * scale.y); 
+        dest.x, dest.y, dest.width, dest.height); 
       
       context.restore();
     });
   }
   
   public drawImage(image: ImageBitmap | OffscreenCanvas, sourceRect: Rect, position: Point) {
-    let integerPosition = position.truncate();
     this.pendingDrawTasks.push((context, camera) => { 
+      let dest = camera.worldRectToScreen(new Rect(position.x, position.y, sourceRect.width, sourceRect.height));
       context.drawImage(image, 
         sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height,
-        integerPosition.x + camera.drawOffset.x, 
-        integerPosition.y + camera.drawOffset.y, 
-        sourceRect.width, sourceRect.height); 
+        dest.x, dest.y, dest.width, dest.height); 
     });
   }
 
   public drawRectangle(rect: Rect, color: string) {
     this.pendingDrawTasks.push((context, camera) => {
+      let dest = camera.worldRectToScreen(rect);
       context.fillStyle = color;
-      context.fillRect(Math.floor(rect.x) + camera.drawOffset.x, Math.floor(rect.y) + camera.drawOffset.y, rect.width, rect.height);
+      context.fillRect(dest.x, dest.y, dest.width, dest.height);
     });
   }
 
   public drawWireRectangle(rect: Rect, color: string) {
     this.pendingDrawTasks.push((context, camera) => {
+      let dest = camera.worldRectToScreen(rect);
       context.strokeStyle = color;
-      context.strokeRect(Math.floor(rect.x) + camera.drawOffset.x, Math.floor(rect.y) + camera.drawOffset.y, rect.width, rect.height);
+      context.strokeRect(dest.x, dest.y, dest.width, dest.height);
     });
   }
 
@@ -86,28 +88,33 @@ export class RenderTarget {
       context.textAlign = 'left';
       context.textBaseline = 'top';
       context.font = "30px Arial";
-      context.fillText(text, position.x + camera.drawOffset.x, position.y + camera.drawOffset.y);
+      let dest = camera.worldPointToScreen(position);
+      context.fillText(text, dest.x, dest.y);
     });
   }
 
   public drawLine(start: Point, end: Point, color: string) {
     this.pendingDrawTasks.push((context, camera) => {
-      context.strokeStyle = color;
+      let _start = camera.worldPointToScreen(start);
+      let _end = camera.worldPointToScreen(end);
+     context.strokeStyle = color;
       context.beginPath();
-      context.moveTo(start.x + camera.drawOffset.x, start.y + camera.drawOffset.y);
-      context.lineTo(end.x + camera.drawOffset.x, end.y + camera.drawOffset.y);
+      context.moveTo(_start.x, _start.y);
+      context.lineTo(_end.x, _end.y);
       context.stroke();
     });
   }
 
   public flush(camera: Camera) {
-        this.context.globalAlpha = 1;
-        this.context.globalCompositeOperation = 'source-over';
-    
-    let halfOffset = new Point(this.canvas.width / 2, this.canvas.height / 2);
+    this.context.save();
+    this.context.globalAlpha = 1;
+    this.context.globalCompositeOperation = 'source-over';
+          
     for (let t of this.pendingDrawTasks)
       t(this.context, camera);
     this.pendingDrawTasks = [];
+
+    this.context.restore();
   }
 
   public asRawImage() : RawImage {

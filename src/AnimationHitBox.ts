@@ -1,24 +1,15 @@
+import { Rect } from "./Rect.js";
+
 type AnimationHitBoxPrototype = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
   type: string;
 }
 
-export class AnimationHitBox {
-  public x: number;
-  public y: number;
-  public width: number;
-  public height: number;
+export class AnimationHitBox extends Rect {
   public type: string;
 
   constructor(prototype?:object) {
+    super(prototype);
     let p = prototype as AnimationHitBoxPrototype;
-    this.x = p?.x ?? 0;
-    this.y = p?.y ?? 0;
-    this.width = p?.width ?? 1;
-    this.height = p?.height ?? 1;
     this.type = p?.type ?? "hit";
   }  
 }

@@ -10,6 +10,10 @@ export class EditorGizmo {
     get bounds() {
         return new Rect(this.position.x, this.position.y, 1, 1);
     }
-    draw(target, context) { }
+    overlaps(mousePosition) {
+        return this.bounds.contains(mousePosition);
+    }
+    drawSelected(context) { }
+    drawUnselected(context) { }
 }
 //# sourceMappingURL=EditorGizmo.js.map
