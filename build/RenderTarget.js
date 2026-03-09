@@ -100,7 +100,7 @@ export class RenderTarget {
         this.context.globalAlpha = 1;
         this.context.globalCompositeOperation = 'source-over';
         this.clearScreen();
-        this.pendingDrawTasks = [];
+        //this.pendingDrawTasks = [];
     }
     bind(gl, slot) {
         gl.activeTexture(slot);

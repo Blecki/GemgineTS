@@ -16,5 +16,5 @@ export class Component {
 
   public constructor(prototype?:object) {}
   public initialize(engine: AssetStore, template: TiledTemplate, prototypeAsset: AssetReference) {}
-  public awake(engine: AssetStore, modules: Modules) {}
+  public awake(assetStore: AssetStore, modules: Modules) {}
 }

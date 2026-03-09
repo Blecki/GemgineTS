@@ -1,0 +1,1 @@
+{"version":3,"file":"NodeConnection.js","sourceRoot":"","sources":["../../src/nodes/NodeConnection.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,qBAAqB,CAAC;AACrD,OAAO,EAAE,aAAa,EAAE,MAAM,oBAAoB,CAAC;AAEnD,MAAM,OAAO,cAAc;IAClB,aAAa,GAA0B,IAAI,CAAC;IAC5C,WAAW,GAAyB,IAAI,CAAC;IACzC,KAAK,GAAQ,IAAI,CAAC;CAC1B"}

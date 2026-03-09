@@ -1,0 +1,31 @@
+<title>Canvas Sprite Example</title>
+<style>
+  canvas {
+    background-color: #ffffff;
+  }
+
+  body {
+    font-family: "Pixelify Sans", sans-serif !important;
+    font-optical-sizing: auto;
+    font-weight: 1.0;
+    font-style: normal;
+  }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+  <div id="frame"></div>
+
+  
+<script type="module">
+    import { Run } from "./build/DemoCube.js";
+    Run(document.getElementById('frame'));
+</script>
+
+</body>
+</html>

@@ -13,6 +13,6 @@ export class Component {
     parent = null;
     constructor(prototype) { }
     initialize(engine, template, prototypeAsset) { }
-    awake(engine, modules) { }
+    awake(assetStore, modules) { }
 }
 //# sourceMappingURL=Component.js.map

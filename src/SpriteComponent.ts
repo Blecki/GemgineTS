@@ -11,11 +11,11 @@ import { Point } from "./Point.js";
 import { AnimationAsset } from "./AnimationSetAsset.js";
 import { GameTime } from "./GameTime.js";
 import { resolveAsGFX, GfxAsset } from "./GfxAsset.js";
-import { type DebuggableObject, PropertyGrid } from "./Debugger.js";
-import { type FluentElement, Fluent } from "./Fluent.js";
 import { AnimationSetAsset } from "./AnimationSetAsset.js";
 import { AnimationPlayer } from "./AnimationPlayer.js";
 import { AnimationFrame } from "./AnimationFrame.js";
+import { HitBoxModule } from "./HitBoxModule.js";
+import { Modules } from "./Modules.js";
 
 type SpriteComponentPrototype = {
   gfx: string | object;
@@ -24,6 +24,7 @@ type SpriteComponentPrototype = {
   startingAnimation: string;
   startingFrame: Point | object;
   scale: Point | object;
+  recordHitBoxes: boolean;
 }
 
 @componentType("Sprite")
@@ -34,7 +35,7 @@ export class SpriteComponent extends RenderComponent {
   public startingAnimation: string;
   public startingFrame: Point;
   public scale: Point;
-  
+  public recordHitBoxes: boolean;
 
   constructor(prototype?: object) {
     super(prototype);
@@ -45,6 +46,7 @@ export class SpriteComponent extends RenderComponent {
     this.startingAnimation = p?.startingAnimation ?? "";
     this.startingFrame = new Point(p?.startingFrame);
     this.scale = new Point(p?.scale ?? new Point(1,1));
+    this.recordHitBoxes = p?.recordHitBoxes ?? false;
   }
 
   private cachedImage: ImageBitmap | null = null;
@@ -54,6 +56,7 @@ export class SpriteComponent extends RenderComponent {
   private animationPlayer: AnimationPlayer = new AnimationPlayer(1, 1, false, 1);
   public flip: boolean = false;
   private currentGfx: GfxAsset | null = null;
+  private cachedHitBoxModule: HitBoxModule | null = null;
 
   public resolveDependencies(reference: AssetReference, engine: AssetStore): void {  
   }
@@ -74,6 +77,16 @@ export class SpriteComponent extends RenderComponent {
     if (sprite != undefined && this.parent != null)
       context.getTarget(this.renderLayer)
         .drawSprite(sprite, this.parent.globalPosition.sub(this.parent.pivot).add(this.offset).add(offset), this.flip);
+
+    if (this.recordHitBoxes && this.cachedHitBoxModule != null && this.currentAnimation != null && this.parent != undefined) {
+      let currentFrame = this.currentAnimation.frames[this.animationPlayer.getCurrentFrame()];
+
+      for (let rect of currentFrame.hitBoxes) {
+        console.log(rect);
+        let worldspaceRect = rect.withOffset(this.parent?.globalPosition).withOffset(offset).withOffset(this.offset).withOffset(this.parent.pivot.negate());
+        this.cachedHitBoxModule.recordBox(worldspaceRect, rect.type, this.parent);
+      }
+    }      
   }
 
   public initialize(engine: AssetStore, template: TiledTemplate, prototypeAsset: AssetReference): void {
@@ -96,6 +109,11 @@ export class SpriteComponent extends RenderComponent {
     }
   }
 
+  public awake(assetStore: AssetStore, modules: Modules) {
+    if (this.recordHitBoxes) this.cachedHitBoxModule = modules.getModule(HitBoxModule) as HitBoxModule;
+  }
+
+
   public playAnimation(name: string, resetFrame: boolean) : void {
     this.currentAnimation = this.resolvedAnimations?.getAnimation(name) ?? null;
     this.animationPlayer.reset(
@@ -114,10 +132,5 @@ export class SpriteComponent extends RenderComponent {
     if (this.currentAnimation != null) {
       this.animationPlayer.advance(GameTime.getDeltaTime());
     }
-  }
-  
-  public createDebugger(name: string): FluentElement {
-    let grid = new PropertyGrid(this, name, ["sprite", "gfx", "frame", "currentAnimaton", "currentPlace", "facing"]);
-    return grid.getElement();
   }
 }

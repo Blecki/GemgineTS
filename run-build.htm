@@ -27,11 +27,7 @@
   </div>
   <script type="module">
     import { Run } from "./build/Main.js";
-    import { Debugger } from "./build/Debugger.js";
     let engine = Run((engine) => {
-      console.log("Trace: Engine Callback");
-      let _debugger = new Debugger(document.getElementById("debug_panel"));
-      _debugger.debugObject(engine.sceneRoot);
     }, document.getElementById('myCanvas'));
   </script>
 </body>

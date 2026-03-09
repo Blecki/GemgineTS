@@ -23,9 +23,9 @@ export class AssetReference {
         }
         return this.path.substring(0, separator + 1);
     }
-    resolveDependencies(engine) {
+    resolveDependencies(assetStore) {
         if (this.asset !== null && this.asset !== undefined && typeof (this.asset.resolveDependencies) === 'function')
-            this.asset.resolveDependencies(this, engine);
+            this.asset.resolveDependencies(this, assetStore);
     }
 }
 //# sourceMappingURL=AssetReference.js.map

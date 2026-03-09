@@ -1,14 +1,14 @@
 import { Camera } from "./Camera.js";
-import { RenderTarget } from "./RenderTarget.js";
+import { RenderTarget2D } from "./RenderTarget2D.js";
 import { RenderLayers } from "./RenderLayers.js";
 export class RenderContext {
     renderTargets;
     constructor(width, height, gl) {
         this.renderTargets = {
-            [RenderLayers.BackgroundDiffuse]: new RenderTarget(width, height, gl),
-            [RenderLayers.ObjectsDiffuse]: new RenderTarget(width, height, gl),
-            [RenderLayers.Collision]: new RenderTarget(width, height, gl),
-            [RenderLayers.GUI]: new RenderTarget(width, height, gl)
+            [RenderLayers.BackgroundDiffuse]: new RenderTarget2D(width, height, gl),
+            [RenderLayers.ObjectsDiffuse]: new RenderTarget2D(width, height, gl),
+            [RenderLayers.Collision]: new RenderTarget2D(width, height, gl),
+            [RenderLayers.GUI]: new RenderTarget2D(width, height, gl)
         };
     }
     getTarget(layer) {

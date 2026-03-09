@@ -8,10 +8,11 @@ import { TiledTileset } from "./TiledTileset.js";
 import { TiledTilemap } from "./TiledTilemap.js";
 import { GfxAsset } from "./GfxAsset.js";
 import { AnimationSetAsset, AnimationAsset } from "./AnimationSetAsset.js";
-import { Shader } from "./Shader.js";
+import { Shader } from "./gl/Shader.js";
 import { TiledWorld, TiledWorldMap } from "./TiledWorld.js";
 import { TiledTemplate } from "./TiledTemplate.js";
 import { EntityBlueprint } from "./EntityBlueprint.js";
+import { loadScript } from "./ScriptComponent.js";
 
 
 type LoadFunction = (basePath: string, path: string) => Promise<AssetReference>;
@@ -83,5 +84,6 @@ export class AssetLoader {
       this.addLoader("gfx", loadAndConvertJSON((prototype:object) => new GfxAsset(prototype)));
       this.addLoader("animset", loadAndConvertJSON((prototype:object) => new AnimationSetAsset(prototype)));
       this.addLoader('glsl', loadAndConvertText((text:string) => new Shader(text)));
+      this.addLoader("js", loadScript);
   }
 }

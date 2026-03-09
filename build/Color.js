@@ -1,3 +1,4 @@
+import { Vector3Raw } from "./gl/Vector3.js";
 export class Color {
     r;
     g;
@@ -18,5 +19,13 @@ export class Color {
             this.a = a ?? 255;
         }
     }
+    static lerp(start, end, t) {
+        return new Color(start.r + (end.r - start.r) * t, start.g + (end.g - start.g) * t, start.b + (end.b - start.b) * t, start.a + (end.a - start.a) * t);
+    }
+    static asVector3(me) {
+        return new Vector3Raw(me.r, me.g, me.b);
+    }
+    static get White() { return new Color(255, 255, 255, 1); }
+    static get Black() { return new Color(0, 0, 0, 1); }
 }
 //# sourceMappingURL=Color.js.map

@@ -9,7 +9,6 @@ import { RenderComponent } from "./RenderModule.js";
 import { componentType } from "./Component.js";
 import { Array2D } from "./Array2D.js";
 import { RenderLayersMapping } from "./RenderLayers.js";
-import { PropertyGrid } from "./Debugger.js";
 import { type FluentElement } from "./Fluent.js";
 import { TiledInlineTileset } from "./TiledInlineTileset.js";
 
@@ -30,11 +29,6 @@ export class TilemapComponent extends RenderComponent {
   public worldspaceOriginOffset: Point | undefined = undefined;
   public tileSize: Point | undefined = undefined;
 
-  public createDebugger(name: string): FluentElement {
-    let grid = new PropertyGrid(this, name, ["layer", "tilemap", "worldspaceOriginOffset", "tileSize", "renderLayer"]);
-    return grid.getElement();
-  }
-  
   constructor(prototype?: object) {
     super(prototype);
     let p = prototype as TilemapComponentPrototype;

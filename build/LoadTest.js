@@ -31,8 +31,9 @@ import { RenderTarget } from "./RenderTarget.js";
 import { AnimationPlayer } from "./AnimationPlayer.js";
 import { AssetStore } from "./AssetStore.js";
 import { AnimationHitBox } from "./AnimationHitBox.js";
-import { EditorContext } from "./EditorContext.js";
+import { EditorContext } from "./editor/EditorContext.js";
 import { MouseHandler } from "./MouseHandler.js";
+import { PropertyGrid } from "./editor/PropertyGrid.js";
 var outerFrame;
 var previewCanvas;
 var renderTarget;
@@ -43,12 +44,13 @@ var dataLoaded = false;
 var frameSlider;
 var animSelector;
 var editorContext;
+var pGrid;
 export function Run(frame) {
     outerFrame = frame;
     const loader = new AssetLoader();
     loader.setupStandardLoaders();
     const store = new AssetStore("data/", null, loader);
-    let test = store.loadAsset("assets/player/player.animset");
+    let test = store.loadAsset("assets/green-slime.animset");
     test.then(asset => render(asset.asset));
     cam = new Camera(new Point(256, 256));
     cam.scale = new Point(4, 4);
@@ -58,7 +60,8 @@ export function Run(frame) {
 function render(animSet) {
     let f = new Fluent();
     animation = animSet.animations[0];
-    let widget = f.div()._append(f.div()._append(animSelector = f.e('select')._append(...animSet.animations.map((a, i) => f.e('option')._append(a.name)._modify(oz => oz.value = i)))
+    let saveOutput = f.e('textarea');
+    let widget = f.div()._style({ display: "grid", gridTemplateColumns: "50% 50%", gridTemplateRows: "40px 256px auto" })._append(f.div()._append(animSelector = f.e('select')._append(...animSet.animations.map((a, i) => f.e('option')._append(a.name)._modify(oz => oz.value = i)))
         ._handler('change', () => {
         animation = animSet.animations[Number(animSelector.value)];
         frameSlider.max = `${animation.frames.length - 1}`;
@@ -71,8 +74,10 @@ function render(animSet) {
         ._handler('click', () => {
         let frame = animation.frames[Number(frameSlider.value)];
         frame.hitBoxes.push(new AnimationHitBox({ x: 4, y: 4, width: 16, height: 16 }));
-    }), f.button()._append("X")), previewCanvas = f.e('canvas')
-        ._modify(c => { let e = c; e.width = 256; e.height = 256; }));
+    }), f.button()._append("X"), f.button()._append('>')._handler('click', () => {
+        saveOutput.value = JSON.stringify(animSet, null, 2);
+    })), f.div(), previewCanvas = f.e('canvas')
+        ._modify(c => { let e = c; e.width = 256; e.height = 256; }), pGrid = f.div(), saveOutput);
     outerFrame.appendChild(widget);
     renderTarget = new RenderTarget(previewCanvas);
     animationPlayer = new AnimationPlayer(animation.frames.length, animation.fps, true, 0);
@@ -97,6 +102,9 @@ function gameLoop(frameCallback) {
             let lcopy_x = x;
             editorContext.adjustRect(frame.hitBoxes[x], x == selectedRectangle).ifClicked(() => {
                 console.log(`Selecting rect ${lcopy_x}`);
+                let inspector = new PropertyGrid(frame.hitBoxes[lcopy_x]);
+                pGrid.innerHTML = "";
+                pGrid._append(inspector.element);
                 selectedRectangle = lcopy_x;
             });
         }

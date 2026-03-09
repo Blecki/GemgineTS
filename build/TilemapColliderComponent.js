@@ -13,7 +13,6 @@ import { TiledTemplate } from "./TiledTemplate.js";
 import { AssetReference } from "./AssetReference.js";
 import { Array2D } from "./Array2D.js";
 import { Point } from "./Point.js";
-import { PropertyGrid } from "./Debugger.js";
 import { Fluent } from "./Fluent.js";
 import { TiledInlineTileset } from "./TiledInlineTileset.js";
 let TilemapColliderComponent = class TilemapColliderComponent extends Component {
@@ -25,10 +24,6 @@ let TilemapColliderComponent = class TilemapColliderComponent extends Component 
         console.log("Trace: TilemapColliderComponent.initialize");
         super.initialize(engine, template, prototypeAsset);
         this.tilemapComponent = this.parent?.getComponent(TilemapComponent);
-    }
-    createDebugger(name) {
-        let grid = new PropertyGrid(this, name, ["cachedOffset", "cachedTileSize"]);
-        return grid.getElement();
     }
     awake(engine) {
         console.log("Trace: TilemapColliderComponent.awake");

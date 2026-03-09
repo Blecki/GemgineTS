@@ -95,4 +95,6 @@ export class Rect {
   public withOffset(point: Point): Rect {
     return new Rect(this.x + point.x, this.y + point.y, this.width, this.height);
   }
+
+  public get origin() : Point { return new Point(this.x, this.y); }
 }

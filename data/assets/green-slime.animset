@@ -1,0 +1,84 @@
+{
+  "animations": [
+    {
+      "name": "idle",
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "hitBoxes": [
+            {
+              "x": 11,
+              "y": 9.75,
+              "width": 25.75,
+              "height": 22,
+              "type": "hit"
+            }
+          ]
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "hitBoxes": [
+            {
+              "x": 9.75,
+              "y": 8.75,
+              "width": 28.5,
+              "height": 23,
+              "type": "hit"
+            }
+          ]
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "hitBoxes": [
+            {
+              "x": 12,
+              "y": 7.5,
+              "width": 24,
+              "height": 24.25,
+              "type": "hit"
+            }
+          ]
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "hitBoxes": [
+            {
+              "x": 13.25,
+              "y": 8.5,
+              "width": 21,
+              "height": 23.5,
+              "type": "hit"
+            }
+          ]
+        }
+      ],
+      "fps": 2,
+      "gfx": {
+        "type": "image",
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "path": "assets/green-slime.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/green-slime.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "cachedImage": {}
+      }
+    }
+  ]
+}

@@ -2,7 +2,6 @@ import { Point } from "./Point.js";
 import { Component } from "./Component.js";
 import { Rect } from "./Rect.js";
 import { QuadTree } from "./QuadTree.js";
-import { PropertyGrid } from "./Debugger.js";
 import { Fluent } from "./Fluent.js";
 export class Entity {
     ID;
@@ -44,11 +43,6 @@ export class Entity {
         if (r == undefined)
             return undefined;
         return r;
-    }
-    createDebugger(name) {
-        console.log("Trace: Entity.createDebugger");
-        let grid = new PropertyGrid(this, name, ["ID", "name", "localPosition", "globalPosition", "pivot", "size", "components", "children"]);
-        return grid.getElement();
     }
 }
 //# sourceMappingURL=Entity.js.map

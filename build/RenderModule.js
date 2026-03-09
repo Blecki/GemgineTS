@@ -9,7 +9,8 @@ import { RenderLayers } from "./RenderLayers.js";
 import { Point } from "./Point.js";
 import { LightComponent } from "./LightComponent.js";
 import { Color } from "./Color.js";
-import { Shader } from "./Shader.js";
+import { Shader } from "./gl/Shader.js";
+import { Program } from "./gl/Program.js";
 export class RenderComponent extends Component {
     renderLayer = RenderLayers.BackgroundDiffuse;
     render(context) { }
@@ -52,11 +53,8 @@ export class RenderModule extends Module {
         //this.guiCamera.drawOffset = new Point(-this.destinationCanvas.width / 2, -this.destinationCanvas.height / 2); // Position 0,0 at the top left.
     }
     engineStart(engine) {
-        const vertexShader = engine.assets.getPreloadedAsset("final-composite-vertex.glsl").asset.compile(this.gl, this.gl.VERTEX_SHADER);
-        const fragmentShader = engine.assets.getPreloadedAsset("final-composite-fragment.glsl").asset.compile(this.gl, this.gl.FRAGMENT_SHADER);
-        this.worldCompositeProgram = this.compileProgram(this.gl, vertexShader, fragmentShader);
-        const guiFragmentShader = engine.assets.getPreloadedAsset("gui-composite-fragment.glsl").asset.compile(this.gl, this.gl.FRAGMENT_SHADER);
-        this.guiCompositeProgram = this.compileProgram(this.gl, vertexShader, guiFragmentShader);
+        this.worldCompositeProgram = (new Program(engine.assets.getPreloadedAsset("final-composite-vertex.glsl").asset, engine.assets.getPreloadedAsset("final-composite-fragment.glsl").asset)).compile(this.gl);
+        this.guiCompositeProgram = (new Program(engine.assets.getPreloadedAsset("final-composite-vertex.glsl").asset, engine.assets.getPreloadedAsset("gui-composite-fragment.glsl").asset)).compile(this.gl);
         this.fullScreenQuadBuffer = this.gl.createBuffer();
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.fullScreenQuadBuffer);
         const positions = new Float32Array([
@@ -89,13 +87,16 @@ export class RenderModule extends Module {
             }
         });
     }
-    render(engine) {
+    render_ex(engine) {
         if (this.camera == null)
             return;
         this.animatables.forEach(a => a.animate());
         this.renderContext.prepAll();
         for (let renderable of this.renderables) {
             renderable.render(this.renderContext);
+        }
+        for (let module of engine.modules.getAllModules()) {
+            module.render(engine, this.renderContext);
         }
         this.fpsQueue.push(GameTime.getDeltaTime());
         if (this.fpsQueue.length > 200)
@@ -136,18 +137,6 @@ export class RenderModule extends Module {
     }
     setCamera(camera) {
         this.camera = camera;
-    }
-    compileProgram(context, vertexShader, fragmentShader) {
-        const program = context.createProgram();
-        if (vertexShader != null)
-            context.attachShader(program, vertexShader);
-        if (fragmentShader != null)
-            context.attachShader(program, fragmentShader);
-        context.linkProgram(program);
-        if (!context.getProgramParameter(program, context.LINK_STATUS)) {
-            throw new Error(`Failed to compile WebGL program: ${context.getProgramInfoLog(program)}`);
-        }
-        return program;
     }
 }
 //# sourceMappingURL=RenderModule.js.map

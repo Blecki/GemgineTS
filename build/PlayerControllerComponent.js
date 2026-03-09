@@ -81,7 +81,6 @@ let PlayerControllerComponent = class PlayerControllerComponent extends Componen
                 }
                 else {
                     if (this.controller != undefined) {
-                        console.log(this.controller.velocity.y);
                         let normalizedSpeed = 128 / (this.controller?.velocity.y);
                         if (normalizedSpeed < -1.0)
                             this.sprite.playAnimation('rise-slow', false);

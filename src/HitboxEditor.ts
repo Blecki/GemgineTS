@@ -22,22 +22,22 @@ import { TagComponent } from "./TagComponent.js";
 import { HealthComponent } from "./HealthComponent.js";
 import { GUIHealthBarComponent } from "./GUIHealthBarComponent.js";
 import { PhysicsModule } from "./PhysicsModule.js";
-import { Shader } from "./Shader.js";
 import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
 import { TilemapComponent } from "./TilemapComponent.js";
 import { Rect } from "./Rect.js";
 import { GameTime  } from "./GameTime.js";
 import { Fluent, type FluentElement } from "./Fluent.js";
-import { RenderTarget } from "./RenderTarget.js";
+import { RenderTarget2D } from "./RenderTarget2D.js";
 import { AnimationPlayer } from "./AnimationPlayer.js";
 import { AssetStore } from "./AssetStore.js";
 import { AnimationHitBox } from "./AnimationHitBox.js";
-import { EditorContext } from "./EditorContext.js";
+import { EditorContext } from "./editor/EditorContext.js";
 import { MouseHandler } from "./MouseHandler.js";
+import { PropertyGrid } from "./editor/PropertyGrid.js";
 
 var outerFrame: HTMLElement; 
 var previewCanvas: HTMLCanvasElement;
-var renderTarget: RenderTarget;
+var renderTarget: RenderTarget2D;
 var animationPlayer: AnimationPlayer;
 var animation: AnimationAsset;
 var cam: Camera;
@@ -45,6 +45,7 @@ var dataLoaded: boolean = false;
 var frameSlider: HTMLInputElement;
 var animSelector: HTMLSelectElement;
 var editorContext: EditorContext;
+var pGrid: FluentElement;
 
 export function Run(frame: HTMLElement) : void {
   outerFrame = frame;
@@ -52,7 +53,7 @@ export function Run(frame: HTMLElement) : void {
   const loader = new AssetLoader();
   loader.setupStandardLoaders();
   const store = new AssetStore("data/", null, loader);
-  let test = store.loadAsset("assets/player/player.animset");
+  let test = store.loadAsset("assets/green-slime.animset");
   test.then(asset => render(asset.asset as AnimationSetAsset));
  
   cam = new Camera(new Point(256, 256));
@@ -67,7 +68,8 @@ export function Run(frame: HTMLElement) : void {
 function render(animSet: AnimationSetAsset) {
   let f = new Fluent();
   animation = animSet.animations[0];
-  let widget = f.div()._append(
+  let saveOutput = f.e('textarea');
+  let widget = f.div()._style({display: "grid", gridTemplateColumns: "50% 50%", gridTemplateRows: "40px 256px auto"})._append(
     f.div()._append(
       animSelector = f.e('select')._append(
         ...animSet.animations.map((a, i) => f.e('option')._append(a.name)._modify(oz => oz.value = i))
@@ -87,14 +89,20 @@ function render(animSet: AnimationSetAsset) {
           let frame = animation.frames[Number(frameSlider.value)];
           frame.hitBoxes.push(new AnimationHitBox({ x: 4, y: 4, width: 16, height: 16 }));
         }),
-      f.button()._append("X")
+      f.button()._append("X"),
+      f.button()._append('>')._handler('click', () => {
+        saveOutput.value = JSON.stringify(animSet, null, 2);
+      })
     ),
+    f.div(),
     previewCanvas = (f.e('canvas')
-      ._modify(c => { let e = c as unknown as HTMLCanvasElement; e.width = 256; e.height = 256; }) as unknown as HTMLCanvasElement)
+      ._modify(c => { let e = c as unknown as HTMLCanvasElement; e.width = 256; e.height = 256; }) as unknown as HTMLCanvasElement),
+    pGrid = f.div(),
+    saveOutput
   );
   outerFrame.appendChild(widget);
   
-  renderTarget = new RenderTarget(previewCanvas);
+  renderTarget = new RenderTarget2D(previewCanvas);
   animationPlayer = new AnimationPlayer(animation.frames.length, animation.fps, true, 0);
   editorContext = new EditorContext(cam, renderTarget);
 
@@ -120,6 +128,9 @@ function gameLoop(frameCallback: () => void) {
       let lcopy_x = x;
       editorContext.adjustRect(frame.hitBoxes[x], x == selectedRectangle).ifClicked(() => {
         console.log( `Selecting rect ${lcopy_x}`);
+        let inspector = new PropertyGrid(frame.hitBoxes[lcopy_x]);
+        pGrid.innerHTML = "";
+        pGrid._append(inspector.element);
         selectedRectangle = lcopy_x; 
       });
     }

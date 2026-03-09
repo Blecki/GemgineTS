@@ -1,6 +1,5 @@
 import { Component } from "./Component.js";
 import { componentType } from "./Component.js";
-import { type DebuggableObject, PropertyGrid } from "./Debugger.js";
 import { type FluentElement, Fluent } from "./Fluent.js";
 
 type TagComponentPrototype = {
@@ -15,10 +14,5 @@ export class TagComponent extends Component {
     super(prototype);
     let p = prototype as TagComponentPrototype;
     this.tag = p?.tag ?? "";
-  }
-
-  public createDebugger(name: string): FluentElement {
-    let grid = new PropertyGrid(this, name, ["tag"]);
-    return grid.getElement();
   }
 }

@@ -39,8 +39,8 @@ export class AssetReference {
     return this.path.substring(0, separator + 1);
   }
 
-  public resolveDependencies(engine: AssetStore): void {
+  public resolveDependencies(assetStore: AssetStore): void {
     if (this.asset !== null && this.asset !== undefined && typeof(this.asset.resolveDependencies) === 'function')
-      this.asset.resolveDependencies(this, engine);
+      this.asset.resolveDependencies(this, assetStore);
   }
 }

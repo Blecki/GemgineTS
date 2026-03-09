@@ -22,11 +22,12 @@ import { TagComponent } from "./TagComponent.js";
 import { HealthComponent } from "./HealthComponent.js";
 import { GUIHealthBarComponent } from "./GUIHealthBarComponent.js";
 import { PhysicsModule } from "./PhysicsModule.js";
-import { Shader } from "./Shader.js";
 import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
 import { TilemapComponent } from "./TilemapComponent.js";
 import { Rect } from "./Rect.js";
 import { AssetStore } from "./AssetStore.js";
+import { HitBoxModule, HitBoxRecord } from "./HitBoxModule.js";
+import { RenderLayers } from "./RenderLayers.js";
 const cellSize = new Point(8, 7);
 function spawnMap(engine, map) {
     return engine.createTilemapFromTiledTilemap("assets/" + map.fileName, new Point(map?.x ?? 0, map?.y ?? 0));
@@ -72,6 +73,8 @@ export function Run(engineCallback, canvas) {
             engine.modules.addModule(new PhysicsModule());
             let renderModule = new RenderModule(canvas);
             engine.modules.addModule(renderModule);
+            let hitBoxModule = new HitBoxModule();
+            engine.modules.addModule(hitBoxModule);
             engine.start();
             let camera = new Camera(screenSize);
             renderModule.setCamera(camera);
@@ -104,7 +107,12 @@ export function Run(engineCallback, canvas) {
                         }
                     }
                 });
-                renderModule.render(engine);
+                renderModule.render_ex(engine);
+                hitBoxModule.detectOverlaps((a, b) => {
+                    if (a.type == 'attack' && b.type == 'hit') {
+                    }
+                });
+                hitBoxModule.clearBoxes();
             });
         });
     })

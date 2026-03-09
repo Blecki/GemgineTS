@@ -10,8 +10,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 import { componentType } from "./Component.js";
 import { Rect } from "./Rect.js";
 import { Component } from "./Component.js";
-import {} from "./Debugger.js";
-import { Fluent } from "./Fluent.js";
 import { RenderContext } from "./RenderContext.js";
 import { RenderLayers } from "./RenderLayers.js";
 let BoundsColliderComponent = class BoundsColliderComponent extends Component {
@@ -30,9 +28,6 @@ let BoundsColliderComponent = class BoundsColliderComponent extends Component {
     }
     overlaps(rect) {
         return this.globalBounds.overlaps(rect);
-    }
-    createDebugger(name) {
-        return (new Fluent).div()._append(name, ' - ', 'BoundsColliderComponent');
     }
     render(context) {
         if (this.parent != null) {

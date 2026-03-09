@@ -2,182 +2,559 @@
   "animations": [
     {
       "name": "idle",
-      "fps": 2,
-      "frames": [ 
-        { "x": 0, "y": 0 }, 
-        { "x": 1, "y": 0 },
-        { "x": 2, "y": 0 }, 
-        { "x": 3, "y": 0 },
-        { "x": 4, "y": 0 },
-        { "x": 5, "y": 0 },
-        { "x": 6, "y": 0 },
-        { "x": 7, "y": 0 },
-        { "x": 8, "y": 0 },
-        { "x": 9, "y": 0 }
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 5,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 6,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 7,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 8,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 9,
+          "y": 0,
+          "hitBoxes": [
+            {
+              "x": 4,
+              "y": 4,
+              "width": 16,
+              "height": 16,
+              "type": "attack"
+            }
+          ]
+        }
       ],
+      "fps": 2,
       "gfx": {
         "type": "image",
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 64,
         "path": "assets/player/sword-idle.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/sword-idle.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 64,
+        "cachedImage": {}
       }
     },
     {
       "name": "run",
-      "fps": 10,
-      "frames": [ 
-        { "x": 0, "y": 0 }, 
-        { "x": 1, "y": 0 },
-        { "x": 2, "y": 0 }, 
-        { "x": 3, "y": 0 },
-        { "x": 4, "y": 0 },
-        { "x": 5, "y": 0 },
-        { "x": 6, "y": 0 },
-        { "x": 7, "y": 0 }
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 5,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 6,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 7,
+          "y": 0,
+          "hitBoxes": []
+        }
       ],
+      "fps": 10,
       "gfx": {
         "type": "image",
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
         "path": "assets/player/sword-run.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/sword-run.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "cachedImage": {}
       }
     },
     {
       "name": "rise-float",
-      "fps": 10,
-      "frames": [ 
-        { "x": 2, "y": 0 }
+      "frames": [
+        {
+          "x": 2,
+          "y": 0,
+          "hitBoxes": []
+        }
       ],
+      "fps": 10,
       "gfx": {
         "type": "image",
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
         "path": "assets/player/jump.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/jump.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "cachedImage": {}
       }
     },
     {
       "name": "rise-fast",
-      "fps": 10,
-      "frames": [ 
-        { "x": 0, "y": 0 }
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "hitBoxes": []
+        }
       ],
+      "fps": 10,
       "gfx": {
         "type": "image",
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
         "path": "assets/player/jump.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/jump.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "cachedImage": {}
       }
     },
     {
       "name": "rise-slow",
-      "fps": 10,
-      "frames": [ 
-        { "x": 1, "y": 0 }
+      "frames": [
+        {
+          "x": 1,
+          "y": 0,
+          "hitBoxes": []
+        }
       ],
+      "fps": 10,
       "gfx": {
         "type": "image",
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
         "path": "assets/player/jump.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/jump.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "cachedImage": {}
       }
     },
     {
       "name": "fall-float",
-      "fps": 10,
-      "frames": [ 
-        { "x": 3, "y": 0 }
+      "frames": [
+        {
+          "x": 3,
+          "y": 0,
+          "hitBoxes": []
+        }
       ],
+      "fps": 10,
       "gfx": {
         "type": "image",
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
         "path": "assets/player/jump.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/jump.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "cachedImage": {}
       }
     },
     {
       "name": "fall-fast",
-      "fps": 10,
-      "frames": [ 
-        { "x": 5, "y": 0 }
+      "frames": [
+        {
+          "x": 5,
+          "y": 0,
+          "hitBoxes": []
+        }
       ],
+      "fps": 10,
       "gfx": {
         "type": "image",
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
         "path": "assets/player/jump.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/jump.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "cachedImage": {}
       }
     },
     {
       "name": "fall-slow",
-      "fps": 10,
-      "frames": [ 
-        { "x": 4, "y": 0 }
+      "frames": [
+        {
+          "x": 4,
+          "y": 0,
+          "hitBoxes": []
+        }
       ],
+      "fps": 10,
       "gfx": {
         "type": "image",
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
         "path": "assets/player/jump.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/jump.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "cachedImage": {}
       }
     },
     {
       "name": "roll",
-      "fps": 10,
-      "frames": [ 
-        { "x": 0, "y": 0 }, 
-        { "x": 1, "y": 0 },
-        { "x": 2, "y": 0 }, 
-        { "x": 3, "y": 0 },
-        { "x": 4, "y": 0 },
-        { "x": 5, "y": 0 },
-        { "x": 6, "y": 0 }
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 5,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 6,
+          "y": 0,
+          "hitBoxes": []
+        }
       ],
+      "fps": 10,
       "gfx": {
         "type": "image",
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
         "path": "assets/player/roll.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/roll.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "cachedImage": {}
       }
     },
     {
       "name": "flip",
-      "fps": 10,
-      "frames": [ 
-        { "x": 0, "y": 0 }, 
-        { "x": 1, "y": 0 },
-        { "x": 2, "y": 0 }, 
-        { "x": 3, "y": 0 },
-        { "x": 4, "y": 0 },
-        { "x": 5, "y": 0 }
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "hitBoxes": []
+        },
+        {
+          "x": 5,
+          "y": 0,
+          "hitBoxes": []
+        }
       ],
+      "fps": 10,
       "gfx": {
         "type": "image",
         "isSheet": true,
         "tileWidth": 48,
         "tileHeight": 48,
         "path": "assets/player/flip.png"
+      },
+      "loop": true,
+      "offset": {
+        "x": 0,
+        "y": 0
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/flip.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 48,
+        "tileHeight": 48,
+        "cachedImage": {}
       }
     },
     {
       "name": "attack",
-      "fps": 20,
-      "frames": [ 
-        { "x": 0, "y": 0 }, 
-        { "x": 1, "y": 0 },
-        { "x": 2, "y": 0 }, 
-        { "x": 3, "y": 0 },
-        { "x": 4, "y": 0 },
-        { "x": 5, "y": 0 }
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "hitBoxes": [
+            {
+              "x": 9.25,
+              "y": 30.5,
+              "width": 16,
+              "height": 9,
+              "type": "attack"
+            },
+            {
+              "x": 15.25,
+              "y": 22.75,
+              "width": 10.25,
+              "height": 7.5,
+              "type": "attack"
+            }
+          ]
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "hitBoxes": [
+            {
+              "x": 10,
+              "y": 14.25,
+              "width": 26.25,
+              "height": 20.75,
+              "type": "attack"
+            }
+          ]
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "hitBoxes": [
+            {
+              "x": 9.25,
+              "y": 13.25,
+              "width": 42,
+              "height": 11.75,
+              "type": "attack"
+            }
+          ]
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "hitBoxes": [
+            {
+              "x": 34,
+              "y": 7.5,
+              "width": 26.75,
+              "height": 41,
+              "type": "attack"
+            }
+          ]
+        },
+        {
+          "x": 4,
+          "y": 0,
+          "hitBoxes": [
+            {
+              "x": 38.75,
+              "y": 41,
+              "width": 20.5,
+              "height": 9,
+              "type": "attack"
+            }
+          ]
+        },
+        {
+          "x": 5,
+          "y": 0,
+          "hitBoxes": []
+        }
       ],
+      "fps": 20,
       "gfx": {
         "type": "image",
         "isSheet": true,
@@ -185,7 +562,21 @@
         "tileHeight": 64,
         "path": "assets/player/sword-attack.png"
       },
-      "offset": { "x": -8, "y": -8 }
+      "loop": true,
+      "offset": {
+        "x": -8,
+        "y": -8
+      },
+      "gfxAsset": {
+        "type": "image",
+        "path": "assets/player/sword-attack.png",
+        "basePalette": "",
+        "layers": [],
+        "isSheet": true,
+        "tileWidth": 64,
+        "tileHeight": 64,
+        "cachedImage": {}
+      }
     }
   ]
 }

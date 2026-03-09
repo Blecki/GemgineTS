@@ -2,7 +2,6 @@ import { Point } from "./Point.js";
 import { Component } from "./Component.js";
 import { Rect } from "./Rect.js";
 import { QuadTree } from "./QuadTree.js";
-import { type DebuggableObject, PropertyGrid } from "./Debugger.js";
 import { Fluent, type FluentElement } from "./Fluent.js";
 
 type EntityPrototype = {
@@ -11,9 +10,7 @@ type EntityPrototype = {
   name: string;
 }
 
-
-
-export class Entity implements DebuggableObject {
+export class Entity {
   public ID: number;
   public parent: Entity | null;
   public name: string = "unnamed";
@@ -60,11 +57,5 @@ export class Entity implements DebuggableObject {
     var r = this.components.find((component) => component instanceof t);
     if (r == undefined) return undefined;
     return r as T;
-  }
-
-  public createDebugger(name: string): FluentElement {
-    console.log("Trace: Entity.createDebugger");
-    let grid = new PropertyGrid(this, name, ["ID", "name", "localPosition", "globalPosition", "pivot", "size", "components", "children"]);
-    return grid.getElement();
   }
 }

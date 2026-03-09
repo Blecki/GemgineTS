@@ -1,8 +1,6 @@
 import { componentType } from "./Component.js";
 import { Rect } from "./Rect.js";
 import { Component } from "./Component.js";
-import { type DebuggableObject } from "./Debugger.js";
-import { type FluentElement, Fluent } from "./Fluent.js";
 import { RenderContext } from "./RenderContext.js";
 import { RenderLayers } from "./RenderLayers.js";
 
@@ -11,7 +9,7 @@ type BoundsColliderComponentPrototype = {
 }
 
 @componentType("BoundsCollider")
-export class BoundsColliderComponent extends Component implements DebuggableObject {
+export class BoundsColliderComponent extends Component {
   public collisionBounds: Rect;
 
   constructor(prototype?: object) {
@@ -29,10 +27,6 @@ export class BoundsColliderComponent extends Component implements DebuggableObje
 
   overlaps(rect: Rect): boolean {
     return this.globalBounds.overlaps(rect);
-  }
-
-  public createDebugger(name: string): FluentElement {
-    return (new Fluent).div()._append(name, ' - ', 'BoundsColliderComponent');
   }
 
   public render(context: RenderContext): void {

@@ -9,7 +9,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Component } from "./Component.js";
 import { componentType } from "./Component.js";
-import { PropertyGrid } from "./Debugger.js";
 import { Fluent } from "./Fluent.js";
 let TagComponent = class TagComponent extends Component {
     tag;
@@ -17,10 +16,6 @@ let TagComponent = class TagComponent extends Component {
         super(prototype);
         let p = prototype;
         this.tag = p?.tag ?? "";
-    }
-    createDebugger(name) {
-        let grid = new PropertyGrid(this, name, ["tag"]);
-        return grid.getElement();
     }
 };
 TagComponent = __decorate([

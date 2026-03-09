@@ -27,4 +27,8 @@ export class Modules {
     return this.modules.find((module) => module instanceof t) as T;
   }
 
+  public getAllModules() : Module[] {
+    return this.modules;
+  }
+
 }

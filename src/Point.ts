@@ -1,12 +1,9 @@
-import { PropertyGrid, type DebuggableObject } from "./Debugger.js";
-import type { FluentElement } from "./Fluent.js";
-
 type PointPrototype = {
   x: number;
   y: number;
 }
 
-export class Point implements DebuggableObject {
+export class Point {
   public x: number;
   public y: number;
 
@@ -53,12 +50,6 @@ export class Point implements DebuggableObject {
     return new Point(Math.floor(this.x), Math.floor(this.y));
   }
   
-  public createDebugger(name: string): FluentElement {
-    console.log("Trace: Entity.createDebugger");
-    let grid = new PropertyGrid(this, name, ["x", "y"]);
-    return grid.getElement();
-  }
-
   public lengthSqrd() : number {
     return (this.x * this.x) + (this.y * this.y);
   }
@@ -70,5 +61,10 @@ export class Point implements DebuggableObject {
   public normalized() : Point {
     let magnitude = Math.sqrt(this.lengthSqrd());
     return new Point(this.x / magnitude, this.y / magnitude);
+  }
+
+  public static distance(a: Point, b: Point) {
+    let d = b.sub(a);
+    return d.length();
   }
 }

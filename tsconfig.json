@@ -8,7 +8,8 @@
     "strict": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "typeRoots": ["./src/glMatrix.types.d.ts"]
   },
   "include": [
     "src"

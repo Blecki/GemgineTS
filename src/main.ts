@@ -23,11 +23,12 @@ import { TagComponent } from "./TagComponent.js";
 import { HealthComponent } from "./HealthComponent.js";
 import { GUIHealthBarComponent } from "./GUIHealthBarComponent.js";
 import { PhysicsModule } from "./PhysicsModule.js";
-import { Shader } from "./Shader.js";
 import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
 import { TilemapComponent } from "./TilemapComponent.js";
 import { Rect } from "./Rect.js";
 import { AssetStore } from "./AssetStore.js";
+import { HitBoxModule, HitBoxRecord } from "./HitBoxModule.js";
+import { RenderLayers } from "./RenderLayers.js";
 
 const cellSize = new Point(8, 7);
 
@@ -84,6 +85,8 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
         engine.modules.addModule(new PhysicsModule());
         let renderModule = new RenderModule(canvas);
         engine.modules.addModule(renderModule);
+        let hitBoxModule = new HitBoxModule();
+        engine.modules.addModule(hitBoxModule);
 
         engine.start();
 
@@ -123,7 +126,13 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
             }
           }); 
 
-          renderModule.render(engine);
+          renderModule.render_ex(engine);
+          hitBoxModule.detectOverlaps((a: HitBoxRecord, b: HitBoxRecord) : void => {
+            if (a.type == 'attack' && b.type == 'hit') {
+
+            }
+          });
+          hitBoxModule.clearBoxes();
         });
       });
     })

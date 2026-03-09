@@ -6,7 +6,7 @@ import { RawImage } from "./RawImage.js";
 
 type DrawTask = (context: CanvasRenderingContext2D, camera: Camera) => void;
 
-export class RenderTarget {
+export class RenderTarget2D {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   private pendingDrawTasks: DrawTask[];
@@ -66,6 +66,15 @@ export class RenderTarget {
     });
   }
 
+  public drawImageDR(image: ImageBitmap | OffscreenCanvas, sourceRect: Rect, position: Rect) {
+    this.pendingDrawTasks.push((context, camera) => { 
+      let dest = camera.worldRectToScreen(position);
+      context.drawImage(image, 
+        sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height,
+        dest.x, dest.y, dest.width, dest.height); 
+    });
+  }
+
   public drawRectangle(rect: Rect, color: string) {
     this.pendingDrawTasks.push((context, camera) => {
       let dest = camera.worldRectToScreen(rect);
@@ -87,7 +96,7 @@ export class RenderTarget {
       context.fillStyle = color;
       context.textAlign = 'left';
       context.textBaseline = 'top';
-      context.font = "30px Arial";
+      context.font = "24px Pixelify Sans";
       let dest = camera.worldPointToScreen(position);
       context.fillText(text, dest.x, dest.y);
     });
@@ -102,6 +111,20 @@ export class RenderTarget {
       context.moveTo(_start.x, _start.y);
       context.lineTo(_end.x, _end.y);
       context.stroke();
+    });
+  }
+
+  public drawLineWidth(start: Point, end: Point, color: string, width: number) {
+    this.pendingDrawTasks.push((context, camera) => {
+      let _start = camera.worldPointToScreen(start);
+      let _end = camera.worldPointToScreen(end);
+     context.strokeStyle = color;
+     context.lineWidth = width;
+      context.beginPath();
+      context.moveTo(_start.x, _start.y);
+      context.lineTo(_end.x, _end.y);
+      context.stroke();
+      context.lineWidth = 1;
     });
   }
 
@@ -129,7 +152,7 @@ export class RenderTarget {
     this.context.globalAlpha = 1;
     this.context.globalCompositeOperation = 'source-over';
     this.clearScreen();
-    this.pendingDrawTasks = [];
+    //this.pendingDrawTasks = [];
   }
 
   public bind(gl: WebGLRenderingContext, slot: GLenum): void {

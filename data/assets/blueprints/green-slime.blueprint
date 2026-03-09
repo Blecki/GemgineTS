@@ -5,28 +5,9 @@
       {
          "type": "Sprite",
          "offset": { "x": 0, "y": 0 },
-         "animations": {
-            "animations": [
-               {
-                  "name": "idle",
-                  "fps": 2,
-                  "frames": [ 
-                     { "x": 0, "y": 0 }, 
-                     { "x": 1, "y": 0 },
-                     { "x": 2, "y": 0 }, 
-                     { "x": 3, "y": 0 }                  
-                  ],
-                  "gfx": {
-                     "type": "image",
-                     "isSheet": true,
-                     "tileWidth": 48,
-                     "tileHeight": 48,
-                     "path": "assets/green-slime.png"
-                  }
-               }
-            ]
-         },
-         "startingAnimation": "idle"
+         "animations": "assets/green-slime.animset",
+         "startingAnimation": "idle",
+         "recordHitBoxes": true
       },
       {
          "type": "Controller"

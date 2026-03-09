@@ -20,5 +20,8 @@ export class Modules {
     getModule(t) {
         return this.modules.find((module) => module instanceof t);
     }
+    getAllModules() {
+        return this.modules;
+    }
 }
 //# sourceMappingURL=Modules.js.map

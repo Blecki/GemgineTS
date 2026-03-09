@@ -1,4 +1,3 @@
-import { PropertyGrid } from "./Debugger.js";
 export class Point {
     x;
     y;
@@ -35,11 +34,6 @@ export class Point {
     truncate() {
         return new Point(Math.floor(this.x), Math.floor(this.y));
     }
-    createDebugger(name) {
-        console.log("Trace: Entity.createDebugger");
-        let grid = new PropertyGrid(this, name, ["x", "y"]);
-        return grid.getElement();
-    }
     lengthSqrd() {
         return (this.x * this.x) + (this.y * this.y);
     }
@@ -49,6 +43,10 @@ export class Point {
     normalized() {
         let magnitude = Math.sqrt(this.lengthSqrd());
         return new Point(this.x / magnitude, this.y / magnitude);
+    }
+    static distance(a, b) {
+        let d = b.sub(a);
+        return d.length();
     }
 }
 //# sourceMappingURL=Point.js.map

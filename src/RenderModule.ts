@@ -9,7 +9,8 @@ import { RenderLayers } from "./RenderLayers.js";
 import { Point } from "./Point.js";
 import { LightComponent } from "./LightComponent.js";
 import { Color } from "./Color.js";
-import { Shader } from "./Shader.js";
+import { Shader } from "./gl/Shader.js";
+import { Program } from "./gl/Program.js";
 
 export class RenderComponent extends Component {
   public renderLayer: number = RenderLayers.BackgroundDiffuse;
@@ -69,14 +70,9 @@ export class RenderModule extends Module {
   }
 
   public engineStart(engine: Engine): void {
-
-    const vertexShader = (engine.assets.getPreloadedAsset("final-composite-vertex.glsl").asset as Shader).compile(this.gl, this.gl.VERTEX_SHADER);
-    const fragmentShader = (engine.assets.getPreloadedAsset("final-composite-fragment.glsl").asset as Shader).compile(this.gl, this.gl.FRAGMENT_SHADER);
-    this.worldCompositeProgram = this.compileProgram(this.gl, vertexShader, fragmentShader);
-
-    const guiFragmentShader = (engine.assets.getPreloadedAsset("gui-composite-fragment.glsl").asset as Shader).compile(this.gl, this.gl.FRAGMENT_SHADER);
-    this.guiCompositeProgram = this.compileProgram(this.gl, vertexShader, guiFragmentShader);
-
+    this.worldCompositeProgram = (new Program(engine.assets.getPreloadedAsset("final-composite-vertex.glsl").asset as Shader, engine.assets.getPreloadedAsset("final-composite-fragment.glsl").asset as Shader)).compile(this.gl);
+    this.guiCompositeProgram = (new Program(engine.assets.getPreloadedAsset("final-composite-vertex.glsl").asset as Shader, engine.assets.getPreloadedAsset("gui-composite-fragment.glsl").asset as Shader)).compile(this.gl);
+      
     this.fullScreenQuadBuffer = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.fullScreenQuadBuffer);
 
@@ -118,7 +114,7 @@ export class RenderModule extends Module {
     });
   }
 
-  render(engine: Engine) {
+  render_ex(engine: Engine) {
 
     if (this.camera == null) return;
 
@@ -127,6 +123,10 @@ export class RenderModule extends Module {
     
     for (let renderable of this.renderables) {
       renderable.render(this.renderContext);
+    }
+
+    for (let module of engine.modules.getAllModules()) {
+      module.render(engine, this.renderContext);
     }
 
     this.fpsQueue.push(GameTime.getDeltaTime());
@@ -180,18 +180,5 @@ export class RenderModule extends Module {
 
   setCamera(camera: Camera) {
     this.camera = camera;
-  }
-
-  compileProgram(context: WebGLRenderingContext, vertexShader: WebGLShader | null, fragmentShader: WebGLShader | null): WebGLProgram | null{
-    const program = context.createProgram();
-    if (vertexShader != null) context.attachShader(program, vertexShader);
-    if (fragmentShader != null) context.attachShader(program, fragmentShader);
-    context.linkProgram(program);
-
-    if (!context.getProgramParameter(program, context.LINK_STATUS)) {
-      throw new Error(`Failed to compile WebGL program: ${context.getProgramInfoLog(program)}`);
-    }
-
-    return program;
   }
 }

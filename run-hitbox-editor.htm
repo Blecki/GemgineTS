@@ -1,0 +1,33 @@
+<title>Canvas Sprite Example</title>
+<style>
+  canvas {
+    border: 1px solid red;
+    background-color: #ffffff;
+  }
+
+  body {
+    font-family: "Pixelify Sans", sans-serif !important;
+    font-optical-sizing: auto;
+    font-weight: 1.0;
+    font-style: normal;
+  }
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+
+</head>
+
+<script type="module">
+    import { Run } from "./build/HitboxEditor.js";
+    window._load = function () {
+      Run(document.getElementById('frame'));
+    }
+</script>
+
+<body>
+  <div style="border: 1px solid black;" id="frame"></div>
+  <div><input id="select-file" type="file"></input><button onclick="window._load()">Load</button></div>
+</body>
+</html>

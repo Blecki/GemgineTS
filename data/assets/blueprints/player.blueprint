@@ -5,7 +5,8 @@
       {
          "type": "Sprite",
          "offset": { "x": -16, "y": -8 },
-         "animations": "assets/player/player.animset"
+         "animations": "assets/player/player.animset",
+         "recordHitBoxes": true
       },
       {
          "type": "PlayerController"
