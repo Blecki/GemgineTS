@@ -18,10 +18,23 @@ export class ImageNode extends Node {
         super.updateHeight();
         this.rect.height += this.rect.width;
     }
+    static getCenteredFitRect(srcW, srcH, dest) {
+        // 1. Calculate the scale factor to fit the image inside the container
+        const scale = Math.min(dest.width / srcW, dest.height / srcH);
+        // 2. Apply scale to get new dimensions
+        const width = srcW * scale;
+        const height = srcH * scale;
+        // 3. Center the new dimensions within the destination rectangle's space
+        const x = dest.x + (dest.width - width) / 2;
+        const y = dest.y + (dest.height - height) / 2;
+        return new Rect(x, y, width, height);
+    }
     draw(ctx, editor, nodeEditor) {
         super.draw(ctx, editor, nodeEditor);
-        if (this.cachedImage != null)
-            ctx.drawImageDR(this.cachedImage, new Rect(0, 0, this.cachedImage.width, this.cachedImage.height), new Rect(this.rect.x + 2, this.rect.y + this.rect.height - this.rect.width + 4, this.rect.width - 4, this.rect.width - 4));
+        if (this.cachedImage != null) {
+            let destRect = ImageNode.getCenteredFitRect(this.cachedImage.width, this.cachedImage.height, new Rect(this.rect.x + 2, this.rect.y + this.rect.height - this.rect.width + 4, this.rect.width - 4, this.rect.width - 4));
+            ctx.drawImageDR(this.cachedImage, new Rect(0, 0, this.cachedImage.width, this.cachedImage.height), destRect);
+        }
     }
     setOutputImage(data) {
         this.outputImage.setValue(data);

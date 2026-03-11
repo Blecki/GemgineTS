@@ -96,5 +96,9 @@ export class Rect {
     return new Rect(this.x + point.x, this.y + point.y, this.width, this.height);
   }
 
+  public lrtb(l: number, r: number, t: number, b: number) : Rect {
+    return new Rect(this.x + l, this.y + t, this.width - l + r, this.height - t + b);
+  }
+
   public get origin() : Point { return new Point(this.x, this.y); }
 }

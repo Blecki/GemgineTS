@@ -73,6 +73,9 @@ export class Rect {
     withOffset(point) {
         return new Rect(this.x + point.x, this.y + point.y, this.width, this.height);
     }
+    lrtb(l, r, t, b) {
+        return new Rect(this.x + l, this.y + t, this.width - l + r, this.height - t + b);
+    }
     get origin() { return new Point(this.x, this.y); }
 }
 //# sourceMappingURL=Rect.js.map

@@ -2,26 +2,26 @@ export class ProcessedElement {
     element = undefined;
 }
 export class Fluent {
-    e(type) { return this.createElement(type); }
-    div() { return this.createElement('div'); }
-    span() { return this.createElement('span'); }
-    button() { return this.createElement('button')._modify(e => e.type = 'button'); }
-    text(contents) { return this.createElement('span')._append(`${contents}`); }
-    input(type) { return this.createElement('input')._modify(f => f.type = type); }
-    table() { return this.createElement('table'); }
-    thead() { return this.createElement('thead'); }
-    th() { return this.createElement('th'); }
-    tr() { return this.createElement('tr'); }
-    td() { return this.createElement('td'); }
-    tfoot() { return this.createElement('tfoot'); }
-    tbody() { return this.createElement('tbody'); }
-    html_div(html) { let r = this.createElement('div'); r.innerHTML = html; return r; }
+    static e(type) { return Fluent.createElement(type); }
+    static div() { return Fluent.createElement('div'); }
+    static span() { return Fluent.createElement('span'); }
+    static button() { return Fluent.createElement('button')._modify(e => e.type = 'button'); }
+    static text(contents) { return Fluent.createElement('span')._append(`${contents}`); }
+    static input(type) { return Fluent.createElement('input')._modify(f => f.type = type); }
+    static table() { return Fluent.createElement('table'); }
+    static thead() { return Fluent.createElement('thead'); }
+    static th() { return Fluent.createElement('th'); }
+    static tr() { return Fluent.createElement('tr'); }
+    static td() { return Fluent.createElement('td'); }
+    static tfoot() { return Fluent.createElement('tfoot'); }
+    static tbody() { return Fluent.createElement('tbody'); }
+    static html_div(html) { let r = Fluent.createElement('div'); r.innerHTML = html; return r; }
     ;
-    createElement(type) {
+    static createElement(type) {
         let r = document.createElement(type);
-        return this.addHooks(r);
+        return Fluent.addHooks(r);
     }
-    addHooks(element) {
+    static addHooks(element) {
         // @ts-ignore
         element["_append"] = (...args) => {
             for (let child of args) {

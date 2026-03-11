@@ -28,8 +28,10 @@ export class OutputTerminal {
 
   public setValue(value: any) {
     this.value = value;
-    if (this.connection != null)
-      this.connection.value = value;
+  }
+  
+  public getValue() : any {
+    return this.value;
   }
 
   public connect(connection: NodeConnection) {

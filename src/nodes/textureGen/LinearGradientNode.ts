@@ -1,7 +1,4 @@
-import { type Vector3, Vector3Raw } from "../../gl/Vector3.js";
 import { ImageNode } from "./ImageNode.js";
-import { TilingPerlin } from "../../PerlinNoise.js";
-import { type Vector2, Vector2Raw } from "../../gl/Vector2.js";
 import { LinearGradient } from "../../LinearGradient.js";
 import { Gradient, type GradientPoint } from "../../Gradient.js";
 import { Color } from "../../Color.js";

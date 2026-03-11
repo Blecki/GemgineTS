@@ -25,8 +25,9 @@ export class OutputTerminal {
     }
     setValue(value) {
         this.value = value;
-        if (this.connection != null)
-            this.connection.value = value;
+    }
+    getValue() {
+        return this.value;
     }
     connect(connection) {
         this.connection = connection;

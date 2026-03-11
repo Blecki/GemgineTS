@@ -14,8 +14,8 @@ export class Editor {
     constructor(backingObject) {
         this.backingObject = backingObject;
     }
-    render(fluent) {
-        return fluent.div()._append("UNIMPLEMENTED EDITOR");
+    render() {
+        return Fluent.div()._append("UNIMPLEMENTED EDITOR");
     }
 }
 //# sourceMappingURL=Editor.js.map

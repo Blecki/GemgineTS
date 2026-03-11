@@ -57,26 +57,25 @@ export function Run(frame) {
     });
 }
 function render(animSet) {
-    let f = new Fluent();
     animation = animSet.animations[0];
-    let saveOutput = f.e('textarea');
-    let widget = f.div()._style({ display: "grid", gridTemplateColumns: "50% 50%", gridTemplateRows: "40px 256px auto" })._append(f.div()._append(animSelector = f.e('select')._append(...animSet.animations.map((a, i) => f.e('option')._append(a.name)._modify(oz => oz.value = i)))
+    let saveOutput = Fluent.e('textarea');
+    let widget = Fluent.div()._style({ display: "grid", gridTemplateColumns: "50% 50%", gridTemplateRows: "40px 256px auto" })._append(Fluent.div()._append(animSelector = Fluent.e('select')._append(...animSet.animations.map((a, i) => Fluent.e('option')._append(a.name)._modify(oz => oz.value = i)))
         ._handler('change', () => {
         animation = animSet.animations[Number(animSelector.value)];
         frameSlider.max = `${animation.frames.length - 1}`;
-    }), frameSlider = f.input('range')._modify(f => {
+    }), frameSlider = Fluent.input('range')._modify(f => {
         let e = f;
         e.step = "1";
         e.min = "0";
         e.max = `${animation.frames.length - 1}`;
-    }), f.button()._append("+")
+    }), Fluent.button()._append("+")
         ._handler('click', () => {
         let frame = animation.frames[Number(frameSlider.value)];
         frame.hitBoxes.push(new AnimationHitBox({ x: 4, y: 4, width: 16, height: 16 }));
-    }), f.button()._append("X"), f.button()._append('>')._handler('click', () => {
+    }), Fluent.button()._append("X"), Fluent.button()._append('>')._handler('click', () => {
         saveOutput.value = JSON.stringify(animSet, null, 2);
-    })), f.div(), previewCanvas = f.e('canvas')
-        ._modify(c => { let e = c; e.width = 256; e.height = 256; }), pGrid = f.div(), saveOutput);
+    })), Fluent.div(), previewCanvas = Fluent.e('canvas')
+        ._modify(c => { let e = c; e.width = 256; e.height = 256; }), pGrid = Fluent.div(), saveOutput);
     outerFrame.appendChild(widget);
     renderTarget = new RenderTarget2D(previewCanvas);
     animationPlayer = new AnimationPlayer(animation.frames.length, animation.fps, true, 0);

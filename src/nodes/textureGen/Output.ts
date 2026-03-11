@@ -5,7 +5,7 @@ export class Output extends ImageNode {
   public input: InputTerminal;
 
   constructor() {
-    super("output");
+    super("Output");
     this.input = this.AddInput("input", "image");
     this.AddInput("test", "number");
     this.updateHeight();

@@ -8,11 +8,13 @@ import { RenderTarget2D } from "../RenderTarget2D.js";
 import { EditorContext, HandleProperties } from "../editor/EditorContext.js";
 import { Node } from "./Node.js";
 import { Output } from "./textureGen/Output.js";
-import { MakeBlankImage } from "./textureGen/MakeBlankImage.js";
+import { BlankImage } from "./textureGen/BlankImage.js";
 import { Rectangle } from "./textureGen/Rectangle.js";
 import { NodeSet } from "./NodeSet.js";
 import { Noise } from "./textureGen/Noise.js";
 import { LinearGradientNode } from "./textureGen/LinearGradientNode.js";
+import { WeirdGradientNode } from "./textureGen/WeirdGradientNode.js";
+import { Blend } from "./textureGen/Blend.js";
 export class NodeEditor {
     previewCanvas;
     renderTarget;
@@ -26,8 +28,7 @@ export class NodeEditor {
         loader.setupStandardLoaders();
         this.cam = new Camera(new Point(256, 256));
         this.cam.scale = new Point(1, 1);
-        let f = new Fluent();
-        this.previewCanvas = f.e('canvas')._style({ width: "100%", height: "100%", border: "2px solid red" });
+        this.previewCanvas = Fluent.e('canvas')._style({ width: "100%", height: "100%", border: "2px solid red" });
         this.previewCanvas.addEventListener("contextmenu", (e) => {
             e.preventDefault();
             this.showContextMenu(e.clientX, e.clientY);
@@ -59,18 +60,24 @@ export class NodeEditor {
     showContextMenu(x, y) {
         this.contextMenu?.remove();
         let f = new Fluent();
-        this.contextMenu = f.div()._append(f.button()._append("BLANK")._handler('click', (e) => {
+        this.contextMenu = Fluent.div()._append(Fluent.button()._append("BLANK")._handler('click', (e) => {
             this.contextMenu?.remove();
-            this.createNewNode(e.clientX, e.clientY, new MakeBlankImage());
-        }), f.button()._append("RECT")._handler('click', (e) => {
+            this.createNewNode(e.clientX, e.clientY, new BlankImage());
+        }), Fluent.button()._append("RECT")._handler('click', (e) => {
             this.contextMenu?.remove();
             this.createNewNode(e.clientX, e.clientY, new Rectangle());
-        }), f.button()._append("NOISE")._handler('click', (e) => {
+        }), Fluent.button()._append("NOISE")._handler('click', (e) => {
             this.contextMenu?.remove();
             this.createNewNode(e.clientX, e.clientY, new Noise());
-        }), f.button()._append("GRADIENT")._handler('click', (e) => {
+        }), Fluent.button()._append("GRADIENT")._handler('click', (e) => {
             this.contextMenu?.remove();
             this.createNewNode(e.clientX, e.clientY, new LinearGradientNode());
+        }), Fluent.button()._append("WEIRD")._handler('click', (e) => {
+            this.contextMenu?.remove();
+            this.createNewNode(e.clientX, e.clientY, new WeirdGradientNode());
+        }), Fluent.button()._append("BLEND")._handler('click', (e) => {
+            this.contextMenu?.remove();
+            this.createNewNode(e.clientX, e.clientY, new Blend());
         }))._style({
             position: "absolute",
             zIndex: 1000,

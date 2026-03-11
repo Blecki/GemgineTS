@@ -3,14 +3,14 @@ import { RenderTarget2D } from "../RenderTarget2D.js";
 import { Point } from "../Point.js";
 import { EditorContext, HandleProperties } from "../editor/EditorContext.js";
 import { NodeSet } from "./NodeSet.js";
-import { Fluent } from "../Fluent.js";
-import { valueEditorFactory, ValueEditor } from "./ValueEditor.js";
 import { InputTerminal } from "./InputTerminal.js";
 import { OutputTerminal } from "./OutputTerminal.js";
+import { NodeSetting } from "./NodeSetting.js";
 export class Node {
     rect = new Rect(0, 0, 220, 100);
     inputs = [];
     outputs = [];
+    settings = [];
     name;
     AddOutput(name, type) {
         let r = new OutputTerminal(name, type, this, this.outputs.length);
@@ -22,8 +22,13 @@ export class Node {
         this.inputs.push(r);
         return r;
     }
+    AddSetting(name, type, value) {
+        let r = new NodeSetting(name, type, this, this.settings.length, value);
+        this.settings.push(r);
+        return r;
+    }
     updateHeight() {
-        this.rect.height = 30 + (54 * Math.max(this.inputs.length, this.outputs.length));
+        this.rect.height = 30 + (30 * Math.max(this.inputs.length, this.outputs.length)) + this.settings.reduce((accumulator, currentValue) => accumulator + currentValue.getDimensions().y + 4, 0);
     }
     Process() {
     }
@@ -43,6 +48,14 @@ export class Node {
             yOffset += outputDimensions.y + 4;
         }
     }
+    positionSettings() {
+        let yOffset = 30 + (30 * Math.max(this.inputs.length, this.outputs.length));
+        for (let setting = 0; setting < this.settings.length; ++setting) {
+            let settingDimensions = this.settings[setting].getDimensions();
+            this.settings[setting].setDrawArea(new Rect(this.rect.x + 4, this.rect.y + yOffset, settingDimensions.x, settingDimensions.y));
+            yOffset += settingDimensions.y + 4;
+        }
+    }
     draw(ctx, editor, nodeSet) {
         ctx.drawRectangle(this.rect.withOffset(new Point(0, 0)), "#000000");
         ctx.drawString(this.name, this.rect.origin.add(new Point(8, 4)), "#ffffff");
@@ -54,7 +67,10 @@ export class Node {
         this.positionOutputs();
         for (let output = 0; output < this.outputs.length; ++output)
             this.outputs[output].draw(ctx, editor, nodeSet);
-        editor.translateHandle(new Rect(this.rect.x + 4, this.rect.y + 4, this.rect.width / 2, 20), new HandleProperties("#b08026", "#f99d1c")).ifDragged(handle => {
+        this.positionSettings();
+        for (let setting = 0; setting < this.settings.length; ++setting)
+            this.settings[setting].draw(ctx, editor, nodeSet);
+        editor.translateHandle(new Rect(this.rect.x + 4, this.rect.y + 4, this.rect.width - 8 - 24, 20), new HandleProperties("#b08026", "#f99d1c")).ifDragged(handle => {
             this.rect.x += handle.delta.x;
             this.rect.y += handle.delta.y;
         });

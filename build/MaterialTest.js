@@ -19,8 +19,7 @@ export function Run(frame) {
         .then(vertexShader => {
         loader.loadAsset("data/", "3d-render-fragment.glsl")
             .then(fragmentShader => {
-            let f = new Fluent();
-            previewCanvas = f.e('canvas')
+            previewCanvas = Fluent.e('canvas')
                 ._modify(c => { let e = c; e.width = 512; e.height = 512; });
             outerFrame.appendChild(previewCanvas);
             let gl = previewCanvas.getContext('webgl');

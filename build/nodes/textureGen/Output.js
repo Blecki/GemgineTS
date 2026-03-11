@@ -3,7 +3,7 @@ import { ImageNode } from "./ImageNode.js";
 export class Output extends ImageNode {
     input;
     constructor() {
-        super("output");
+        super("Output");
         this.input = this.AddInput("input", "image");
         this.AddInput("test", "number");
         this.updateHeight();

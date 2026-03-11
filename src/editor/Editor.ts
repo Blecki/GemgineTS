@@ -21,7 +21,7 @@ export class Editor {
     this.backingObject = backingObject;
   }
 
-  public render(fluent: Fluent) : FluentElement {
-    return fluent.div()._append("UNIMPLEMENTED EDITOR");
+  public render() : FluentElement {
+    return Fluent.div()._append("UNIMPLEMENTED EDITOR");
   }
 }

@@ -18,27 +18,27 @@ export interface ElementExtensions {
 export interface FluentElement extends HTMLElement, ElementExtensions {}
 
 export class Fluent {
-    e(type: string): FluentElement { return  this.createElement(type); }
-    div(): FluentElement { return this.createElement('div'); }
-    span(): FluentElement { return this.createElement('span'); }
-    button(): FluentElement { return this.createElement('button')._modify(e => e.type = 'button'); }
-    text(contents: string): FluentElement { return this.createElement('span')._append(`${contents}`); }
-    input(type: string): FluentElement { return this.createElement('input')._modify(f => f.type = type); }
-    table(): FluentElement { return this.createElement('table'); }
-    thead(): FluentElement { return this.createElement('thead'); }
-    th(): FluentElement { return this.createElement('th'); }
-    tr(): FluentElement { return this.createElement('tr'); }
-    td(): FluentElement { return this.createElement('td'); }
-    tfoot(): FluentElement { return this.createElement('tfoot'); }
-    tbody(): FluentElement { return this.createElement('tbody'); }
-    html_div(html: string): FluentElement { let r = this.createElement('div'); r.innerHTML = html; return r; };
+    public static e(type: string): FluentElement { return  Fluent.createElement(type); }
+    public static div(): FluentElement { return Fluent.createElement('div'); }
+    public static span(): FluentElement { return Fluent.createElement('span'); }
+    public static button(): FluentElement { return Fluent.createElement('button')._modify(e => e.type = 'button'); }
+    public static text(contents: string): FluentElement { return Fluent.createElement('span')._append(`${contents}`); }
+    public static input(type: string): FluentElement { return Fluent.createElement('input')._modify(f => f.type = type); }
+    public static table(): FluentElement { return Fluent.createElement('table'); }
+    public static thead(): FluentElement { return Fluent.createElement('thead'); }
+    public static th(): FluentElement { return Fluent.createElement('th'); }
+    public static tr(): FluentElement { return Fluent.createElement('tr'); }
+    public static td(): FluentElement { return Fluent.createElement('td'); }
+    public static tfoot(): FluentElement { return Fluent.createElement('tfoot'); }
+    public static tbody(): FluentElement { return Fluent.createElement('tbody'); }
+    public static html_div(html: string): FluentElement { let r = Fluent.createElement('div'); r.innerHTML = html; return r; };
     
-    createElement(type: string): FluentElement {
+    public static createElement(type: string): FluentElement {
         let r = document.createElement(type);
-        return this.addHooks(r);
+        return Fluent.addHooks(r);
     }
 
-    addHooks(element: HTMLElement): FluentElement {
+    public static addHooks(element: HTMLElement): FluentElement {
         // @ts-ignore
         element["_append"] = (...args: any[]) => {
             for (let child of args) {
