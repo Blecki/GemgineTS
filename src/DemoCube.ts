@@ -13,6 +13,8 @@ import { Mesh } from "./gl/Mesh.js";
 import { Camera3D } from "./gl/Camera3D.js";
 import { Vector3Raw } from "./gl/Vector3.js";
 import { type Matrix4x4, m4Rotation, m4Multiply } from "./gl/Matrix4x4.js";
+import type { AssetReference } from "./AssetReference.js";
+import { Texture } from "./gl/Texture.js";
 
 var outerFrame: HTMLElement; 
 var previewCanvas: HTMLCanvasElement;
@@ -24,67 +26,81 @@ export function Run(frame: HTMLElement) : void {
   const loader = new AssetLoader();
   loader.setupStandardLoaders();
 
-  loader.loadAsset("data/", "3d-render-vertex.glsl")
-    .then(vertexShader => {
-      loader.loadAsset("data/", "3d-render-fragment.glsl")
-        .then(fragmentShader => {
-          previewCanvas = (Fluent.e('canvas')
-              ._modify(c => { let e = c as unknown as HTMLCanvasElement; e.width = 512; e.height = 512; }) as unknown as HTMLCanvasElement);
-          outerFrame.appendChild(previewCanvas);
-          
-          let gl = previewCanvas.getContext('webgl');
-          let mat: Material | null = null;
-          let mesh: Mesh | null = null;
-          let cam = new Camera3D();
-          cam.position = new Vector3Raw(0, 0, -3);
+  var _vertexShader = loader.loadAsset("data/", "3d-render-vertex.glsl");
+  var _fragmentShader = loader.loadAsset("data/", "3d-render-fragment.glsl");
+  var _texture = loader.loadAsset("data/", "assets/small-ball-2.png");
+  
+  Promise.all([_vertexShader, _fragmentShader, _texture]).then(([vertexShader, fragmentShader, texture]) => {
 
-          if (gl) {
-            mat = new Material(gl, new Program(vertexShader.asset as Shader, fragmentShader.asset as Shader));
-            mesh = Mesh.fromVertexList(new Float32Array([
-              -1,-1, 1,  1,-1, 1,  1, 1, 1, -1, 1, 1, // Front
-              -1,-1,-1, -1, 1,-1,  1, 1,-1,  1,-1,-1, // Back
-              -1, 1,-1, -1, 1, 1,  1, 1, 1,  1, 1,-1, // Top
-              -1,-1,-1,  1,-1,-1,  1,-1, 1, -1,-1, 1, // Bottom
-              -1,-1, 1, -1,-1,-1, -1, 1,-1, -1, 1, 1, // Left
-              1,-1, 1,  1,-1,-1,  1, 1,-1,  1, 1, 1, // Right
-            ]),
-            new Uint16Array([
-              0,1,2, 0,2,3, 
-              4,5,6, 4,6,7, 
-              8,9,10, 8,10,11, 
-              12,13,14, 12,14,15, 
-              16,17,18, 16,18,19, 
-              20,21,22, 20,22,23
-            ]));
-              mesh.updateBuffer(gl);
+    previewCanvas = (Fluent.e('canvas')
+        ._modify(c => { let e = c as unknown as HTMLCanvasElement; e.width = 512; e.height = 512; }) as unknown as HTMLCanvasElement);
+    outerFrame.appendChild(previewCanvas);
+    
+    let gl = previewCanvas.getContext('webgl');
+    let mat: Material | null = null;
+    let mesh: Mesh | null = null;
+    let cam = new Camera3D();
+    cam.position = new Vector3Raw(0, 0, -3);
 
-            console.log(mesh);
-          }
+    if (gl) {
+      mat = new Material(gl, new Program(vertexShader.asset as Shader, fragmentShader.asset as Shader));
+      var tex = new Texture(gl, texture.asset);
+      mat.setUniform("u_texture", tex);
+      mesh = Mesh.fromVertexList(new Float32Array([
+        -1,-1, 1, 1,   1,-1, 1, 1,   1, 1, 1, 1,   -1, 1, 1, 1, // Front
+        -1,-1,-1, 1,  -1, 1,-1, 1,   1, 1,-1, 1,    1,-1,-1, 1, // Back
+        -1, 1,-1, 1,  -1, 1, 1, 1,   1, 1, 1, 1,    1, 1,-1, 1, // Top
+        -1,-1,-1, 1,   1,-1,-1, 1,   1,-1, 1, 1,   -1,-1, 1, 1, // Bottom
+        -1,-1, 1, 1,  -1,-1,-1, 1,  -1, 1,-1, 1,   -1, 1, 1, 1, // Left
+         1,-1, 1, 1,   1,-1,-1, 1,   1, 1,-1, 1,    1, 1, 1, 1, // Right
+      ]),
+      new Uint16Array([
+        0,1,2, 0,2,3, 
+        4,5,6, 4,6,7, 
+        8,9,10, 8,10,11, 
+        12,13,14, 12,14,15, 
+        16,17,18, 16,18,19, 
+        20,21,22, 20,22,23
+      ]),
+      new Float32Array([
+        0,0,  1,0,  1,1,  0,1, // Front
+        0,0,  1,0,  1,1,  0,1, // Back
+        0,0,  1,0,  1,1,  0,1, // Top
+        0,0,  1,0,  1,1,  0,1, // Bottom
+        0,0,  1,0,  1,1,  0,1, // Left
+        0,0,  1,0,  1,1,  0,1, // Right
+      ]));
+      mesh.updateBuffer(gl);
 
-          console.log(mat);
+      console.log(mesh);
+    }
 
-          dataLoaded = true;
+    console.log(mat);
 
-          let cubeRotation = 0;
+    dataLoaded = true;
 
-          gameLoop(() => {
-            if (gl && mat && mesh) {
-              cubeRotation += 0.01;
-              gl.clearColor(0, 0, 0, 1);
-              gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-              gl.enable(gl.DEPTH_TEST);
+    let cubeRotation = 0;
 
-              let rotation = m4Rotation(cubeRotation, new Vector3Raw(0, 1, 0));
-              mat.setUniform("uModelViewMatrix", m4Multiply(cam.getViewMatrix(), rotation));
-              mat.setUniform("uProjectionMatrix", cam.getProjectionMatrix(512, 512));
-              mat.bind();
-              mat.setAttribImmediate("aVertexPosition", mesh.positionBuffer);
-              gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
-              gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
-            }
-          }); 
-        });
-    });
+    gameLoop(() => {
+      if (gl && mat && mesh) {
+        cubeRotation += 0.01;
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.enable(gl.DEPTH_TEST);
+
+        let rotation = m4Rotation(cubeRotation, new Vector3Raw(0, 1, 0));
+        mat.setUniform("uModelViewMatrix", m4Multiply(cam.getViewMatrix(), rotation));
+        mat.setUniform("uProjectionMatrix", cam.getProjectionMatrix(512, 512));
+        mat.bind();
+        mat.setAttribImmediate("aVertexPosition", mesh.positionBuffer);
+        mat.setAttribImmediate("aTexcoord", mesh.uvBuffer);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
+        gl.drawElements(gl.TRIANGLES, mesh.indices.length, gl.UNSIGNED_SHORT, 0);
+      }
+    }); 
+
+  });
+
 }
 
 function gameLoop(frameCallback: () => void) {

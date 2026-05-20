@@ -5,43 +5,25 @@ import { Point } from "../../Point.js";
 import { EditorContext, HandleProperties } from "../../editor/EditorContext.js";
 import { RenderTarget2D } from "../../RenderTarget2D.js";
 export class PointValueEditor extends ValueEditor {
-    xElement = null;
-    yElement = null;
-    constructor() {
-        super();
-        this.xElement = Fluent.input('number')._style({ position: "absolute", width: "60px" });
-        document.documentElement.appendChild(this.xElement);
-        this.yElement = Fluent.input('number')._style({ position: "absolute", width: "60px" });
-        document.documentElement.appendChild(this.yElement);
-    }
+    rawX = "0";
+    rawY = "0";
     draw(ctx, editor, drawArea) {
-        if (this.xElement) {
-            let pos = editor.camera.worldPointToScreen(new Point(drawArea.x + 20, drawArea.y));
-            this.xElement.style.left = pos.x.toString();
-            this.xElement.style.top = pos.y.toString();
-        }
-        if (this.yElement) {
-            let pos = editor.camera.worldPointToScreen(new Point(drawArea.x + 120, drawArea.y));
-            this.yElement.style.left = pos.x.toString();
-            this.yElement.style.top = pos.y.toString();
-        }
+        this.rawX = editor.numberField(new Rect(drawArea.x + 20, drawArea.y, 60, 24), this.rawX);
+        this.rawY = editor.numberField(new Rect(drawArea.x + 120, drawArea.y, 60, 24), this.rawY);
         ctx.drawString("x", new Point(drawArea.x, drawArea.y), "#ffffff");
         ctx.drawString("y", new Point(drawArea.x + 100, drawArea.y), "#ffffff");
     }
     setValue(v) {
-        if (this.xElement)
-            this.xElement.value = v.x;
-        if (this.yElement)
-            this.yElement.value = v.y;
+        this.rawX = `${v.x}`;
+        this.rawY = `${v.y}`;
     }
     getValue() {
-        let x = 0;
-        let y = 0;
-        if (this.xElement && this.xElement.value != "")
-            x = Number(this.xElement.value);
-        if (this.yElement && this.yElement.value != "")
-            y = Number(this.yElement.value);
+        let x = parseInt(this.rawX);
+        let y = parseInt(this.rawY);
         return new Point(x, y);
+    }
+    deserialize(v) {
+        this.setValue(new Point(v));
     }
 }
 //# sourceMappingURL=PointValueEditor.js.map

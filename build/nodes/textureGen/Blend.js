@@ -3,13 +3,14 @@ import { ImageNode } from "./ImageNode.js";
 import { Point } from "../../Point.js";
 import { NodeSetting } from "../NodeSetting.js";
 import { Color } from "../../Color.js";
+import { AssetStore } from "../../AssetStore.js";
 export class Blend extends ImageNode {
     blendfunction;
     imageA;
     imageB;
-    constructor() {
-        super("Blend");
-        this.blendfunction = this.AddSetting("function", "blend", "multiply");
+    constructor(assetStore) {
+        super("BLEND", "Blend", assetStore);
+        this.blendfunction = this.AddSetting("function", "blend", "multiply", assetStore);
         this.imageA = this.AddInput("base", "image");
         this.imageB = this.AddInput("blend", "image");
         this.updateHeight();

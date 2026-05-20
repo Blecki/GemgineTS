@@ -6,6 +6,22 @@ import { NodeSet } from "./NodeSet.js";
 import { InputTerminal } from "./InputTerminal.js";
 import { OutputTerminal } from "./OutputTerminal.js";
 import { NodeSetting } from "./NodeSetting.js";
+import { AssetStore } from "../AssetStore.js";
+import { GuiAssets } from "./GuiAssets.js";
+
+export type enqueueNodeForUpdateCallback = (node: Node) => void;
+
+export type NodePrototype = {
+  TYPE: string;
+  VALUES: object[];
+  X: number;
+  Y: number;
+}
+
+export type NodeSettingPrototype = {
+  SETTING: string;
+  VALUE: any;
+}
 
 export class Node {
   public rect: Rect = new Rect(0,0,220,100);
@@ -13,7 +29,10 @@ export class Node {
   public outputs: OutputTerminal[] = [];
   public settings: NodeSetting[] = [];
   public name: string;
-  
+  public type: string;
+
+  public serialization_id: number = 0;
+
   public AddOutput(name: string, type: string) : OutputTerminal {
     let r = new OutputTerminal(name, type, this, this.outputs.length);
     this.outputs.push(r);
@@ -26,17 +45,71 @@ export class Node {
     return r;
   }
 
-  public AddSetting(name: string, type: string, value: any) : NodeSetting {
-    let r = new NodeSetting(name, type, this, this.settings.length, value);
+  public AddSetting(name: string, type: string, value: any, assetStore: AssetStore) : NodeSetting {
+    let r = new NodeSetting(name, type, this, this.settings.length, value, assetStore);
     this.settings.push(r);
     return r;
   }
 
-  public updateHeight() : void {
-    this.rect.height = 30 + (30 * Math.max(this.inputs.length, this.outputs.length)) + this.settings.reduce((accumulator, currentValue) => accumulator + currentValue.getDimensions().y + 4, 0);
+  public findOutput(name: string) : OutputTerminal | undefined {
+    return this.outputs.find(o => o.name == name);
   }
 
-  public Process() : void {
+  public findInput(name: string) : InputTerminal | undefined {
+    return this.inputs.find(i => i.name == name);
+  }
+
+  public findSetting(name: string) : NodeSetting | undefined {
+    return this.settings.find(s => s.name == name);
+  }
+
+  public serialize() : object {
+    return {
+      TYPE: this.type,
+      VALUES: this.settings.map(s => { return { SETTING: s.name, VALUE: s.serialize() }; }),
+      X: this.rect.x,
+      Y: this.rect.y
+    }
+  }
+
+  public deserialize(prototype: NodePrototype) : void {
+    prototype.VALUES.forEach(s => {
+      let settingPrototype = s as NodeSettingPrototype;
+      let setting = this.findSetting(settingPrototype.SETTING);
+      if (setting) setting.deserialize(settingPrototype.VALUE);
+    });
+    this.rect.x = prototype.X;
+    this.rect.y = prototype.Y;
+  }
+
+  public updateHeight() : void {
+    let inputHeight = this.inputs.reduce((accumulator, currentValue) => accumulator + currentValue.getDimensions().y + 4, 0);
+    let settingsHeight = this.settings.reduce((accumulator, currentValue) => accumulator + currentValue.getDimensions().y + 4, 0);
+    this.rect.height = 30 + Math.max(30 * this.outputs.length, inputHeight) + settingsHeight;
+  }
+
+  public checkInputs(callback: enqueueNodeForUpdateCallback): boolean {
+    let success = true;
+    this.inputs.forEach(input => {
+      if (input.required == false)
+        return;
+      
+      let v = input.getValue();
+      if (v == null) { 
+        success = false;
+        input.error = true;
+        let previousNode = input.getSourceNode();
+        if (previousNode != undefined) 
+          callback(previousNode);
+      } 
+      else {
+        input.error = false;
+      }
+    });
+    return success;
+  }
+
+  public Process(callback: enqueueNodeForUpdateCallback) : void {
 
   }
 
@@ -67,14 +140,21 @@ export class Node {
     }
   }
 
-  public draw(ctx: RenderTarget2D, editor: EditorContext, nodeSet: NodeSet) {
-    ctx.drawRectangle(this.rect.withOffset(new Point(0,0)), "#000000");
+  public draw(ctx: RenderTarget2D, editor: EditorContext, nodeSet: NodeSet, guiAssets: GuiAssets, callback: enqueueNodeForUpdateCallback) {
+    ctx.drawCustom(context => {
+      context.beginPath();
+      context.roundRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height, 10);
+      context.fillStyle = "#000000";
+      context.fill();
+      context.strokeStyle = "#f0f0f0";
+      context.stroke();
+      context.closePath();
+    });
     ctx.drawString(this.name, this.rect.origin.add(new Point(8, 4)), "#ffffff");
-    ctx.drawWireRectangle(this.rect.withOffset(new Point(0,0)), "#f0f0f0");
 
     this.positionInputs();
     for (let input = 0; input < this.inputs.length; ++input) {
-      this.inputs[input].draw(ctx, editor, nodeSet);
+      this.inputs[input].draw(ctx, editor, nodeSet, guiAssets);
     }
 
     this.positionOutputs();
@@ -85,18 +165,19 @@ export class Node {
     for (let setting = 0; setting < this.settings.length; ++setting)
       this.settings[setting].draw(ctx, editor, nodeSet);
 
-    editor.translateHandle(new Rect(this.rect.x + 4, this.rect.y + 4, this.rect.width - 8 - 24, 20), new HandleProperties("#b08026", "#f99d1c")).ifDragged(handle => {
-      this.rect.x += handle.delta.x;
-      this.rect.y += handle.delta.y;
+    editor.widget(new Rect(this.rect.x + 4, this.rect.y + 4, this.rect.width - 8 - 24, 20), {fill: "", border: ""}).ifDragged(handle => {
+      this.rect.x += handle.mouseDelta.x;
+      this.rect.y += handle.mouseDelta.y;
     });
 
-    editor.button(new Rect(this.rect.x + this.rect.width - 24, this.rect.y + 2, 22, 22)).ifClicked(button => {
-      console.log("Refresh button clicked.");
-      this.Process();
+    editor.widget(new Rect(this.rect.x + this.rect.width - 24, this.rect.y + 2, 22, 22), { image: guiAssets.refreshIcon }).ifMouseDown(button => {
+      callback(this);
+      button.handled = true;
     });
   }
 
-  constructor(name: string) {
+  constructor(type: string, name: string, assetStore: AssetStore) {
+    this.type = type;
     this.name = name;
   }
 }

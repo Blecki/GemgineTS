@@ -7,6 +7,7 @@ import { Point } from "../Point.js";
 import { EditorContext, HandleProperties } from "../editor/EditorContext.js";
 import { NodeSet } from "./NodeSet.js";
 import { Rect } from "../Rect.js";
+import { AssetStore } from "../AssetStore.js";
 
 export class NodeSetting {
   public node: Node;
@@ -17,14 +18,22 @@ export class NodeSetting {
   public drawArea: Rect;
 
 
-  constructor(name: string, type: string, node: Node, id: number, value: any) {
+  constructor(name: string, type: string, node: Node, id: number, value: any, assetStore: AssetStore) {
     this.name = name;
     this.type = type;
     this.node = node;
     this.id = id;
-    this.valueEditor = valueEditorFactory(this.type);
+    this.valueEditor = valueEditorFactory(this.type, assetStore);
     this.valueEditor.setValue(value);
     this.drawArea = new Rect(0,0,200,48);
+  }
+
+  public serialize() : any {
+    return this.valueEditor.serialize();
+  }
+
+  public deserialize(value: any) : void {
+    this.valueEditor.deserialize(value);
   }
 
   public getValue() : any {
@@ -33,7 +42,7 @@ export class NodeSetting {
 
   getDimensions() : Point {
     let valueEditorDimensions = this.valueEditor.getDimensions();
-    return new Point(200, 24 + valueEditorDimensions.y);
+    return new Point(214, 24 + valueEditorDimensions.y);
   }
 
   setDrawArea(rect: Rect) : void {
@@ -41,7 +50,7 @@ export class NodeSetting {
   }
 
   public draw(ctx: RenderTarget2D, editor: EditorContext, nodeSet: NodeSet) {
-    ctx.drawRectangle(this.drawArea, "#292929");
+    //ctx.drawRectangle(this.drawArea, "#292929");
     ctx.drawString(this.name, new Point(this.drawArea.x, this.drawArea.y), "#ffffff");
     this.valueEditor.draw(ctx, editor, this.drawArea.lrtb(4, -4, 24, -2));
   }

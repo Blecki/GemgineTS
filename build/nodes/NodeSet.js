@@ -37,5 +37,32 @@ export class NodeSet {
         end.connect(newConnection);
         this.connections.push(newConnection);
     }
+    serialize() {
+        for (let x = 0; x < this.nodes.length; ++x)
+            this.nodes[x].serialization_id = x;
+        return {
+            NODES: this.nodes.map(n => n.serialize()),
+            CONNECTIONS: this.connections.map(c => c.serialize())
+        };
+    }
+    deserialize(data, nodeFactory) {
+        let p = data;
+        this.nodes = p.NODES != null ? p.NODES.map(n => {
+            let nodePrototype = n;
+            let node = nodeFactory(nodePrototype.TYPE);
+            if (node != undefined)
+                node.deserialize(nodePrototype);
+            return node;
+        }).filter(n => n != undefined) : [];
+        this.connections = p.CONNECTIONS != null ? p.CONNECTIONS.map(c => {
+            let connectionPrototype = c;
+            let r = new NodeConnection();
+            r.startTerminal = this.nodes[connectionPrototype.START_NODE].findOutput(connectionPrototype.START_TERMINAL) ?? null;
+            r.endTerminal = this.nodes[connectionPrototype.END_NODE].findInput(connectionPrototype.END_TERMINAL) ?? null;
+            r.startTerminal?.connect(r);
+            r.endTerminal?.connect(r);
+            return r;
+        }) : [];
+    }
 }
 //# sourceMappingURL=NodeSet.js.map

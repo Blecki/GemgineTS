@@ -38,5 +38,14 @@
   "assets/templates/green-slime.tj",
   "assets/green-slime.tsj",
   "assets/green-slime.animset",
+  "assets/dwarf.animset",
+  "assets/dwarf.gfx",
+  "assets/dwarf/beard-braided.bmp",
+  "assets/dwarf/body-female.bmp",
+  "assets/dwarf/clothing-robe.bmp",
+  "assets/dwarf/dwarf-palettes.bmp",
+  "assets/dwarf/face-female.bmp",
+  "assets/dwarf/hair-boyish.bmp",
+  "assets/dwarf/nose-beak.bmp",
   "assets/other/blood-3.png"
 ]

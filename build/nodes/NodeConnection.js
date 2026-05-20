@@ -6,7 +6,15 @@ export class NodeConnection {
     getValue() {
         if (this.startTerminal != null)
             return this.startTerminal.getValue();
-        throw "Unconnected Connection Error";
+        return null;
+    }
+    serialize() {
+        return {
+            START_NODE: this.startTerminal?.node.serialization_id,
+            START_TERMINAL: this.startTerminal?.name,
+            END_NODE: this.endTerminal?.node.serialization_id,
+            END_TERMINAL: this.endTerminal?.name
+        };
     }
 }
 //# sourceMappingURL=NodeConnection.js.map

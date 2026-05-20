@@ -3,37 +3,33 @@ import { ValueEditor } from "../ValueEditor.js";
 import { Fluent, type FluentElement } from "../../Fluent.js";
 import { EditorContext, HandleProperties } from "../../editor/EditorContext.js";
 import { RenderTarget2D } from "../../RenderTarget2D.js";
+import { ComboBox } from "../../editor/ComboBox.js";
+import { AssetStore } from "../../AssetStore.js";
 
 export class BlendValueEditor extends ValueEditor {
-  protected element: FluentElement | null = null;
-
-  constructor() {
-    super();
-    this.element = Fluent.e('select')._style({position: "absolute", width: "80px"})._append(
-      Fluent.e('option')._modify(o => o.value = "normal")._append("normal"),
-      Fluent.e('option')._modify(o => o.value = "multiply")._append("multiply"),
-      Fluent.e('option')._modify(o => o.value = "screen")._append("screen"),
-      Fluent.e('option')._modify(o => o.value = "overlay")._append("overlay"),
-      Fluent.e('option')._modify(o => o.value = "difference")._append("difference")
-    );
-    document.documentElement.appendChild(this.element);
+  protected raw: string = "normal";
+  protected comboBox: ComboBox;
+  
+  constructor(assetStore: AssetStore) {
+    super(assetStore);
+    this.comboBox = new ComboBox(new Rect(0,0,1,1), [
+      "normal",
+      "multiply",
+      "screen",
+      "overlay",
+      "difference" ]);
   }
 
   draw(ctx: RenderTarget2D, editor: EditorContext, drawArea: Rect): void {
-    if (this.element) {
-      let pos = editor.camera.worldPointToScreen(drawArea.origin);
-      this.element.style.left = pos.x.toString();
-      this.element.style.top = pos.y.toString();
-    }
+    this.comboBox.rect = drawArea;
+    this.raw = this.comboBox.gui(editor, this.raw);
   }
 
-  setValue(v: any): void {
-    if (this.element) this.element.value = v;
+  setValue(v: any): void { 
+    this.raw = `${v}`;
   }
 
   getValue() : any {
-    if (this.element && this.element.value != "")
-      return this.element.value;
-    return "";
+    return this.raw;
   }
 }

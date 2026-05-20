@@ -6,12 +6,13 @@ import { NodeSet } from "../NodeSet.js";
 import { RenderTarget2D } from "../../RenderTarget2D.js";
 import { InputTerminal } from "../InputTerminal.js";
 import { NodeSetting } from "../NodeSetting.js";
+import { AssetStore } from "../../AssetStore.js";
 export class Rectangle extends Node {
     settingRect;
     outputRect;
-    constructor() {
-        super("rect");
-        this.settingRect = this.AddSetting("rect", "rect", new Rect(32, 32, 32, 32));
+    constructor(assetStore) {
+        super("RECT", "rect", assetStore);
+        this.settingRect = this.AddSetting("rect", "rect", new Rect(32, 32, 32, 32), assetStore);
         this.outputRect = this.AddOutput("rect", "rect");
         this.updateHeight();
     }

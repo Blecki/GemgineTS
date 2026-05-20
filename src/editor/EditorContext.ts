@@ -4,6 +4,8 @@ import { Camera } from "./../Camera.js";
 import { MouseHandler } from "./../MouseHandler.js";
 import { Rect } from "./../Rect.js";
 import { Fluent } from "../Fluent.js";
+import { KeyboardHandler, type KeyState } from "../KeyboardHandler.js";
+import { AssetStore } from "../AssetStore.js";
 
 export class HandleProperties {
   public color: string = "orange";
@@ -15,115 +17,141 @@ export class HandleProperties {
   }
 }
 
-type transientHandleCallback = (handle: TransientHandle) => void;
-
-export class TransientHandle {
-  public id: number = 0;
-  public dragged: boolean = false;
-  public clicked: boolean = false;
-  public overlapped: boolean = false;
-  public delta: Point = new Point(0,0);
+export class InputEvent {
+  public triggered: boolean = false;
   public mousePosition: Point = new Point(0,0);
-  public ifDragged(callback: transientHandleCallback) : TransientHandle {
-    if (this.dragged) callback(this);
-    return this;
+  public mouseDelta: Point = new Point(0,0);
+  public handled: boolean = false;
+  public altHeld: boolean = false;
+}
+
+type transientWidgetCallback = (event: InputEvent) => void;
+
+export class InputHandlerEvent {
+  public inputEvent: InputEvent;
+  public callback: transientWidgetCallback;
+  public checkHandled: boolean;
+
+  constructor(inputEvent: InputEvent, callback: transientWidgetCallback, checkHandled: boolean) {
+    this.inputEvent = inputEvent;
+    this.callback = callback;
+    this.checkHandled = checkHandled;
   }
 
-  private ifReleasedCallback: transientHandleCallback | null = null;
-  public ifReleased(callback: transientHandleCallback) : TransientHandle {
-    this.ifReleasedCallback = callback;
-    return this;
-  }
-  public triggerIfReleased() {
-    if (this.ifReleasedCallback != null) this.ifReleasedCallback(this);
+  public trigger() {
+    if (this.checkHandled && this.inputEvent.handled)
+      return;
+    this.callback(this.inputEvent);
   }
 }
 
-type transientRectCallback = (rect: TransientRect) => void;
+export class TransientWidget {
+  public id: number = 0;
+  public hasFocus: boolean = false;
+  public overlapped: boolean = false;
+  public keys: KeyState[] = [];
+  public context: EditorContext;
 
-export class TransientRect {
-  public rect: Rect;
-  public editorContext: EditorContext;
-
-  constructor(rect: Rect, editorContext: EditorContext) {
-    this.rect = rect;
-    this.editorContext = editorContext;
+  constructor(context: EditorContext) {
+    this.context = context;
   }
 
-  private ifClickedCallback: transientRectCallback | null = null;
-  public ifClicked(callback: transientRectCallback) {
-    this.ifClickedCallback = callback;
+  public ifMouseDown(callback: transientWidgetCallback) : TransientWidget {
+    if (this.context.mouseDown?.triggered && this.overlapped) {
+      this.context.enqueuInputHandlerEvent(new InputHandlerEvent(this.context.mouseDown, callback, true));
+    }
+    return this;
   }
-  public triggerIfClicked() {
-    if (this.ifClickedCallback != null) this.ifClickedCallback(this);
+
+  public ifMouseUp(callback: transientWidgetCallback) : TransientWidget {
+    if (this.context.mouseUp?.triggered) {
+      this.context.enqueuInputHandlerEvent(new InputHandlerEvent(this.context.mouseUp, callback, false));
+    }
+    return this;
+  }
+
+  public ifDragged(callback: transientWidgetCallback) : TransientWidget {
+    if (this.context.mouseDrag?.triggered && this.id == this.context.dragItem) {
+      this.context.enqueuInputHandlerEvent(new InputHandlerEvent(this.context.mouseDrag, callback, true));
+    }
+    return this;
+  }
+
+  public ifKey(callback: (w: TransientWidget, key: KeyState) => void) : TransientWidget {
+    this.keys.forEach(k => callback(this, k));
+    return this;
   }
 }
 
-type transientButtonCallback = (button: TransientButton) => void;
+class WidgetProperties {
+  public fill: string = "#ffffff";
+  public border: string = "#444444";
+  public border_focus: string = "#ff0000";
+  public text: string = "";
+  public text_color: string = "#000000";
+  public image: ImageBitmap | null = null;
+  public radius: number = 0;
+}
 
-export class TransientButton { 
-  public rect: Rect;
-  constructor(rect: Rect) {
-    this.rect = rect;
-  }
-
-  private ifClickedCallback: transientButtonCallback | null = null;
-  public ifClicked(callback: transientButtonCallback) {
-    this.ifClickedCallback = callback;
-  }
-  public triggerIfClicked() {
-    if (this.ifClickedCallback != null) this.ifClickedCallback(this);
-  }
-}  
+var widgetProperties : WidgetProperties = new WidgetProperties();
 
 export class EditorContext {
   public mouseHandler: MouseHandler;
+  public keyboardHandler: KeyboardHandler;
   public renderTarget: RenderTarget2D;
-  public camera: Camera;
-  public handleSize: number = 10;
   public fluent: Fluent = new Fluent();
+  public focusItem: number = -1;
+  public dragItem: number = -1;
+  public assetStore: AssetStore;
+  private digitReg: RegExp = /^\d$/;
+  public mouseDown: InputEvent = new InputEvent();
+  public mouseUp: InputEvent = new InputEvent();
+  public mouseDrag: InputEvent = new InputEvent();
+  private inputHandlerTriggers: InputHandlerEvent[] = [];
 
-  private transientRects: (TransientRect | TransientButton)[] = [];
-
-  constructor(camera: Camera, renderTarget: RenderTarget2D) {
+  constructor(camera: Camera, renderTarget: RenderTarget2D, assetStore: AssetStore) {
     this.renderTarget = renderTarget;
-    this.camera = camera;
     this.mouseHandler = new MouseHandler(renderTarget.canvas, camera);
+    this.keyboardHandler = new KeyboardHandler(renderTarget.canvas);
+    this.assetStore = assetStore;
+    renderTarget.canvas.tabIndex = 1;
   }
 
-  private lastTranslateHandleID: number = 0;
   private nextTranslateHandleID: number = 1;
-  private anyDragged: boolean = false;
-  private previouslyDragged: TransientHandle | null = null;
+
+  public enqueuInputHandlerEvent(handler: InputHandlerEvent) {
+    this.inputHandlerTriggers.push(handler);
+  }
 
   public open() {
-    this.anyDragged = false;
     this.nextTranslateHandleID = 1;
+
+    this.mouseDown.triggered = !this.mouseHandler.previousMouse.pressed && this.mouseHandler.currentMouse.pressed;
+    this.mouseDown.mouseDelta = this.mouseHandler.mouseDelta;
+    this.mouseDown.mousePosition = this.mouseHandler.previousMouse.position;
+    this.mouseDown.handled = false;
+    this.mouseDown.altHeld = this.keyboardHandler.isKeyDown("AltLeft");
+    
+    this.mouseUp.triggered = (this.mouseHandler.previousMouse.pressed && !this.mouseHandler.currentMouse.pressed);
+    this.mouseUp.mouseDelta = this.mouseHandler.mouseDelta;
+    this.mouseUp.mousePosition = this.mouseHandler.previousMouse.position;
+    this.mouseUp.handled = false;
+    this.mouseUp.altHeld = this.keyboardHandler.isKeyDown("AltLeft");
+
+    this.mouseDrag.triggered = (this.mouseHandler.currentMouse.pressed || this.mouseUp.triggered);
+    this.mouseDrag.mouseDelta = this.mouseHandler.mouseDelta;
+    this.mouseDrag.mousePosition = this.mouseHandler.previousMouse.position;
+    this.mouseDrag.handled = false;
+    this.mouseDrag.altHeld = this.keyboardHandler.isKeyDown("AltLeft");
   }
 
   public close() {
-    if (this.anyDragged == false) {
-      if (this.previouslyDragged) {
-        this.previouslyDragged.triggerIfReleased();
-        this.previouslyDragged = null;
-      }
 
-      this.lastTranslateHandleID = 0;
-
-      // User didn't drag with any handles so check for mouse click
-      if (this.mouseHandler.previousMouse.pressed == false && this.mouseHandler.currentMouse.pressed == true) {
-        let mouseWorldPoint = this.mouseHandler.currentMouse.position;
-        console.log(mouseWorldPoint);
-        console.log(this.transientRects);
-
-        let clickedGizmos = this.transientRects.filter(g => g.rect.contains(mouseWorldPoint));
-        if (clickedGizmos.length > 0)
-          clickedGizmos[clickedGizmos.length - 1].triggerIfClicked();
-      }
-    }
-
-    this.transientRects = [];
+    for (let x = 0; x < this.inputHandlerTriggers.length; ++x)
+      this.inputHandlerTriggers[x].trigger();
+    this.inputHandlerTriggers = [];
     this.mouseHandler.update();
+    if (!this.mouseHandler.currentMouse.pressed) this.dragItem = -1;
   }
   
   public allocateHandleId() {
@@ -132,36 +160,20 @@ export class EditorContext {
     return r;
   }
 
-  public translateHandle(handleBounds: Rect, properties: HandleProperties) : TransientHandle {
-    let r = new TransientHandle();
-    r.id = this.allocateHandleId();
-    r.delta = this.mouseHandler.mouseDelta;
-    r.overlapped = handleBounds.contains(this.mouseHandler.previousMouse.position);
-    r.mousePosition = this.mouseHandler.previousMouse.position;
-    if (this.mouseHandler.currentMouse.pressed && r.overlapped && this.lastTranslateHandleID == 0)
-      r.dragged = true;
-    if (r.id == this.lastTranslateHandleID && this.mouseHandler.currentMouse.pressed) {
-      r.dragged = true;
-      r.overlapped = true;
-    }
-    if (r.dragged) {
-      this.anyDragged = true;
-      this.previouslyDragged = r;
-      this.lastTranslateHandleID = r.id;
-    }
+  public focus(id: number) {
+    this.focusItem = id;
+  }
 
+  public translateHandle(handleBounds: Rect, properties: HandleProperties) : TransientWidget {
+    let r = this.widget(handleBounds)
     if (r.overlapped)
       this.renderTarget.drawWireRectangle(handleBounds, properties.hoverColor);
     else
       this.renderTarget.drawWireRectangle(handleBounds, properties.color);
-
     return r;
   }
 
-  public adjustRect(rect: Rect, isSelected: boolean) : TransientRect {
-    let r = new TransientRect(rect, this);
-    this.transientRects.push(r);
-
+  public adjustRect(rect: Rect, isSelected: boolean) : TransientWidget {
     if (isSelected) {
       this.renderTarget.drawWireRectangle(rect, "#69b969");
 
@@ -186,14 +198,83 @@ export class EditorContext {
     else 
       this.renderTarget.drawWireRectangle(rect, "#494949");
     
+    return this.widget(rect);
+  }
+
+  public widget(rect: Rect, properties?: object) : TransientWidget {
+    if (properties == undefined) properties = new WidgetProperties();
+    else properties = Object.assign({}, widgetProperties, properties);
+    let props = properties as WidgetProperties;
+
+    let r = new TransientWidget(this);
+    r.id = this.allocateHandleId();
+    r.hasFocus = r.id == this.focusItem;
+    r.overlapped = rect.contains(this.mouseHandler.previousMouse.position);
+    if (this.dragItem == -1 && r.overlapped && this.mouseHandler.currentMouse.pressed)
+      this.dragItem = r.id;
+    if (r.hasFocus) r.keys = this.keyboardHandler.consumeEvents();
+
+    let drect = rect.withOffset(new Point(0,0));
+    this.renderTarget.drawCustom((context) => {
+      context.beginPath();
+      if (props.radius != 0) context.roundRect(drect.x, drect.y, drect.width, drect.height, props.radius);
+      else context.rect(drect.x, drect.y, drect.width, drect.height);
+      context.closePath();
+      if (props.fill != "") {
+        context.fillStyle = props.fill;
+        context.fill();
+      }
+      if (props.border != "") {
+        context.strokeStyle = props.border;
+        context.stroke();
+      }
+      if (props.border_focus != "" && r.hasFocus) {
+        context.strokeStyle = props.border_focus;
+        context.stroke();
+      }
+    });
+    if (props.text != "") this.renderTarget.drawString(props.text, rect.origin.add(new Point(4, 2)), props.text_color);
+    if (props.image != null) this.renderTarget.drawImage(props.image, new Rect(0, 0, props.image.width, props.image.height), rect.origin);
+
     return r;
   }
 
-  public button(rect: Rect) : TransientButton {
-    let r = new TransientButton(rect);
-    this.transientRects.push(r);
-    this.renderTarget.drawRectangle(rect, "green");
-    return r;
+  public field(rect: Rect, value: string) : string {
+    let widget = this.widget(rect, {text: value});
+
+    widget.ifMouseDown(w => {
+      this.focus(widget.id);
+      w.handled = true;
+    });
+
+    widget.ifKey((w, k) => {
+      if (k.code == 'Backspace') {
+        if (value.length > 0) value = value.substring(0, value.length - 1);
+      }
+      else if (k.key.length == 1)
+        value += k.key;
+    });
+
+    return value;
   }
-  
+
+  public numberField(rect: Rect, value: string) : string {
+    let widget = this.widget(rect, {text: value});
+
+    widget.ifMouseDown(w => {
+      this.focus(widget.id);
+      w.handled = true;
+    });
+
+    widget.ifKey((w, k) => {
+      if (k.code == 'Backspace') {
+        if (value.length > 0) value = value.substring(0, value.length - 1);
+        if (value.length == 0) value = '0';
+      }
+      else if (k.key.length == 1 && this.digitReg.test(k.key))
+        value += k.key;
+    });
+
+    return value;
+  }
 }

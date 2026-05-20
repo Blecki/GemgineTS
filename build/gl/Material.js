@@ -1,6 +1,7 @@
 import { Program } from "./Program.js";
 import {} from "./Vector3.js";
 import {} from "./Matrix4x4.js";
+import { Texture } from "./Texture.js";
 export class MaterialUniform {
     rawUniform;
     value;
@@ -66,8 +67,7 @@ export class Material {
                     r.textureUnit = this.nextTextureUnit;
                     this.nextTextureUnit += 1;
                     r.setter = (tex) => {
-                        this.gl.activeTexture(this.gl.TEXTURE0 + r.textureUnit);
-                        this.gl.bindTexture(this.gl.SAMPLER_2D, tex);
+                        tex.bind(this.gl, this.gl.TEXTURE0 + r.textureUnit);
                         this.gl.uniform1i(loc, r.textureUnit);
                     };
                     return r;
@@ -77,8 +77,7 @@ export class Material {
                     r.textureUnit = this.nextTextureUnit;
                     this.nextTextureUnit += 1;
                     r.setter = (tex) => {
-                        this.gl.activeTexture(this.gl.TEXTURE0 + r.textureUnit);
-                        this.gl.bindTexture(this.gl.SAMPLER_CUBE, tex);
+                        tex.bind(this.gl, this.gl.TEXTURE0 + r.textureUnit);
                         this.gl.uniform1i(loc, r.textureUnit);
                     };
                     return r;
@@ -101,13 +100,19 @@ export class Material {
                 case this.gl.FLOAT_MAT3: return null;
                 case this.gl.FLOAT_MAT2: return null;
                 case this.gl.FLOAT: return null;
-                case this.gl.FLOAT_VEC2: return null;
+                case this.gl.FLOAT_VEC2:
+                    console.log("FLOAT_VEC2");
+                    return new MaterialAttrib(attrib, (value) => {
+                        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, value);
+                        this.gl.vertexAttribPointer(loc, 2, this.gl.FLOAT, false, 0, 0);
+                        this.gl.enableVertexAttribArray(loc);
+                    });
                 case this.gl.FLOAT_VEC3: return null;
                 case this.gl.FLOAT_VEC4:
                     console.log("FLOAT_VEC4");
                     return new MaterialAttrib(attrib, (value) => {
                         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, value);
-                        this.gl.vertexAttribPointer(loc, 3, this.gl.FLOAT, false, 0, 0);
+                        this.gl.vertexAttribPointer(loc, 4, this.gl.FLOAT, false, 0, 0);
                         this.gl.enableVertexAttribArray(loc);
                     });
                 //case gl.INT:

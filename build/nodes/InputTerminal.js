@@ -10,9 +10,10 @@ export class InputTerminal {
     id;
     name;
     type;
-    defaultValue;
     anchorPoint;
     drawArea;
+    error = false;
+    required = true;
     connection = null;
     constructor(name, type, node, id) {
         this.name = name;
@@ -25,7 +26,10 @@ export class InputTerminal {
     getValue() {
         if (this.connection != null)
             return this.connection.getValue();
-        return this.defaultValue;
+        return null;
+    }
+    getSourceNode() {
+        return this.connection?.startTerminal?.node;
     }
     connect(connection) {
         this.connection = connection;
@@ -44,9 +48,15 @@ export class InputTerminal {
         this.drawArea = rect;
         this.anchorPoint = new Point(this.drawArea.x + 12, this.drawArea.y + 12);
     }
-    draw(ctx, editor, nodeSet) {
-        ctx.drawRectangle(this.drawArea, "#292929");
-        ctx.drawString(this.name, new Point(this.drawArea.x + 24, this.drawArea.y), "#ffffff");
+    draw(ctx, editor, nodeSet, guiAssets) {
+        //ctx.drawRectangle(this.drawArea, "#292929");
+        if (this.error) {
+            if (guiAssets.alertIcon != null)
+                ctx.drawImage(guiAssets.alertIcon, new Rect(0, 0, 32, 32), new Point(this.drawArea.x + 24, this.drawArea.y));
+            ctx.drawString(this.name, new Point(this.drawArea.x + 56, this.drawArea.y), "#ffffff");
+        }
+        else
+            ctx.drawString(this.name, new Point(this.drawArea.x + 24, this.drawArea.y), "#ffffff");
         editor.translateHandle(new Rect(this.drawArea.x + 6, this.drawArea.y + 6, 12, 12), new HandleProperties("#b08026", "#f99d1c")).ifDragged(handle => {
             ctx.drawLine(this.anchorPoint, handle.mousePosition, "red"); // Eventually these need to be drawn to a different canvas layer.
         });

@@ -3,11 +3,13 @@ import { LinearGradient } from "../../LinearGradient.js";
 import { Gradient } from "../../Gradient.js";
 import { Color } from "../../Color.js";
 import { Point } from "../../Point.js";
+import { fullShade } from "./FullShade.js";
+import { AssetStore } from "../../AssetStore.js";
 export class WeirdGradientNode extends ImageNode {
     width = 512;
     height = 512;
-    constructor() {
-        super("noise");
+    constructor(assetStore) {
+        super("WEIRD_GRADIENT", "Weird Gradient", assetStore);
         this.updateHeight();
     }
     Process() {
@@ -19,7 +21,7 @@ export class WeirdGradientNode extends ImageNode {
             { duration: 0.0, color: white },
             { duration: 1.0, color: black }
         ]);
-        ImageNode.fullShade(output, (uv) => {
+        fullShade(output, (uv) => {
             let gradientSpace = Math.abs(uv.x - 0.5) + Math.abs(uv.y - 0.5);
             return Color.asVector3(diagonalGradient.getColorAt(gradientSpace * 2));
         });

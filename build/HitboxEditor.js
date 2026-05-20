@@ -44,11 +44,12 @@ var frameSlider;
 var animSelector;
 var editorContext;
 var pGrid;
+var store;
 export function Run(frame) {
     outerFrame = frame;
     const loader = new AssetLoader();
     loader.setupStandardLoaders();
-    const store = new AssetStore("data/", null, loader);
+    store = new AssetStore("data/", null, loader);
     let test = store.loadAsset("assets/green-slime.animset");
     test.then(asset => render(asset.asset));
     cam = new Camera(new Point(256, 256));
@@ -79,7 +80,7 @@ function render(animSet) {
     outerFrame.appendChild(widget);
     renderTarget = new RenderTarget2D(previewCanvas);
     animationPlayer = new AnimationPlayer(animation.frames.length, animation.fps, true, 0);
-    editorContext = new EditorContext(cam, renderTarget);
+    editorContext = new EditorContext(cam, renderTarget, store);
     dataLoaded = true;
 }
 var selectedRectangle = -1;
@@ -98,12 +99,13 @@ function gameLoop(frameCallback) {
         editorContext.open();
         for (let x = 0; x < frame.hitBoxes.length; ++x) {
             let lcopy_x = x;
-            editorContext.adjustRect(frame.hitBoxes[x], x == selectedRectangle).ifClicked(() => {
+            editorContext.adjustRect(frame.hitBoxes[x], x == selectedRectangle).ifMouseDown((e) => {
                 console.log(`Selecting rect ${lcopy_x}`);
                 let inspector = new PropertyGrid(frame.hitBoxes[lcopy_x]);
                 pGrid.innerHTML = "";
                 pGrid._append(inspector.element);
                 selectedRectangle = lcopy_x;
+                e.handled = true;
             });
         }
         editorContext.close();

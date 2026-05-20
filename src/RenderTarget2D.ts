@@ -3,15 +3,15 @@ import { Point } from "./Point.js";
 import { Rect } from "./Rect.js";
 import { Camera } from "./Camera.js";
 import { RawImage } from "./RawImage.js";
+import { generateBezierPoints } from "./Bezier.js";
 
-type DrawTask = (context: CanvasRenderingContext2D, camera: Camera) => void;
+type DrawTask = (context: CanvasRenderingContext2D) => void;
 
 export class RenderTarget2D {
   public canvas: HTMLCanvasElement;
   public context: CanvasRenderingContext2D;
   private pendingDrawTasks: DrawTask[];
   private texture: WebGLTexture | null = null;
-
 
   constructor(canvas: HTMLCanvasElement);
   constructor(targetWidth: number, targetHeight: number, gl: WebGLRenderingContext | null);
@@ -37,8 +37,8 @@ export class RenderTarget2D {
   }
 
   public drawSprite(sprite: Sprite, position: Point, flipped?: boolean) {
-    this.pendingDrawTasks.push((context, camera) => { 
-      let dest = camera.worldRectToScreen(new Rect(position.x, position.y,  sprite.sourceRect.width, sprite.sourceRect.height));
+    this.pendingDrawTasks.push((context) => { 
+      let dest = new Rect(position.x, position.y,  sprite.sourceRect.width, sprite.sourceRect.height);
 
       context.save();
 
@@ -58,8 +58,8 @@ export class RenderTarget2D {
   }
   
   public drawImage(image: ImageBitmap | OffscreenCanvas, sourceRect: Rect, position: Point) {
-    this.pendingDrawTasks.push((context, camera) => { 
-      let dest = camera.worldRectToScreen(new Rect(position.x, position.y, sourceRect.width, sourceRect.height));
+    this.pendingDrawTasks.push((context) => { 
+      let dest = new Rect(position.x, position.y, sourceRect.width, sourceRect.height);
       context.drawImage(image, 
         sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height,
         dest.x, dest.y, dest.width, dest.height); 
@@ -67,74 +67,91 @@ export class RenderTarget2D {
   }
 
   public drawImageDR(image: ImageBitmap | OffscreenCanvas, sourceRect: Rect, position: Rect) {
-    this.pendingDrawTasks.push((context, camera) => { 
-      let dest = camera.worldRectToScreen(position);
+    this.pendingDrawTasks.push((context) => { 
+      context.globalCompositeOperation = 'source-over';
       context.drawImage(image, 
         sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height,
-        dest.x, dest.y, dest.width, dest.height); 
+        position.x, position.y, position.width, position.height); 
     });
   }
 
   public drawRectangle(rect: Rect, color: string) {
-    this.pendingDrawTasks.push((context, camera) => {
-      let dest = camera.worldRectToScreen(rect);
+    this.pendingDrawTasks.push((context) => {
       context.fillStyle = color;
-      context.fillRect(dest.x, dest.y, dest.width, dest.height);
+      context.fillRect(rect.x, rect.y, rect.width, rect.height);
     });
   }
 
   public drawWireRectangle(rect: Rect, color: string) {
-    this.pendingDrawTasks.push((context, camera) => {
-      let dest = camera.worldRectToScreen(rect);
+    this.pendingDrawTasks.push((context) => {
       context.strokeStyle = color;
-      context.strokeRect(dest.x, dest.y, dest.width, dest.height);
+      context.strokeRect(rect.x, rect.y, rect.width, rect.height);
     });
   }
 
   public drawString(text: string, position: Point, color: string) {
-    this.pendingDrawTasks.push((context, camera) => {
+    this.pendingDrawTasks.push((context) => {
       context.fillStyle = color;
       context.textAlign = 'left';
       context.textBaseline = 'top';
       context.font = "24px Pixelify Sans";
-      let dest = camera.worldPointToScreen(position);
-      context.fillText(text, dest.x, dest.y);
+      context.fillText(text, position.x, position.y);
     });
   }
 
   public drawLine(start: Point, end: Point, color: string) {
-    this.pendingDrawTasks.push((context, camera) => {
-      let _start = camera.worldPointToScreen(start);
-      let _end = camera.worldPointToScreen(end);
+    this.pendingDrawTasks.push((context) => {
      context.strokeStyle = color;
       context.beginPath();
-      context.moveTo(_start.x, _start.y);
-      context.lineTo(_end.x, _end.y);
+      context.moveTo(start.x, start.y);
+      context.lineTo(end.x, end.y);
       context.stroke();
     });
   }
 
   public drawLineWidth(start: Point, end: Point, color: string, width: number) {
-    this.pendingDrawTasks.push((context, camera) => {
-      let _start = camera.worldPointToScreen(start);
-      let _end = camera.worldPointToScreen(end);
-     context.strokeStyle = color;
-     context.lineWidth = width;
+    this.pendingDrawTasks.push((context) => {
+      context.strokeStyle = color;
+      context.lineWidth = width;
       context.beginPath();
-      context.moveTo(_start.x, _start.y);
-      context.lineTo(_end.x, _end.y);
+      context.moveTo(start.x, start.y);
+      context.lineTo(end.x, end.y);
       context.stroke();
       context.lineWidth = 1;
     });
+  }
+
+  public drawCurveWidth(start: Point, control1: Point, control2: Point, end: Point, color: string, width: number) {
+    this.pendingDrawTasks.push((context) => {
+      let points = generateBezierPoints(start, control1, control2, end, 16);
+
+      context.strokeStyle = color;
+      context.lineWidth = width;
+      context.beginPath();
+      context.moveTo(start.x, start.y);
+      for (let i = 0; i < points.length; ++i)
+        context.lineTo(points[i].x, points[i].y);
+      context.stroke();
+      context.lineWidth = 1;
+    });
+  }
+
+  public drawCustom(drawtask: DrawTask) {
+    this.pendingDrawTasks.push(drawtask);
   }
 
   public flush(camera: Camera) {
     this.context.save();
     this.context.globalAlpha = 1;
     this.context.globalCompositeOperation = 'source-over';
+
+    this.context.save();
+    this.context.translate(this.canvas.width / 2, this.canvas.height / 2);
+    this.context.scale(camera.scale.x, camera.scale.y);
+    this.context.translate(-camera.position.x, -camera.position.y);
           
     for (let t of this.pendingDrawTasks)
-      t(this.context, camera);
+      t(this.context);
     this.pendingDrawTasks = [];
 
     this.context.restore();

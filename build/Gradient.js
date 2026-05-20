@@ -1,8 +1,36 @@
 import { Color } from "./Color.js";
+export class GradientPoint {
+    duration; // 0.0 to 1.0
+    color;
+    constructor(first, second) {
+        if (first === undefined) {
+            this.duration = 0;
+            this.color = new Color(0, 0, 0, 1);
+        }
+        else if (typeof first === 'number') {
+            this.duration = first;
+            this.color = second ?? new Color(0, 0, 0, 1);
+        }
+        else {
+            let prototype = first;
+            this.duration = prototype.DURATION;
+            this.color = new Color(prototype.COLOR);
+        }
+    }
+}
 export class Gradient {
     points;
-    constructor(points) {
-        this.points = points.sort((a, b) => a.duration - b.duration);
+    constructor(first) {
+        if (first === undefined) {
+            this.points = [];
+        }
+        else if (Array.isArray(first)) {
+            this.points = first.sort((a, b) => a.duration - b.duration);
+        }
+        else {
+            let prototype = first;
+            this.points = prototype.POINTS.map(p => new GradientPoint(p)).sort((a, b) => a.duration - b.duration);
+        }
     }
     getColorAt(t) {
         if (this.points.length === 0)
@@ -21,6 +49,9 @@ export class Gradient {
             }
         }
         return this.points[this.points.length - 1].color;
+    }
+    sortPoints() {
+        this.points.sort((a, b) => a.duration - b.duration);
     }
 }
 //# sourceMappingURL=Gradient.js.map

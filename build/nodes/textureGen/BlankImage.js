@@ -3,13 +3,14 @@ import { ImageNode } from "./ImageNode.js";
 import { Point } from "../../Point.js";
 import { NodeSetting } from "../NodeSetting.js";
 import { Color } from "../../Color.js";
+import { AssetStore } from "../../AssetStore.js";
 export class BlankImage extends ImageNode {
     dimensions;
     color;
-    constructor() {
-        super("Blank Image");
-        this.dimensions = this.AddSetting("dimensions", "point", new Point(512, 512));
-        this.color = this.AddSetting("color", "color", new Color(255, 255, 255, 255));
+    constructor(assetStore) {
+        super("BLANK_IMAGE", "Blank Image", assetStore);
+        this.dimensions = this.AddSetting("dimensions", "point", new Point(512, 512), assetStore);
+        this.color = this.AddSetting("color", "color", new Color(255, 255, 255, 255), assetStore);
         this.updateHeight();
     }
     Process() {

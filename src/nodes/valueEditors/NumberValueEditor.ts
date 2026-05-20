@@ -3,31 +3,24 @@ import { ValueEditor } from "../ValueEditor.js";
 import { Fluent, type FluentElement } from "../../Fluent.js";
 import { EditorContext, HandleProperties } from "../../editor/EditorContext.js";
 import { RenderTarget2D } from "../../RenderTarget2D.js";
+import { AssetStore } from "../../AssetStore.js";
 
 export class NumberValueEditor extends ValueEditor {
-  protected element: FluentElement | null = null;
+  protected raw: string = "0";
 
-  constructor() {
-    super();
-    this.element = Fluent.input('number')._style({position: "absolute", width: "80px"});
-    document.documentElement.appendChild(this.element);
+  constructor(assetStore: AssetStore) {
+    super(assetStore);
   }
 
   draw(ctx: RenderTarget2D, editor: EditorContext, drawArea: Rect): void {
-    if (this.element) {
-      let pos = editor.camera.worldPointToScreen(drawArea.origin);
-      this.element.style.left = pos.x.toString();
-      this.element.style.top = pos.y.toString();
-    }
+    this.raw = editor.numberField(new Rect(drawArea.x + 20, drawArea.y, 60, 24), this.raw);
   }
 
   setValue(v: any): void {
-    if (this.element) this.element.value = v;
+    this.raw = `${v}`;
   }
 
   getValue() : any {
-    if (this.element && this.element.value != "")
-      return Number(this.element.value);
-    return 0;
+    return parseInt(this.raw);
   }
 }

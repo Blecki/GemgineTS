@@ -1,0 +1,34 @@
+<title>Canvas Sprite Example</title>
+<style>
+  body { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: black;
+  }
+  canvas {
+    border: 1px solid red;
+    background-color: #ffffff;
+    width: 1056;
+    height: 448;
+  }
+</style>
+</head>
+<body>
+  <div style="display: grid; grid-template-rows: 500px auto;">
+    <div>
+      <canvas id="myCanvas" width="528" height="224"></canvas>
+    </div>
+    <div id="debug_panel">
+      
+    </div>
+  </div>
+  <script type="module">
+    import { Run } from "./build/DwarfDemo.js";
+    let engine = Run((engine) => {
+    }, document.getElementById('myCanvas'));
+  </script>
+</body>
+</html>

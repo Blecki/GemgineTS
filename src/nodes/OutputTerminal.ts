@@ -57,12 +57,12 @@ export class OutputTerminal {
 
 
   public draw(ctx: RenderTarget2D, editor: EditorContext, nodeSet: NodeSet) {
-    ctx.drawRectangle(this.drawArea, "#292929");
+    //ctx.drawRectangle(this.drawArea, "#292929");
     ctx.drawString(this.name, new Point(this.drawArea.x + 4, this.drawArea.y), "#ffffff");
 
     let snappedTerminal: InputTerminal | null = null;
-    editor.handleSize = 3;
-    editor.translateHandle(new Rect(this.anchorPoint.x - 6, this.anchorPoint.y - 6, 12, 12), new HandleProperties("#b08026", "#f99d1c"))
+
+    editor.widget(new Rect(this.anchorPoint.x - 6, this.anchorPoint.y - 6, 12, 12))
       .ifDragged(handle => {
         let possibleInputs = nodeSet.getPossibleInputConnections(this.type);
         let inputPositions = possibleInputs.map(pi => pi.anchorPoint);
@@ -84,7 +84,7 @@ export class OutputTerminal {
           ctx.drawLine(this.anchorPoint, inputPositions[minIndex], "green");
         }
       })
-      .ifReleased(handle => {
+      .ifMouseUp(handle => {
         if (snappedTerminal != null) {
           nodeSet.addConnection(this, snappedTerminal);
         }
