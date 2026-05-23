@@ -1,6 +1,6 @@
 import { GemgineGL } from "./Common.js";
 import {} from "./Vector3.js";
-export function mat4Identity() {
+export function m4Identity() {
     return [1, 0, 0, 0,
         0, 1, 0, 0,
         0, 0, 1, 0,
@@ -20,7 +20,7 @@ export function m4LookAt(eye, center, up) {
     if (Math.abs(eyex - centerx) < GemgineGL.EPSILON &&
         Math.abs(eyey - centery) < GemgineGL.EPSILON &&
         Math.abs(eyez - centerz) < GemgineGL.EPSILON) {
-        return mat4Identity();
+        return m4Identity();
     }
     z0 = eyex - centerx;
     z1 = eyey - centery;
@@ -136,5 +136,60 @@ export function m4Rotation(rad, axis) {
     out[14] = 0;
     out[15] = 1;
     return new Float32Array(out);
+}
+export function m4Translate(m, x, y, z) {
+    const t = [
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        x, y, z, 1
+    ];
+    return m4Multiply(m, t);
+}
+// Scale (Multiplies vectors on the primary diagonal elements 0, 5, 10)
+export function m4Scale(m, x, y, z) {
+    const s = [
+        x, 0, 0, 0,
+        0, y, 0, 0,
+        0, 0, z, 0,
+        0, 0, 0, 1
+    ];
+    return m4Multiply(m, s);
+}
+// Rotation around X Axis (rad = angle in radians)
+export function m4RotateX(m, rad) {
+    const c = Math.cos(rad);
+    const s = Math.sin(rad);
+    const r = [
+        1, 0, 0, 0,
+        0, c, s, 0,
+        0, -s, c, 0,
+        0, 0, 0, 1
+    ];
+    return m4Multiply(m, r);
+}
+// Rotation around Y Axis (rad = angle in radians)
+export function m4RotateY(m, rad) {
+    const c = Math.cos(rad);
+    const s = Math.sin(rad);
+    const r = [
+        c, 0, -s, 0,
+        0, 1, 0, 0,
+        s, 0, c, 0,
+        0, 0, 0, 1
+    ];
+    return m4Multiply(m, r);
+}
+// Rotation around Z Axis (rad = angle in radians)
+export function m4RotateZ(m, rad) {
+    const c = Math.cos(rad);
+    const s = Math.sin(rad);
+    const r = [
+        c, s, 0, 0,
+        -s, c, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
+    ];
+    return m4Multiply(m, r);
 }
 //# sourceMappingURL=Matrix4x4.js.map

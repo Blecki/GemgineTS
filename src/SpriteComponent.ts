@@ -49,20 +49,17 @@ export class SpriteComponent extends RenderComponent {
     this.recordHitBoxes = p?.recordHitBoxes ?? false;
   }
 
-  private cachedImage: ImageBitmap | null = null;
   public resolvedAnimations: AnimationSetAsset | undefined = undefined;
   public gfxAsset: GfxAsset | undefined = undefined;
   private currentAnimation: AnimationAsset | null = null;
   private animationPlayer: AnimationPlayer = new AnimationPlayer(1, 1, false, 1);
   public flip: boolean = false;
-  private currentGfx: GfxAsset | null = null;
   private cachedHitBoxModule: HitBoxModule | null = null;
 
   public resolveDependencies(reference: AssetReference, engine: AssetStore): void {  
   }
 
   public render(context: RenderContext) {
-    let target = context.getTarget(this.renderLayer);
     let sprite: Sprite | null = null;
     let offset: Point = new Point(0, 0);
     if (this.currentAnimation != null) {

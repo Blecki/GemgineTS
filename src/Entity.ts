@@ -2,7 +2,7 @@ import { Point } from "./Point.js";
 import { Component } from "./Component.js";
 import { Rect } from "./Rect.js";
 import { QuadTree } from "./QuadTree.js";
-import { Fluent, type FluentElement } from "./Fluent.js";
+import { Vector3Raw } from "./gl/Vector3.js";
 
 type EntityPrototype = {
   pivot: Point;

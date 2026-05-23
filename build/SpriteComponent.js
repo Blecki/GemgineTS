@@ -44,18 +44,15 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
         this.scale = new Point(p?.scale ?? new Point(1, 1));
         this.recordHitBoxes = p?.recordHitBoxes ?? false;
     }
-    cachedImage = null;
     resolvedAnimations = undefined;
     gfxAsset = undefined;
     currentAnimation = null;
     animationPlayer = new AnimationPlayer(1, 1, false, 1);
     flip = false;
-    currentGfx = null;
     cachedHitBoxModule = null;
     resolveDependencies(reference, engine) {
     }
     render(context) {
-        let target = context.getTarget(this.renderLayer);
         let sprite = null;
         let offset = new Point(0, 0);
         if (this.currentAnimation != null) {

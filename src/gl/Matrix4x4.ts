@@ -3,7 +3,7 @@ import { type Vector3 } from "./Vector3.js";
 
 export type Matrix4x4 = [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number ] | Float32Array;
 
-export function mat4Identity() : Matrix4x4 {
+export function m4Identity() : Matrix4x4 {
   return [1, 0, 0, 0,
           0, 1, 0, 0,
           0, 0, 1, 0,
@@ -27,7 +27,7 @@ export function m4LookAt(eye : Vector3, center : Vector3, up : Vector3) : Matrix
     Math.abs(eyey - centery) < GemgineGL.EPSILON &&
     Math.abs(eyez - centerz) < GemgineGL.EPSILON
   ) {
-    return mat4Identity();
+    return m4Identity();
   }
 
   z0 = eyex - centerx;
@@ -176,4 +176,64 @@ export function m4Rotation(rad : number, axis : Vector3) : Matrix4x4 {
   out[14] = 0;
   out[15] = 1;
   return new Float32Array(out);
+}
+
+export function m4Translate(m: Matrix4x4, x: number, y: number, z: number): Matrix4x4 {
+  const t: Matrix4x4 = [
+    1, 0, 0, 0,
+    0, 1, 0, 0,
+    0, 0, 1, 0,
+    x, y, z, 1
+  ];
+  return m4Multiply(m, t);
+}
+
+// Scale (Multiplies vectors on the primary diagonal elements 0, 5, 10)
+export function m4Scale(m: Matrix4x4, x: number, y: number, z: number): Matrix4x4 {
+  const s: Matrix4x4 = [
+    x, 0, 0, 0,
+    0, y, 0, 0,
+    0, 0, z, 0,
+    0, 0, 0, 1
+  ];
+  return m4Multiply(m, s);
+}
+
+// Rotation around X Axis (rad = angle in radians)
+export function m4RotateX(m: Matrix4x4, rad: number): Matrix4x4 {
+  const c = Math.cos(rad);
+  const s = Math.sin(rad);
+  const r: Matrix4x4 = [
+    1,  0,  0, 0,
+    0,  c,  s, 0,
+    0, -s,  c, 0,
+    0,  0,  0, 1
+  ];
+  return m4Multiply(m, r);
+}
+
+// Rotation around Y Axis (rad = angle in radians)
+export function m4RotateY(m: Matrix4x4, rad: number): Matrix4x4 {
+  const c = Math.cos(rad);
+  const s = Math.sin(rad);
+  const r: Matrix4x4 = [
+    c, 0, -s, 0,
+    0, 1,  0, 0,
+    s, 0,  c, 0,
+    0, 0,  0, 1
+  ];
+  return m4Multiply(m, r);
+}
+
+// Rotation around Z Axis (rad = angle in radians)
+export function m4RotateZ(m: Matrix4x4, rad: number): Matrix4x4 {
+  const c = Math.cos(rad);
+  const s = Math.sin(rad);
+  const r: Matrix4x4 = [
+     c, s, 0, 0,
+    -s, c, 0, 0,
+     0, 0, 1, 0,
+     0, 0, 0, 1
+  ];
+  return m4Multiply(m, r);
 }

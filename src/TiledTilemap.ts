@@ -115,7 +115,6 @@ export class TiledTilemap {
   }
 
   public resolveDependencies(self: AssetReference, engine: AssetStore) {
-    console.log("TRACE: TiledTilemap.resolveDependencies");
     this.tilesets.forEach(t => t.resolveDependencies(self, engine));
     this.layers.forEach(t => t.resolveDependencies(self, engine));
   }

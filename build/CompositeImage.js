@@ -11,7 +11,6 @@ export class CompositeImageLayer {
 export class CompositeImage {
     layers = [];
     compose() {
-        console.log("Composing composite image");
         let maxWidth = 0;
         let maxHeight = 0;
         this.layers.forEach(l => {

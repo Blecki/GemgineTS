@@ -101,4 +101,8 @@ export class GfxAsset {
     else 
       return new Sprite(this.cachedImage, new Rect(x * (this.tileWidth ?? 0), y * (this.tileHeight ?? 0), this.tileWidth ?? 1, this.tileHeight ?? 1));
   }
+
+  public getCachedImage() : ImageBitmap | null {
+    return this.cachedImage;
+  }
 }

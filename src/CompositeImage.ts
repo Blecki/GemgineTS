@@ -15,7 +15,6 @@ export class CompositeImage {
   public layers: CompositeImageLayer[] = [];
 
   public compose(): ImageBitmap | null {
-    console.log("Composing composite image");
     let maxWidth = 0;
     let maxHeight = 0;
     this.layers.forEach(l => {

@@ -90,9 +90,7 @@ export class Material {
     }
     createAttribSetter(attrib) {
         if (this.compiledShader != null) {
-            console.log(attrib);
             const loc = this.gl.getAttribLocation(this.compiledShader, attrib.name);
-            console.log(loc);
             //if (!loc) return null;
             // Vectors and Scalars
             switch (attrib.type) {
@@ -101,7 +99,6 @@ export class Material {
                 case this.gl.FLOAT_MAT2: return null;
                 case this.gl.FLOAT: return null;
                 case this.gl.FLOAT_VEC2:
-                    console.log("FLOAT_VEC2");
                     return new MaterialAttrib(attrib, (value) => {
                         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, value);
                         this.gl.vertexAttribPointer(loc, 2, this.gl.FLOAT, false, 0, 0);
@@ -109,7 +106,6 @@ export class Material {
                     });
                 case this.gl.FLOAT_VEC3: return null;
                 case this.gl.FLOAT_VEC4:
-                    console.log("FLOAT_VEC4");
                     return new MaterialAttrib(attrib, (value) => {
                         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, value);
                         this.gl.vertexAttribPointer(loc, 4, this.gl.FLOAT, false, 0, 0);

@@ -47,5 +47,7 @@
   "assets/dwarf/face-female.bmp",
   "assets/dwarf/hair-boyish.bmp",
   "assets/dwarf/nose-beak.bmp",
-  "assets/other/blood-3.png"
+  "assets/other/blood-3.png",
+  "3d-render-vertex.glsl",
+  "3d-render-fragment.glsl"
 ]

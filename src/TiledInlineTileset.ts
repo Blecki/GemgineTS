@@ -68,7 +68,6 @@ export class TiledInlineTileset {
   }
 
   public resolveDependencies(self: AssetReference, engine: AssetStore) {
-    console.log("TRACE: TiledInlineTileset.resolveDependencies");
     if (this.source != "")
       this.tilesetAsset = engine.getPreloadedAsset(pathCombine(self.directory(), this.source)).asset as TiledTileset;
     else

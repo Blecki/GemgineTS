@@ -73,7 +73,6 @@ export class TiledTilemap {
         this.width = p?.width ?? 0;
     }
     resolveDependencies(self, engine) {
-        console.log("TRACE: TiledTilemap.resolveDependencies");
         this.tilesets.forEach(t => t.resolveDependencies(self, engine));
         this.layers.forEach(t => t.resolveDependencies(self, engine));
     }
