@@ -18,13 +18,11 @@ export class TilemapColliderComponent extends Component {
   private cachedTileSize: Point | undefined = undefined;
 
   public initialize(engine: AssetStore, template: TiledTemplate, prototypeAsset: AssetReference) {
-    console.log("Trace: TilemapColliderComponent.initialize");
     super.initialize(engine, template, prototypeAsset);
     this.tilemapComponent = this.parent?.getComponent(TilemapComponent);
   }
   
   public awake(engine: AssetStore) {
-    console.log("Trace: TilemapColliderComponent.awake");
     if (this.tilemapComponent != undefined) {
       this.cachedGrid = this.tilemapComponent.fillArray(function(tileset: TiledInlineTileset | null, tile: number | null): boolean { if (tileset == undefined || tile == undefined) return false; else return true; });
       this.cachedOffset = this.tilemapComponent.worldspaceOriginOffset;

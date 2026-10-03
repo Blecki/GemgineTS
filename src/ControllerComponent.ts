@@ -49,6 +49,10 @@ export class ControllerComponent extends Component {
         let overlaps = this.collisionModule.overlaps(destinationBounds).filter(e => e !== this.parent);
         if (overlaps.length == 0)
           this.parent.localPosition.y += direction;
+        else {
+          console.log("Overlaps!");
+          console.log(overlaps);
+        }
         delta.y -= direction;
       }
       else {

@@ -35,16 +35,15 @@ export class PhysicsModule extends Module {
     }
     update() {
         for (let body of this.bodies) {
-            if (body.useGravity) {
+            if (body.useGravity)
                 body.velocity = body.velocity.add(this.gravity.multiply(GameTime.getDeltaTime()));
-                body.move(body.velocity.multiply(GameTime.getDeltaTime()));
-                if (this.collision != undefined && body.parent != undefined) {
-                    let groundDetectionBounds = body.parent.globalBounds.withOffset(new Point(0, 1));
-                    let overlaps = this.collision.overlaps(groundDetectionBounds).filter(e => e != body.parent);
-                    body.isGrounded = overlaps.length > 0;
-                    if (body.isGrounded)
-                        body.velocity.y = 0;
-                }
+            body.move(body.velocity.multiply(GameTime.getDeltaTime()));
+            if (this.collision != undefined && body.parent != undefined) {
+                let groundDetectionBounds = body.parent.globalBounds.withOffset(new Point(0, 1));
+                let overlaps = this.collision.overlaps(groundDetectionBounds).filter(e => e != body.parent);
+                body.isGrounded = overlaps.length > 0;
+                if (body.isGrounded)
+                    body.velocity.y = 0;
             }
         }
     }

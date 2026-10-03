@@ -1,20 +1,20 @@
-import { AssetLoader } from "./AssetLoader.js";
-import { Camera } from "./Camera.js";
-import { Point } from "./Point.js";
-import { GameTime  } from "./GameTime.js";
-import { Fluent, type FluentElement } from "./Fluent.js";
-import { RenderTarget2D } from "./RenderTarget2D.js";
-import { EditorContext, HandleProperties } from "./editor/EditorContext.js";
+import { AssetLoader } from "../AssetLoader.js";
+import { Camera } from "../Camera.js";
+import { Point } from "../Point.js";
+import { GameTime  } from "../GameTime.js";
+import { Fluent, type FluentElement } from "../Fluent.js";
+import { RenderTarget2D } from "../RenderTarget2D.js";
+import { EditorContext, HandleProperties } from "../editor/EditorContext.js";
 
-import { Material } from "./gl/Material.js";
-import { Shader } from "./gl/Shader.js";
-import { Program } from "./gl/Program.js";
-import { Mesh } from "./gl/Mesh.js";
-import { Camera3D } from "./gl/Camera3D.js";
-import { Vector3Raw } from "./gl/Vector3.js";
-import { type Matrix4x4, m4Rotation, m4Multiply } from "./gl/Matrix4x4.js";
-import type { AssetReference } from "./AssetReference.js";
-import { Texture } from "./gl/Texture.js";
+import { Material } from "../gl/Material.js";
+import { Shader } from "../gl/Shader.js";
+import { Program } from "../gl/Program.js";
+import { Mesh } from "../gl/Mesh.js";
+import { Camera3D } from "../gl/Camera3D.js";
+import { Vector3Raw } from "../gl/Vector3.js";
+import { type Matrix4x4, m4Rotation, m4Multiply } from "../gl/Matrix4x4.js";
+import type { AssetReference } from "../AssetReference.js";
+import { Texture } from "../gl/Texture.js";
 
 var outerFrame: HTMLElement; 
 var previewCanvas: HTMLCanvasElement;
@@ -71,11 +71,7 @@ export function Run(frame: HTMLElement) : void {
         0,0,  1,0,  1,1,  0,1, // Right
       ]));
       mesh.updateBuffer(gl);
-
-      console.log(mesh);
     }
-
-    console.log(mat);
 
     dataLoaded = true;
 

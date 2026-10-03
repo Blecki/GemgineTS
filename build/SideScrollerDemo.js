@@ -54,9 +54,9 @@ class LoadedMap {
         this.entities = entities;
     }
 }
-export function Run(engineCallback, canvas) {
+export function Run(dataPath, engineCallback, canvas) {
     console.log("Starting Engine");
-    loadJSON("data/", "manifest.json")
+    loadJSON(dataPath, "manifest.json")
         .then(asset => {
         let manifest = asset.asset;
         canvas.style.imageRendering = 'pixelated';
@@ -65,8 +65,8 @@ export function Run(engineCallback, canvas) {
         console.log(screenSize);
         const loader = new AssetLoader();
         loader.setupStandardLoaders();
-        loader.loadAssets("data/", manifest, (assets) => {
-            const engine = new Engine(new AssetStore("data/", assets, loader));
+        loader.loadAssets(dataPath, manifest, (assets) => {
+            const engine = new Engine(new AssetStore(dataPath, assets, loader));
             engine.debugMode = true;
             engine.modules.addModule(new UpdateModule());
             engine.modules.addModule(new CollisionModule());
@@ -96,7 +96,7 @@ export function Run(engineCallback, canvas) {
                 camera.update();
                 let currentMap = world.findMapAt(player.globalPosition);
                 camera.confineToVisibleBounds(new Rect(currentMap?.x ?? 0, currentMap?.y ?? 0, currentMap?.width ?? 1, currentMap?.height ?? 1), screenSize);
-                let neighbors = world.findMapsThatTouch(new Rect(currentMap?.x ?? 0, currentMap?.y ?? 0, currentMap?.height ?? 1, currentMap?.height ?? 1));
+                let neighbors = world.findMapsThatTouch(new Rect(currentMap?.x ?? 0, currentMap?.y ?? 0, currentMap?.width ?? 1, currentMap?.height ?? 1));
                 neighbors.forEach(n => {
                     var matching = loadedMaps.filter(l => l.map.fileName == n.fileName);
                     if (matching.length == 0) {

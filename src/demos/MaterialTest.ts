@@ -1,14 +1,14 @@
-import { AssetLoader } from "./AssetLoader.js";
-import { Camera } from "./Camera.js";
-import { Point } from "./Point.js";
-import { GameTime  } from "./GameTime.js";
-import { Fluent, type FluentElement } from "./Fluent.js";
-import { RenderTarget2D } from "./RenderTarget2D.js";
-import { EditorContext, HandleProperties } from "./editor/EditorContext.js";
+import { AssetLoader } from "../AssetLoader.js";
+import { Camera } from "../Camera.js";
+import { Point } from "../Point.js";
+import { GameTime  } from "../GameTime.js";
+import { Fluent, type FluentElement } from "../Fluent.js";
+import { RenderTarget2D } from "../RenderTarget2D.js";
+import { EditorContext, HandleProperties } from "../editor/EditorContext.js";
 
-import { Material } from "./gl/Material.js";
-import { Shader } from "./gl/Shader.js";
-import { Program } from "./gl/Program.js";
+import { Material } from "../gl/Material.js";
+import { Shader } from "../gl/Shader.js";
+import { Program } from "../gl/Program.js";
 
 var outerFrame: HTMLElement; 
 var previewCanvas: HTMLCanvasElement;
@@ -33,8 +33,6 @@ export function Run(frame: HTMLElement) : void {
           if (gl) {
             mat = new Material(gl, new Program(vertexShader.asset as Shader, fragmentShader.asset as Shader));
           }
-
-          console.log(mat);
 
           dataLoaded = true;
 

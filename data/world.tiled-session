@@ -3,13 +3,13 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "assets/room0.tmj",
+    "activeFile": "assets/room3.tmj",
     "console.history": [
         "world"
     ],
     "expandedProjectPaths": [
-        "assets",
         "assets/templates",
+        "assets",
         "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
@@ -58,11 +58,11 @@
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 1.4889,
+            "scale": 0.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 314.99764927127416,
-                "y": 89.66350997380619
+                "x": 1472,
+                "y": 410
             }
         },
         "assets/room0.tmj#test": {
@@ -72,11 +72,33 @@
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 1.5,
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 425,
+                "y": 231
+            }
+        },
+        "assets/room2.tmj": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 0.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": 264,
-                "y": 112
+                "x": 416,
+                "y": 410
+            }
+        },
+        "assets/room3.tmj": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 425,
+                "y": 7
             }
         },
         "assets/shadows.tsj": {
@@ -85,6 +107,10 @@
         },
         "assets/small-ball-2.tsj": {
             "scaleInDock": 1
+        },
+        "assets/template-tileset.tsj": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "assets/template.tsj": {
             "scaleInDock": 4,
@@ -161,24 +187,27 @@
     "map.width": 33,
     "openFiles": [
         "assets/room0.tmj",
+        "assets/room2.tmj",
+        "assets/template-tileset.tsj",
+        "assets/room3.tmj",
         "assets/room1.tmj"
     ],
     "project": "world.tiled-project",
     "recentFiles": [
-        "assets/room1.tmj",
         "assets/room0.tmj",
+        "assets/room2.tmj",
+        "assets/template-tileset.tsj",
+        "assets/room1.tmj",
+        "assets/room3.tmj",
         "assets/base-tileset.tsj",
         "assets/collision.tsj",
         "assets/normal-tiles.tsj",
         "assets/test-room.tmj",
         "assets/test-room2.tmj",
         "assets/untitled3.tmj",
-        "assets/minitiles.tsj",
-        "assets/untitled.tmj",
-        "assets/minitiles2.tsj",
-        "assets/leaf2.tsj"
+        "assets/minitiles.tsj"
     ],
-    "tileset.embedInMap": true,
+    "tileset.embedInMap": false,
     "tileset.lastUsedFilter": "JSON tileset files (*.tsj *.json)",
     "tileset.lastUsedFormat": "json",
     "tileset.tileSize": {

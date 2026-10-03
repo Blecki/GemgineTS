@@ -1,19 +1,151 @@
 {
   "animations": [
     {
-      "name": "idle",
+      "name": "idle-south",
+      "fps": 2,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames": [ 
+        { "x": 1, "y": 0 } 
+      ]
+    },
+    {
+      "name": "idle-west",
+      "fps": 2,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames": [ 
+        { "x": 1, "y": 1 } 
+      ]
+    },
+    {
+      "name": "idle-east",
+      "fps": 2,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames": [ 
+        { "x": 1, "y": 2 } 
+      ]
+    },
+    {
+      "name": "idle-north",
+      "fps": 2,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames": [ 
+        { "x": 1, "y": 3 } 
+      ]
+    },
+    {
+      "name": "run-south",
       "fps": 2,
       "gfx": "assets/dwarf.gfx",
       "loop": true,
       "frames": [ 
         { "x": 1, "y": 0 }, 
-        { "x": 2 , "y": 0 },
+        { "x": 2, "y": 0 },
         { "x": 1, "y": 0 }, 
         { "x": 0, "y": 0 }, 
         { "x": 1, "y": 0 }, 
         { "x": 2, "y": 0 },
         { "x": 3, "y": 0 }, 
         { "x": 0, "y": 0 } 
+      ]
+    },
+    {
+      "name": "run-west",
+      "fps": 2,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames": [ 
+        { "x": 1, "y": 1 }, 
+        { "x": 2, "y": 1 },
+        { "x": 1, "y": 1 }, 
+        { "x": 0, "y": 1 }, 
+        { "x": 1, "y": 1 }, 
+        { "x": 2, "y": 1 },
+        { "x": 3, "y": 1 }, 
+        { "x": 0, "y": 1 } 
+      ]
+    },
+    {
+      "name": "run-east",
+      "fps": 2,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames": [ 
+        { "x": 1, "y": 2 }, 
+        { "x": 2, "y": 2 },
+        { "x": 1, "y": 2 }, 
+        { "x": 0, "y": 2 }, 
+        { "x": 1, "y": 2 }, 
+        { "x": 2, "y": 2 },
+        { "x": 3, "y": 2 }, 
+        { "x": 0, "y": 2 } 
+      ]
+    },
+    {
+      "name": "run-north",
+      "fps": 2,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames": [ 
+        { "x": 1, "y": 3 }, 
+        { "x": 2, "y": 3 },
+        { "x": 1, "y": 3 }, 
+        { "x": 0, "y": 3 }, 
+        { "x": 1, "y": 3 }, 
+        { "x": 2, "y": 3 },
+        { "x": 3, "y": 3 }, 
+        { "x": 0, "y": 3 } 
+      ]
+    },
+    {
+      "name": "attack-south",
+      "fps": 5,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames": [ 
+        { "x": 0, "y": 8 }, 
+        { "x": 1, "y": 8 },
+        { "x": 2, "y": 8 }, 
+        { "x": 3, "y": 8 } 
+      ]
+    },
+    {
+      "name": "attack-west",
+      "fps": 5,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames": [ 
+        { "x": 0, "y": 9 }, 
+        { "x": 1, "y": 9 },
+        { "x": 2, "y": 9 }, 
+        { "x": 3, "y": 9 } 
+      ]
+    },
+    {
+      "name": "attack-east",
+      "fps": 5,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames":[ 
+        { "x": 0, "y": 10 }, 
+        { "x": 1, "y": 10 },
+        { "x": 2, "y": 10 }, 
+        { "x": 3, "y": 10 } 
+      ]
+    },
+    {
+      "name": "attack-north",
+      "fps": 5,
+      "gfx": "assets/dwarf.gfx",
+      "loop": true,
+      "frames": [ 
+        { "x": 0, "y": 11 }, 
+        { "x": 1, "y": 11 },
+        { "x": 2, "y": 11 }, 
+        { "x": 3, "y": 11 }
       ]
     }
   ]

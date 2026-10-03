@@ -27,7 +27,6 @@ export function Run(frame) {
             if (gl) {
                 mat = new Material(gl, new Program(vertexShader.asset, fragmentShader.asset));
             }
-            console.log(mat);
             dataLoaded = true;
             gameLoop(() => {
             });

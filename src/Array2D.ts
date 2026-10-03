@@ -37,6 +37,5 @@ export class Array2D<T> {
   fill(constructor: () => T) {
     for (let x = 0; x < this._width * this._height; x++) 
         this.data[x] = constructor();
-      console.log(this);
     }
 }

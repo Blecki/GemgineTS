@@ -17,6 +17,7 @@ import { Point } from "./Point.js";
 let PlayerControllerComponent = class PlayerControllerComponent extends Component {
     input = null;
     speed = 128;
+    airControlSpeed = 80;
     sprite = undefined;
     controller = undefined;
     playingStaticAnimation = false;
@@ -34,29 +35,34 @@ let PlayerControllerComponent = class PlayerControllerComponent extends Componen
     update() {
         let delta = new Point(0, 0);
         let aim = new Point(0, 0);
-        if (this.controller?.isGrounded) {
-            if (this.input?.check("west")) {
-                delta.x = -this.speed;
-                aim = new Point(-1, 0);
-            }
-            else if (this.input?.check("east")) {
-                delta.x = this.speed;
-                aim = new Point(1, 0);
-            }
+        const grounded = this.controller?.isGrounded ?? false;
+        // Allow horizontal movement both on the ground and in the air.
+        const movementSpeed = grounded ? this.speed : this.airControlSpeed;
+        if (this.input?.check("west")) {
+            delta.x = -movementSpeed;
+            aim = new Point(-1, 0);
+        }
+        else if (this.input?.check("east")) {
+            delta.x = movementSpeed;
+            aim = new Point(1, 0);
+        }
+        if (this.controller) {
             this.controller.velocity.x = delta.x;
+        }
+        if (grounded) {
             if (!this.playingStaticAnimation && this.input?.check("north")) {
                 this.input.markHandled("north");
                 this.controller.velocity = new Point(this.controller.velocity.x, -256);
             }
             if (!this.playingStaticAnimation && this.input?.check("south")) {
                 this.input.markHandled("south");
-                this.playStatic('roll');
+                this.playStatic("roll");
             }
         }
         else {
-            if (!this.playingStaticAnimation && this.controller != undefined && this.input?.check("north")) {
+            if (!this.playingStaticAnimation && this.input?.check("north")) {
                 this.input.markHandled("north");
-                this.playStatic('flip');
+                this.playStatic("flip");
                 this.controller.velocity = new Point(this.controller.velocity.x, -256);
             }
         }

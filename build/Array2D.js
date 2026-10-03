@@ -31,7 +31,6 @@ export class Array2D {
     fill(constructor) {
         for (let x = 0; x < this._width * this._height; x++)
             this.data[x] = constructor();
-        console.log(this);
     }
 }
 //# sourceMappingURL=Array2D.js.map

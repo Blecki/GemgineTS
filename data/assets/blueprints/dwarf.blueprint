@@ -1,0 +1,23 @@
+{
+   "size": { "x": 24, "y": 32 },
+   "pivot": { "x": 11, "y": 31 },
+   "components": [
+      {
+         "type": "Sprite",
+         "offset": { "x": -12, "y": -8 },
+         "animations": "assets/dwarf.animset",
+         "recordHitBoxes": true,
+         "startingAnimation": "idle"
+      },
+      {
+         "type": "FourWayPlayerController"
+      },
+      {
+         "type": "Controller",
+         "useGravity": false
+      },
+      {
+         "type": "DebugGizmo"
+      }
+   ]
+}

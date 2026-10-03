@@ -38,6 +38,14 @@ export class Point {
     return new Point(-this.x, -this.y);
   }
 
+  public negateX(): Point {
+    return new Point(-this.x, this.y);
+  }
+  
+  public negateY(): Point {
+    return new Point(this.x, -this.y);
+  }
+
   public sub(other: Point): Point {
     return new Point(this.x - other.x, this.y - other.y);
   }

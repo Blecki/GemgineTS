@@ -2,7 +2,6 @@ import { Point } from "./Point.js";
 import { Component } from "./Component.js";
 import { Rect } from "./Rect.js";
 import { QuadTree } from "./QuadTree.js";
-import { Vector3Raw } from "./gl/Vector3.js";
 export class Entity {
     ID;
     parent;

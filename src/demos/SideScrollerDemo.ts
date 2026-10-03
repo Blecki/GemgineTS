@@ -1,34 +1,34 @@
-import { AssetLoader } from "./AssetLoader.js";
-import { RenderModule } from "./RenderModule.js";
-import { Engine } from "./Engine.js";
-import { EntityBlueprint } from "./EntityBlueprint.js";
-import { Entity } from "./Entity.js";
-import { loadJSON } from "./JsonLoader.js";
-import { TiledWorld, TiledWorldMap } from "./TiledWorld.js";
-import { TiledTemplate } from "./TiledTemplate.js";
-import { Camera } from "./Camera.js";
-import { UpdateModule } from "./UpdateModule.js";
-import { Point } from "./Point.js";
-import { GfxAsset } from "./GfxAsset.js";
-import { AnimationSetAsset, AnimationAsset } from "./AnimationSetAsset.js";
-import { Random } from "./Random.js";
-import { CollisionModule } from "./CollisionModule.js";
-import { RawImage } from "./RawImage.js";
+import { AssetLoader } from "../AssetLoader.js";
+import { RenderModule } from "../RenderModule.js";
+import { Engine } from "../Engine.js";
+import { EntityBlueprint } from "../EntityBlueprint.js";
+import { Entity } from "../Entity.js";
+import { loadJSON } from "../JsonLoader.js";
+import { TiledWorld, TiledWorldMap } from "../TiledWorld.js";
+import { TiledTemplate } from "../TiledTemplate.js";
+import { Camera } from "../Camera.js";
+import { UpdateModule } from "../UpdateModule.js";
+import { Point } from "../Point.js";
+import { GfxAsset } from "../GfxAsset.js";
+import { AnimationSetAsset, AnimationAsset } from "../AnimationSetAsset.js";
+import { Random } from "../Random.js";
+import { CollisionModule } from "../CollisionModule.js";
+import { RawImage } from "../RawImage.js";
 
-import { SpriteComponent } from "./SpriteComponent.js";
-import { Component } from "./Component.js";
-import { PlayerControllerComponent } from "./PlayerControllerComponent.js";
-import { BoundsColliderComponent } from "./BoundsColliderComponent.js";
-import { TagComponent } from "./TagComponent.js";
-import { HealthComponent } from "./HealthComponent.js";
-import { GUIHealthBarComponent } from "./GUIHealthBarComponent.js";
-import { PhysicsModule } from "./PhysicsModule.js";
-import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
-import { TilemapComponent } from "./TilemapComponent.js";
-import { Rect } from "./Rect.js";
-import { AssetStore } from "./AssetStore.js";
-import { HitBoxModule, HitBoxRecord } from "./HitBoxModule.js";
-import { RenderLayers } from "./RenderLayers.js";
+import { SpriteComponent } from "../SpriteComponent.js";
+import { Component } from "../Component.js";
+import { PlayerControllerComponent } from "../PlayerControllerComponent.js";
+import { BoundsColliderComponent } from "../BoundsColliderComponent.js";
+import { TagComponent } from "../TagComponent.js";
+import { HealthComponent } from "../HealthComponent.js";
+import { GUIHealthBarComponent } from "../GUIHealthBarComponent.js";
+import { PhysicsModule } from "../PhysicsModule.js";
+import { TilemapColliderComponent } from "../TilemapColliderComponent.js";
+import { TilemapComponent } from "../TilemapComponent.js";
+import { Rect } from "../Rect.js";
+import { AssetStore } from "../AssetStore.js";
+import { HitBoxModule, HitBoxRecord } from "../HitBoxModule.js";
+import { RenderLayers } from "../RenderLayers.js";
 
 const cellSize = new Point(8, 7);
 
@@ -63,9 +63,9 @@ class LoadedMap {
   }
 }
 
-export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) : void {
+export function Run(dataPath: string, engineCallback: EngineCallback, canvas: HTMLCanvasElement) : void {
   console.log("Starting Engine");
-  loadJSON("data/", "manifest.json")
+  loadJSON(dataPath, "manifest.json")
     .then(asset => {
       let manifest = asset.asset as string[];
       canvas.style.imageRendering = 'pixelated';
@@ -76,8 +76,8 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
       const loader = new AssetLoader();
       loader.setupStandardLoaders();
 
-      loader.loadAssets("data/", manifest, (assets) => { 
-        const engine = new Engine(new AssetStore("data/", assets, loader));
+      loader.loadAssets(dataPath, manifest, (assets) => { 
+        const engine = new Engine(new AssetStore(dataPath, assets, loader));
         engine.debugMode = true;
 
         engine.modules.addModule(new UpdateModule());
@@ -114,7 +114,7 @@ export function Run(engineCallback: EngineCallback, canvas: HTMLCanvasElement) :
           let currentMap = world.findMapAt(player.globalPosition);
           camera.confineToVisibleBounds(new Rect(currentMap?.x ?? 0, currentMap?.y ?? 0, currentMap?.width ?? 1, currentMap?.height ?? 1), screenSize);
 
-          let neighbors = world.findMapsThatTouch(new Rect(currentMap?.x ?? 0, currentMap?.y ?? 0, currentMap?.height ?? 1, currentMap?.height ?? 1));
+          let neighbors = world.findMapsThatTouch(new Rect(currentMap?.x ?? 0, currentMap?.y ?? 0, currentMap?.width ?? 1, currentMap?.height ?? 1));
           neighbors.forEach(n => {
             var matching = loadedMaps.filter(l => l.map.fileName == n.fileName);
             if (matching.length == 0) {

@@ -13,6 +13,20 @@
             "width": 528,
             "x": 528,
             "y": 0
+        },
+        {
+            "fileName": "room2.tmj",
+            "height": 224,
+            "width": 528,
+            "x": 1056,
+            "y": 0
+        },
+        {
+            "fileName": "room3.tmj",
+            "height": 224,
+            "width": 528,
+            "x": 528,
+            "y": 224
         }
     ],
     "onlyShowAdjacentMaps": false,

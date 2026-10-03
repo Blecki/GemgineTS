@@ -1,20 +1,21 @@
 {
-   "size": { "x": 48, "y": 48 },
-   "pivot": { "x": 23, "y": 31 },
+   "size": { "x": 24, "y": 24 },
+   "pivot": { "x": 12, "y": 23 },
    "components": [
       {
          "type": "Sprite",
-         "offset": { "x": 0, "y": 0 },
+         "offset": { "x": -12, "y": -12 },
          "animations": "assets/green-slime.animset",
          "startingAnimation": "idle",
          "recordHitBoxes": true
       },
       {
-         "type": "Controller"
+         "type": "Controller",
+         "useGravity": false
       },
       {
          "type": "BoundsCollider",
-         "collisionBounds": { "x": 8, "y": 8, "width": 32, "height": 24 }
+         "collisionBounds": { "x": 0, "y": 0, "width": 24, "height": 24 }
       },
       {
          "type": "DebugGizmo"

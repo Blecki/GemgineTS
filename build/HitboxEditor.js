@@ -100,7 +100,6 @@ function gameLoop(frameCallback) {
         for (let x = 0; x < frame.hitBoxes.length; ++x) {
             let lcopy_x = x;
             editorContext.adjustRect(frame.hitBoxes[x], x == selectedRectangle).ifMouseDown((e) => {
-                console.log(`Selecting rect ${lcopy_x}`);
                 let inspector = new PropertyGrid(frame.hitBoxes[lcopy_x]);
                 pGrid.innerHTML = "";
                 pGrid._append(inspector.element);

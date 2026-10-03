@@ -1,31 +1,34 @@
 <title>Canvas Sprite Example</title>
 <style>
-  canvas {
-    background-color: #ffffff;
+  body { 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: black;
   }
-
-  body {
-    font-family: "Pixelify Sans", sans-serif !important;
-    font-optical-sizing: auto;
-    font-weight: 1.0;
-    font-style: normal;
+  canvas {
+    border: 1px solid red;
+    background-color: #ffffff;
+    width: 1056;
+    height: 448;
   }
 </style>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
-
 </head>
-
 <body>
-  <div id="frame"></div>
-
-  
-<script type="module">
-    import { Run } from "./build/DemoZelgine.js";
-    Run(document.getElementById('frame'));
-</script>
-
+  <div style="display: grid; grid-template-rows: 500px auto;">
+    <div>
+      <canvas id="myCanvas" width="528" height="224"></canvas>
+    </div>
+    <div id="debug_panel">
+      
+    </div>
+  </div>
+  <script type="module">
+    import { Run } from "./build/demos/DemoZelgine.js";
+    let engine = Run("data/", (engine) => {
+    }, document.getElementById('myCanvas'));
+  </script>
 </body>
 </html>

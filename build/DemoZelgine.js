@@ -1,101 +1,123 @@
 import { AssetLoader } from "./AssetLoader.js";
-import { Camera } from "./Camera.js";
-import { Point } from "./Point.js";
-import { GameTime } from "./GameTime.js";
-import { Fluent } from "./Fluent.js";
-import { RenderTarget2D } from "./RenderTarget2D.js";
-import { EditorContext, HandleProperties } from "./editor/EditorContext.js";
+import { RenderModule } from "./RenderModule.js";
+import { Engine } from "./Engine.js";
+import { EntityBlueprint } from "./EntityBlueprint.js";
+import { Entity } from "./Entity.js";
 import { loadJSON } from "./JsonLoader.js";
+import { TiledWorld, TiledWorldMap } from "./TiledWorld.js";
+import { TiledTemplate } from "./TiledTemplate.js";
+import { Camera } from "./Camera.js";
+import { UpdateModule } from "./UpdateModule.js";
+import { Point } from "./Point.js";
+import { GfxAsset } from "./GfxAsset.js";
+import { AnimationSetAsset, AnimationAsset } from "./AnimationSetAsset.js";
+import { Random } from "./Random.js";
+import { CollisionModule } from "./CollisionModule.js";
+import { RawImage } from "./RawImage.js";
+import { SpriteComponent } from "./SpriteComponent.js";
+import { Component } from "./Component.js";
+import { PlayerControllerComponent } from "./PlayerControllerComponent.js";
+import { FourWayPlayerControllerComponent } from "./FourWayPlayerControllerComponent.js";
+import { BoundsColliderComponent } from "./BoundsColliderComponent.js";
+import { TagComponent } from "./TagComponent.js";
+import { HealthComponent } from "./HealthComponent.js";
+import { GUIHealthBarComponent } from "./GUIHealthBarComponent.js";
+import { PhysicsModule } from "./PhysicsModule.js";
+import { TilemapColliderComponent } from "./TilemapColliderComponent.js";
+import { TilemapComponent } from "./TilemapComponent.js";
+import { Rect } from "./Rect.js";
 import { AssetStore } from "./AssetStore.js";
-import { Material } from "./gl/Material.js";
-import { Shader } from "./gl/Shader.js";
-import { Program } from "./gl/Program.js";
-import { Mesh } from "./gl/Mesh.js";
-import { Camera3D } from "./gl/Camera3D.js";
-import { Vector3Raw } from "./gl/Vector3.js";
-import { m4Rotation, m4Multiply } from "./gl/Matrix4x4.js";
-import { Texture } from "./gl/Texture.js";
-var outerFrame;
-var previewCanvas;
-var dataLoaded = false;
-export function Run(frame) {
-    outerFrame = frame;
-    previewCanvas = Fluent.e('canvas')
-        ._modify(c => { let e = c; e.width = 512; e.height = 512; });
-    outerFrame.appendChild(previewCanvas);
-    // Show loading screen??
-    console.log("Starting Engine....");
-    loadJSON("data/", "manifest.json")
+import { HitBoxModule, HitBoxRecord } from "./HitBoxModule.js";
+import { RenderLayers } from "./RenderLayers.js";
+import { DebugGizmoComponent } from "./DebugGizmo.js";
+const cellSize = new Point(8, 7);
+function spawnMap(engine, map) {
+    return engine.createTilemapFromTiledTilemap("assets/" + map.fileName, new Point(map?.x ?? 0, map?.y ?? 0));
+}
+function spawnPlayer(engine, spawnPoint) {
+    let playerBlueprint = engine.assets.getPreloadedAsset("assets/blueprints/dwarf.blueprint");
+    let player = engine.createEntityFromBlueprint(engine.sceneRoot, playerBlueprint, new TiledTemplate());
+    player.localPosition = new Point(spawnPoint.localPosition);
+    return player;
+}
+function findEntityWithTag(entities, tag) {
+    for (let e of entities) {
+        let component = e.getComponent(TagComponent);
+        if (component != undefined && component.tag == tag)
+            return e;
+    }
+    return null;
+}
+class LoadedMap {
+    map;
+    entities;
+    constructor(map, entities) {
+        this.map = map;
+        this.entities = entities;
+    }
+}
+export function Run(dataPath, engineCallback, canvas) {
+    console.log("Starting Engine");
+    loadJSON(dataPath, "manifest.json")
         .then(asset => {
         let manifest = asset.asset;
-        console.log("Loading Assets....");
+        canvas.style.imageRendering = 'pixelated';
+        let screenSize = new Point(canvas.width, canvas.height);
+        console.log("Screensize:");
+        console.log(screenSize);
         const loader = new AssetLoader();
         loader.setupStandardLoaders();
-        loader.loadAssets("data/", manifest, (assets) => {
-            console.log("Done Loading. Initializing....");
-            var assetStore = new AssetStore("data/", assets, loader);
-            var vertexShader = assetStore.getPreloadedAsset("3d-render-vertex.glsl");
-            var fragmentShader = assetStore.getPreloadedAsset("3d-render-fragment.glsl");
-            var gfx = assetStore.getPreloadedAsset("assets/dwarf.gfx").asset;
-            gfx.loadImageCache(assetStore);
-            var texture = gfx.getCachedImage();
-            let gl = previewCanvas.getContext('webgl');
-            let mat = null;
-            let mesh = null;
-            let cam = new Camera3D();
-            cam.position = new Vector3Raw(0, 0, -3);
-            if (gl && texture) {
-                mat = new Material(gl, new Program(vertexShader.asset, fragmentShader.asset));
-                var tex = new Texture(gl, texture);
-                mat.setUniform("u_texture", tex);
-                mesh = Mesh.fromVertexList(new Float32Array([
-                    -1, -1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, // Front
-                    -1, -1, -1, 1, -1, 1, -1, 1, 1, 1, -1, 1, 1, -1, -1, 1, // Back
-                    -1, 1, -1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, // Top
-                    -1, -1, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, -1, -1, 1, 1, // Bottom
-                    -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, -1, 1, -1, 1, 1, 1, // Left
-                    1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, 1, 1, 1, 1, 1, // Right
-                ]), new Uint16Array([
-                    0, 1, 2, 0, 2, 3,
-                    4, 5, 6, 4, 6, 7,
-                    8, 9, 10, 8, 10, 11,
-                    12, 13, 14, 12, 14, 15,
-                    16, 17, 18, 16, 18, 19,
-                    20, 21, 22, 20, 22, 23
-                ]), new Float32Array([
-                    0, 0, 1, 0, 1, 1, 0, 1, // Front
-                    0, 0, 1, 0, 1, 1, 0, 1, // Back
-                    0, 0, 1, 0, 1, 1, 0, 1, // Top
-                    0, 0, 1, 0, 1, 1, 0, 1, // Bottom
-                    0, 0, 1, 0, 1, 1, 0, 1, // Left
-                    0, 0, 1, 0, 1, 1, 0, 1, // Right
-                ]));
-                mesh.updateBuffer(gl);
-            }
-            dataLoaded = true;
-            let cubeRotation = 0;
-            gameLoop(() => {
-                if (gl && mat && mesh) {
-                    cubeRotation += 0.01;
-                    gl.clearColor(0, 0, 0, 1);
-                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-                    gl.enable(gl.DEPTH_TEST);
-                    let rotation = m4Rotation(cubeRotation, new Vector3Raw(0, 1, 0));
-                    mat.setUniform("uModelViewMatrix", m4Multiply(cam.getViewMatrix(), rotation));
-                    mat.setUniform("uProjectionMatrix", cam.getProjectionMatrix(512, 512));
-                    mat.bind();
-                    mat.setAttribImmediate("aVertexPosition", mesh.positionBuffer);
-                    mat.setAttribImmediate("aTexcoord", mesh.uvBuffer);
-                    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
-                    gl.drawElements(gl.TRIANGLES, mesh.indices.length, gl.UNSIGNED_SHORT, 0);
-                }
+        loader.loadAssets(dataPath, manifest, (assets) => {
+            const engine = new Engine(new AssetStore(dataPath, assets, loader));
+            engine.debugMode = true;
+            engine.modules.addModule(new UpdateModule());
+            engine.modules.addModule(new CollisionModule());
+            engine.modules.addModule(new PhysicsModule());
+            let renderModule = new RenderModule(canvas);
+            engine.modules.addModule(renderModule);
+            let hitBoxModule = new HitBoxModule();
+            engine.modules.addModule(hitBoxModule);
+            engine.start();
+            let camera = new Camera(screenSize);
+            renderModule.setCamera(camera);
+            camera.position = new Point(0, 0);
+            let world = engine.assets.getPreloadedAsset("assets/base-world.world").asset;
+            let loadedMaps = [];
+            let startMap = world.findMapWithName("room0.tmj");
+            if (startMap == null)
+                throw "Could not find start map";
+            let roomEntities = spawnMap(engine, startMap);
+            loadedMaps.push(new LoadedMap(startMap, roomEntities));
+            let spawn = findEntityWithTag(roomEntities, "spawn");
+            if (spawn == null)
+                throw "Could not find spawn point";
+            let player = spawnPlayer(engine, spawn);
+            engineCallback(engine);
+            engine.run(() => {
+                //if (player != undefined) //camera.position = new Point(player.globalPosition);
+                camera.update();
+                let currentMap = world.findMapAt(player.globalPosition);
+                camera.confineToVisibleBounds(new Rect(currentMap?.x ?? 0, currentMap?.y ?? 0, currentMap?.width ?? 1, currentMap?.height ?? 1), screenSize);
+                let neighbors = world.findMapsThatTouch(new Rect(currentMap?.x ?? 0, currentMap?.y ?? 0, currentMap?.height ?? 1, currentMap?.height ?? 1));
+                neighbors.forEach(n => {
+                    var matching = loadedMaps.filter(l => l.map.fileName == n.fileName);
+                    if (matching.length == 0) {
+                        let newMap = world.findMapWithName(n.fileName);
+                        if (newMap != null) {
+                            let roomEntities = spawnMap(engine, n);
+                            loadedMaps.push(new LoadedMap(newMap, roomEntities));
+                        }
+                    }
+                });
+                renderModule.render_ex(engine);
+                hitBoxModule.detectOverlaps((a, b) => {
+                    if (a.type == 'attack' && b.type == 'hit') {
+                    }
+                });
+                hitBoxModule.clearBoxes();
             });
         });
-    });
-}
-function gameLoop(frameCallback) {
-    GameTime.update();
-    frameCallback();
-    requestAnimationFrame(() => gameLoop(frameCallback));
+    })
+        .catch(error => console.error("Failed to load asset manifest."));
 }
 //# sourceMappingURL=DemoZelgine.js.map

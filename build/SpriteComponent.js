@@ -17,14 +17,14 @@ import { RenderLayers } from "./RenderLayers.js";
 import { AssetReference } from "./AssetReference.js";
 import { resolveInlineReference } from "./JsonConverter.js";
 import { Point } from "./Point.js";
-import { AnimationAsset } from "./AnimationSetAsset.js";
 import { GameTime } from "./GameTime.js";
 import { resolveAsGFX, GfxAsset } from "./GfxAsset.js";
-import { AnimationSetAsset } from "./AnimationSetAsset.js";
+import { AnimationAsset, AnimationSetAsset } from "./AnimationSetAsset.js";
 import { AnimationPlayer } from "./AnimationPlayer.js";
 import { AnimationFrame } from "./AnimationFrame.js";
 import { HitBoxModule } from "./HitBoxModule.js";
 import { Modules } from "./Modules.js";
+import { Rect } from "./Rect.js";
 let SpriteComponent = class SpriteComponent extends RenderComponent {
     gfx;
     offset;
@@ -70,9 +70,16 @@ let SpriteComponent = class SpriteComponent extends RenderComponent {
         if (this.recordHitBoxes && this.cachedHitBoxModule != null && this.currentAnimation != null && this.parent != undefined) {
             let currentFrame = this.currentAnimation.frames[this.animationPlayer.getCurrentFrame()];
             for (let rect of currentFrame.hitBoxes) {
-                console.log(rect);
-                let worldspaceRect = rect.withOffset(this.parent?.globalPosition).withOffset(offset).withOffset(this.offset).withOffset(this.parent.pivot.negate());
-                this.cachedHitBoxModule.recordBox(worldspaceRect, rect.type, this.parent);
+                if (this.flip) {
+                    let localRect = new Rect(rect);
+                    localRect.x = -localRect.x - localRect.width;
+                    let worldspaceRect = localRect.withOffset(this.parent?.globalPosition).withOffset(offset.negateX()).withOffset(this.offset.negateX()).withOffset(this.parent.pivot.negateY());
+                    this.cachedHitBoxModule.recordBox(worldspaceRect, rect.type, this.parent);
+                }
+                else {
+                    let worldspaceRect = rect.withOffset(this.parent?.globalPosition).withOffset(offset).withOffset(this.offset).withOffset(this.parent.pivot.negate());
+                    this.cachedHitBoxModule.recordBox(worldspaceRect, rect.type, this.parent);
+                }
             }
         }
     }

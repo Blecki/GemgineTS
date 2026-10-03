@@ -28,6 +28,10 @@
     {
       "sheet": "assets/dwarf/hair-boyish.bmp",
       "palette": 10
+    },
+    {
+      "sheet": "assets/dwarf/tool-axe.bmp",
+      "palette": 10
     }
   ],
   "animations": "assets/dwarf.animset"

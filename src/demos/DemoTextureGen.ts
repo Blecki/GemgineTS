@@ -1,9 +1,9 @@
-import { AssetLoader } from "./AssetLoader.js";
-import { GameTime  } from "./GameTime.js";
-import { Vector3Raw, type Vector3 } from "./gl/Vector3.js";
-import { type Vector2, Vector2Raw } from "./gl/Vector2.js";
-import { TilingPerlin } from "./PerlinNoise.js";
-import { NodeEditor } from "./nodes/NodeEditor.js";
+import { AssetLoader } from "../AssetLoader.js";
+import { GameTime  } from "../GameTime.js";
+import { Vector3Raw, type Vector3 } from "../gl/Vector3.js";
+import { type Vector2, Vector2Raw } from "../gl/Vector2.js";
+import { TilingPerlin } from "../PerlinNoise.js";
+import { NodeEditor } from "../nodes/NodeEditor.js";
 
 var outerFrame: HTMLElement; 
 var editor: NodeEditor;

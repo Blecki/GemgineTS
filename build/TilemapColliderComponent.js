@@ -21,12 +21,10 @@ let TilemapColliderComponent = class TilemapColliderComponent extends Component 
     cachedOffset = undefined;
     cachedTileSize = undefined;
     initialize(engine, template, prototypeAsset) {
-        console.log("Trace: TilemapColliderComponent.initialize");
         super.initialize(engine, template, prototypeAsset);
         this.tilemapComponent = this.parent?.getComponent(TilemapComponent);
     }
     awake(engine) {
-        console.log("Trace: TilemapColliderComponent.awake");
         if (this.tilemapComponent != undefined) {
             this.cachedGrid = this.tilemapComponent.fillArray(function (tileset, tile) { if (tileset == undefined || tile == undefined)
                 return false;

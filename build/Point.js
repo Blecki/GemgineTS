@@ -25,6 +25,12 @@ export class Point {
     negate() {
         return new Point(-this.x, -this.y);
     }
+    negateX() {
+        return new Point(-this.x, this.y);
+    }
+    negateY() {
+        return new Point(this.x, -this.y);
+    }
     sub(other) {
         return new Point(this.x - other.x, this.y - other.y);
     }
