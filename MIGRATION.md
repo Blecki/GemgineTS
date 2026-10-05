@@ -257,3 +257,5 @@ Expose sync status without treating sync failure as local save failure.
 - Disk sync detects concurrent changes before overwriting.
 - GitHub sync detects SHA conflicts before overwriting.
 - Tests cover project serialization, schema migration, local persistence, and conflict decisions.
+
+Test
